@@ -1,0 +1,120 @@
+2026-01-21 23:52:59,709 - transcript_extractor - INFO - Extracting transcript for video: 3CMWP0rd0Zc
+2026-01-21 23:52:59,709 - transcript_extractor - ERROR - Error extracting transcript for 3CMWP0rd0Zc: type object 'YouTubeTranscriptApi' has no attribute 'list_transcripts'
+2026-01-21 23:52:59,709 - transcript_extractor - INFO - Extracting transcript for video: KagPCgyNxGo
+2026-01-21 23:52:59,709 - transcript_extractor - ERROR - Error extracting transcript for KagPCgyNxGo: type object 'YouTubeTranscriptApi' has no attribute 'list_transcripts'
+2026-01-21 23:52:59,709 - transcript_extractor - INFO - Extracting transcript for video: 25G6zymMFrA
+2026-01-21 23:52:59,709 - transcript_extractor - ERROR - Error extracting transcript for 25G6zymMFrA: type object 'YouTubeTranscriptApi' has no attribute 'list_transcripts'
+2026-01-21 23:54:01,763 - transcript_extractor - INFO - Extracting transcript for video: 3CMWP0rd0Zc
+2026-01-21 23:54:02,904 - transcript_extractor - INFO - Found ko transcript for 3CMWP0rd0Zc
+2026-01-21 23:54:03,101 - transcript_extractor - INFO - Extracted transcript for 3CMWP0rd0Zc: 10668 characters
+2026-01-21 23:55:51,826 - transcript_extractor - INFO - Extracting transcript for video: 3CMWP0rd0Zc
+2026-01-21 23:55:53,179 - transcript_extractor - INFO - Found ko transcript for 3CMWP0rd0Zc
+2026-01-21 23:55:53,332 - transcript_extractor - INFO - Extracted transcript for 3CMWP0rd0Zc: 10668 characters
+2026-01-21 23:56:22,710 - transcript_extractor - INFO - Extracting transcript for video: KagPCgyNxGo
+2026-01-21 23:56:23,899 - transcript_extractor - INFO - Found ko transcript for KagPCgyNxGo
+2026-01-21 23:56:24,056 - transcript_extractor - INFO - Extracted transcript for KagPCgyNxGo: 10363 characters
+2026-01-21 23:56:54,259 - transcript_extractor - INFO - Extracting transcript for video: 25G6zymMFrA
+2026-01-21 23:56:55,275 - transcript_extractor - INFO - Found ko transcript for 25G6zymMFrA
+2026-01-21 23:56:55,474 - transcript_extractor - INFO - Extracted transcript for 25G6zymMFrA: 9465 characters
+2026-01-24 09:21:22,805 - transcript_extractor - INFO - Extracting transcript for video: HHe2W-FLnlY
+2026-01-24 09:21:23,820 - transcript_extractor - INFO - Found ko transcript for HHe2W-FLnlY
+2026-01-24 09:21:23,913 - transcript_extractor - INFO - Extracted transcript for HHe2W-FLnlY: 14515 characters
+2026-01-24 09:21:52,828 - transcript_extractor - INFO - Extracting transcript for video: CRpSqJJlumI
+2026-01-24 09:21:53,677 - transcript_extractor - INFO - Found ko transcript for CRpSqJJlumI
+2026-01-24 09:21:53,771 - transcript_extractor - INFO - Extracted transcript for CRpSqJJlumI: 15229 characters
+2026-01-24 09:22:21,001 - transcript_extractor - INFO - Extracting transcript for video: n1Zz8SZY3oQ
+2026-01-24 09:22:21,830 - transcript_extractor - INFO - Found ko transcript for n1Zz8SZY3oQ
+2026-01-24 09:22:21,906 - transcript_extractor - INFO - Extracted transcript for n1Zz8SZY3oQ: 7491 characters
+2026-01-24 09:22:45,928 - transcript_extractor - INFO - Extracting transcript for video: DGujae905sQ
+2026-01-24 09:22:46,822 - transcript_extractor - INFO - Found ko transcript for DGujae905sQ
+2026-01-24 09:22:46,901 - transcript_extractor - INFO - Extracted transcript for DGujae905sQ: 5313 characters
+2026-01-24 09:23:11,645 - transcript_extractor - INFO - Extracting transcript for video: tzz210md1ys
+2026-01-24 09:23:12,468 - transcript_extractor - INFO - Found ko transcript for tzz210md1ys
+2026-01-24 09:23:12,554 - transcript_extractor - INFO - Extracted transcript for tzz210md1ys: 9050 characters
+2026-01-24 09:23:40,221 - transcript_extractor - INFO - Extracting transcript for video: Sj3kvGEEqaE
+2026-01-24 09:23:41,146 - transcript_extractor - INFO - Found ko transcript for Sj3kvGEEqaE
+2026-01-24 09:23:41,230 - transcript_extractor - INFO - Extracted transcript for Sj3kvGEEqaE: 9340 characters
+2026-01-24 09:24:09,076 - transcript_extractor - INFO - Extracting transcript for video: FIUelEbywmk
+2026-01-24 09:24:09,906 - transcript_extractor - INFO - Found ko transcript for FIUelEbywmk
+2026-01-24 09:24:09,995 - transcript_extractor - INFO - Extracted transcript for FIUelEbywmk: 15046 characters
+2026-01-24 09:24:37,927 - transcript_extractor - INFO - Extracting transcript for video: A5WZN0EV7Pg
+2026-01-24 09:24:38,808 - transcript_extractor - INFO - Found ko transcript for A5WZN0EV7Pg
+2026-01-24 09:24:38,889 - transcript_extractor - INFO - Extracted transcript for A5WZN0EV7Pg: 3691 characters
+2026-01-24 09:25:03,704 - transcript_extractor - INFO - Extracting transcript for video: f33a0V44KkU
+2026-01-24 09:25:04,442 - transcript_extractor - INFO - Found ko transcript for f33a0V44KkU
+2026-01-24 09:25:04,528 - transcript_extractor - INFO - Extracted transcript for f33a0V44KkU: 6503 characters
+2026-01-25 22:32:09,567 - transcript_extractor - INFO - Extracting transcript for video: CwDM2eFXZ8w
+2026-01-25 22:32:10,740 - transcript_extractor - INFO - Found ko transcript for CwDM2eFXZ8w
+2026-01-25 22:32:10,901 - transcript_extractor - INFO - Extracted transcript for CwDM2eFXZ8w: 12210 characters
+2026-01-25 22:32:38,047 - transcript_extractor - INFO - Extracting transcript for video: 6dCer-qqFYs
+2026-01-25 22:32:38,981 - transcript_extractor - INFO - Found ko transcript for 6dCer-qqFYs
+2026-01-25 22:32:39,167 - transcript_extractor - INFO - Extracted transcript for 6dCer-qqFYs: 8029 characters
+2026-01-25 22:33:05,733 - transcript_extractor - INFO - Extracting transcript for video: iwzlL2yf_fw
+2026-01-25 22:33:06,614 - transcript_extractor - INFO - Found ko transcript for iwzlL2yf_fw
+2026-01-25 22:33:06,761 - transcript_extractor - INFO - Extracted transcript for iwzlL2yf_fw: 6914 characters
+2026-01-25 22:33:34,476 - transcript_extractor - INFO - Extracting transcript for video: xUiqpf4FIb4
+2026-01-25 22:33:35,511 - transcript_extractor - INFO - Found ko transcript for xUiqpf4FIb4
+2026-01-25 22:33:35,643 - transcript_extractor - INFO - Extracted transcript for xUiqpf4FIb4: 1614 characters
+2026-01-25 22:33:55,630 - transcript_extractor - INFO - Extracting transcript for video: 7tlPMID6_P4
+2026-01-25 22:33:56,920 - transcript_extractor - INFO - Found ko transcript for 7tlPMID6_P4
+2026-01-25 22:33:57,059 - transcript_extractor - INFO - Extracted transcript for 7tlPMID6_P4: 1676 characters
+2026-01-25 22:34:16,183 - transcript_extractor - INFO - Extracting transcript for video: Xxnb_oFqdlE
+2026-01-25 22:34:17,172 - transcript_extractor - INFO - Found ko transcript for Xxnb_oFqdlE
+2026-01-25 22:34:17,311 - transcript_extractor - INFO - Extracted transcript for Xxnb_oFqdlE: 1667 characters
+2026-01-25 22:34:38,272 - transcript_extractor - INFO - Extracting transcript for video: OGwlXAhf5fY
+2026-01-25 22:34:40,330 - transcript_extractor - INFO - Found ko transcript for OGwlXAhf5fY
+2026-01-25 22:34:40,482 - transcript_extractor - INFO - Extracted transcript for OGwlXAhf5fY: 10336 characters
+2026-01-25 22:35:12,340 - transcript_extractor - INFO - Extracting transcript for video: 28HIGvYc8cs
+2026-01-25 22:35:13,636 - transcript_extractor - INFO - Found ko transcript for 28HIGvYc8cs
+2026-01-25 22:35:13,824 - transcript_extractor - INFO - Extracted transcript for 28HIGvYc8cs: 2005 characters
+2026-01-25 22:35:34,256 - transcript_extractor - INFO - Extracting transcript for video: Dr4nkUBigfs
+2026-01-25 22:35:35,315 - transcript_extractor - INFO - Found ko transcript for Dr4nkUBigfs
+2026-01-25 22:35:35,460 - transcript_extractor - INFO - Extracted transcript for Dr4nkUBigfs: 8873 characters
+2026-01-25 22:35:59,563 - transcript_extractor - INFO - Extracting transcript for video: sSvolxYeS_8
+2026-01-25 22:36:00,498 - transcript_extractor - INFO - Found ko transcript for sSvolxYeS_8
+2026-01-25 22:36:00,645 - transcript_extractor - INFO - Extracted transcript for sSvolxYeS_8: 10610 characters
+2026-01-25 22:36:29,799 - transcript_extractor - INFO - Extracting transcript for video: aj0_S31MM7s
+2026-01-25 22:36:30,729 - transcript_extractor - INFO - Found ko transcript for aj0_S31MM7s
+2026-01-25 22:36:30,883 - transcript_extractor - INFO - Extracted transcript for aj0_S31MM7s: 14117 characters
+2026-01-26 22:43:11,358 - transcript_extractor - INFO - Extracting transcript for video: EGNCZLYkJQ0
+2026-01-26 22:43:12,791 - transcript_extractor - INFO - Found ko transcript for EGNCZLYkJQ0
+2026-01-26 22:43:12,917 - transcript_extractor - INFO - Extracted transcript for EGNCZLYkJQ0: 12572 characters
+2026-01-26 22:43:39,971 - transcript_extractor - INFO - Extracting transcript for video: lrTo6or5xeQ
+2026-01-26 22:43:41,050 - transcript_extractor - INFO - Found ko transcript for lrTo6or5xeQ
+2026-01-26 22:43:41,221 - transcript_extractor - INFO - Extracted transcript for lrTo6or5xeQ: 12150 characters
+2026-01-26 22:44:11,798 - transcript_extractor - INFO - Extracting transcript for video: IVq7S50JVZw
+2026-01-26 22:44:12,706 - transcript_extractor - INFO - Found ko transcript for IVq7S50JVZw
+2026-01-26 22:44:12,909 - transcript_extractor - INFO - Extracted transcript for IVq7S50JVZw: 8221 characters
+2026-01-27 23:01:08,349 - transcript_extractor - INFO - Extracting transcript for video: AebHMl0TomM
+2026-01-27 23:01:10,523 - transcript_extractor - INFO - Found ko transcript for AebHMl0TomM
+2026-01-27 23:01:10,630 - transcript_extractor - INFO - Extracted transcript for AebHMl0TomM: 5796 characters
+2026-01-27 23:01:39,380 - transcript_extractor - INFO - Extracting transcript for video: utF8DycjVaI
+2026-01-27 23:01:40,611 - transcript_extractor - INFO - Found ko transcript for utF8DycjVaI
+2026-01-27 23:01:40,702 - transcript_extractor - INFO - Extracted transcript for utF8DycjVaI: 9819 characters
+2026-01-27 23:02:02,610 - transcript_extractor - INFO - Extracting transcript for video: wv5rNx-Ia3g
+2026-01-27 23:02:04,216 - transcript_extractor - INFO - Found ko transcript for wv5rNx-Ia3g
+2026-01-27 23:02:05,057 - transcript_extractor - INFO - Extracted transcript for wv5rNx-Ia3g: 15860 characters
+2026-01-27 23:02:32,698 - transcript_extractor - INFO - Extracting transcript for video: VI3E2f5m0Qg
+2026-01-27 23:02:34,013 - transcript_extractor - INFO - Found ko transcript for VI3E2f5m0Qg
+2026-01-27 23:02:34,130 - transcript_extractor - INFO - Extracted transcript for VI3E2f5m0Qg: 1507 characters
+2026-01-28 23:00:56,827 - transcript_extractor - INFO - Extracting transcript for video: T68rjDE41Tg
+2026-01-28 23:00:57,749 - transcript_extractor - INFO - Found ko transcript for T68rjDE41Tg
+2026-01-28 23:00:57,886 - transcript_extractor - INFO - Extracted transcript for T68rjDE41Tg: 17692 characters
+2026-01-28 23:01:26,112 - transcript_extractor - INFO - Extracting transcript for video: dzR8EEkY9bc
+2026-01-28 23:01:27,096 - transcript_extractor - INFO - Found ko transcript for dzR8EEkY9bc
+2026-01-28 23:01:27,191 - transcript_extractor - INFO - Extracted transcript for dzR8EEkY9bc: 10019 characters
+2026-01-28 23:01:45,985 - transcript_extractor - INFO - Extracting transcript for video: T68rjDE41Tg
+2026-01-28 23:01:47,060 - transcript_extractor - INFO - Found ko transcript for T68rjDE41Tg
+2026-01-28 23:01:47,195 - transcript_extractor - INFO - Extracted transcript for T68rjDE41Tg: 17692 characters
+2026-01-28 23:01:54,423 - transcript_extractor - INFO - Extracting transcript for video: SSR5YbMYzdc
+2026-01-28 23:01:55,574 - transcript_extractor - INFO - Found ko transcript for SSR5YbMYzdc
+2026-01-28 23:01:55,647 - transcript_extractor - INFO - Extracted transcript for SSR5YbMYzdc: 1532 characters
+2026-01-28 23:02:14,464 - transcript_extractor - INFO - Extracting transcript for video: dzR8EEkY9bc
+2026-01-28 23:02:15,682 - transcript_extractor - INFO - Found ko transcript for dzR8EEkY9bc
+2026-01-28 23:02:15,765 - transcript_extractor - INFO - Extracted transcript for dzR8EEkY9bc: 10019 characters
+2026-01-28 23:02:49,069 - transcript_extractor - INFO - Extracting transcript for video: SSR5YbMYzdc
+2026-01-28 23:02:50,297 - transcript_extractor - INFO - Found ko transcript for SSR5YbMYzdc
+2026-01-28 23:02:50,373 - transcript_extractor - INFO - Extracted transcript for SSR5YbMYzdc: 1532 characters
+2026-01-29 23:00:51,292 - transcript_extractor - INFO - Extracting transcript for video: LzvLYG6l6h8
+2026-01-29 23:00:52,777 - transcript_extractor - INFO - Found ko transcript for LzvLYG6l6h8
+2026-01-29 23:00:52,881 - transcript_extractor - INFO - Extracted transcript for LzvLYG6l6h8: 1359 characters

@@ -1,0 +1,59 @@
+2026-01-21 23:52:47,435 - state_manager - INFO - Run started
+2026-01-21 23:52:59,710 - state_manager - INFO - Run completed: 0 videos processed, 0 errors
+2026-01-21 23:53:49,855 - state_manager - INFO - Run started
+2026-01-21 23:54:03,106 - state_manager - ERROR - Run failed: ANTHROPIC_API_KEY not configured. Please set it in config/.env file.
+2026-01-21 23:55:39,730 - state_manager - INFO - Run started
+2026-01-21 23:56:22,709 - state_manager - INFO - Marked video as processed: 3CMWP0rd0Zc - 천장 뚫린 은값, 지금 사면 늦었을까? (박종훈의 지식한방)
+2026-01-21 23:56:54,259 - state_manager - INFO - Marked video as processed: KagPCgyNxGo - 은(銀) 창고가 텅 비었다. 머스크 '이건 재앙이다' (박종훈의 지식한방)
+2026-01-21 23:57:21,437 - state_manager - INFO - Marked video as processed: 25G6zymMFrA - 트럼프의 무시무시한 그린란드 점령 전략 (박종훈의 지식한방)
+2026-01-21 23:57:24,069 - state_manager - INFO - Run completed: 3 videos processed, 0 errors
+2026-01-22 00:05:23,080 - state_manager - INFO - Run started
+2026-01-22 00:05:34,523 - state_manager - INFO - Run completed: 0 videos processed, 0 errors
+2026-01-22 00:09:19,301 - state_manager - INFO - Run started
+2026-01-22 00:09:32,393 - state_manager - INFO - Run completed: 0 videos processed, 0 errors
+2026-01-24 08:19:09,665 - state_manager - INFO - Run started
+2026-01-24 08:19:13,277 - state_manager - INFO - Run completed: 0 videos processed, 0 errors
+2026-01-24 09:21:52,828 - state_manager - INFO - Marked video as processed: HHe2W-FLnlY - [월가아재] 트럼프가 돈을 풀고 있는 지금, 채권이냐 금이냐?
+2026-01-24 09:22:21,000 - state_manager - INFO - Marked video as processed: CRpSqJJlumI - [월가아재] 지금부터 게임주를 주목해야 하는 이유
+2026-01-24 09:22:45,928 - state_manager - INFO - Marked video as processed: n1Zz8SZY3oQ - [월가아재] 2026년 주식시장의 리스크와 대응 총정리
+2026-01-24 09:23:11,645 - state_manager - INFO - Marked video as processed: DGujae905sQ - [월가아재] 코인과 부동산, 트럼프가 작정하고 띄우는 진짜 이유
+2026-01-24 09:23:40,221 - state_manager - INFO - Marked video as processed: tzz210md1ys - [월가아재]K방산 수출길 막혔다? 돌파구는 따로 있습니다
+2026-01-24 09:24:09,076 - state_manager - INFO - Marked video as processed: Sj3kvGEEqaE - [월가아재] 2200억 달러가 풀린다? 연준이 돈을 푸는 방식이 바뀌었습니다.
+2026-01-24 09:24:37,926 - state_manager - INFO - Marked video as processed: FIUelEbywmk - [월가아재] 팀 쿡도 줍줍한 나이키, 월드컵을 노려보자
+2026-01-24 09:25:03,704 - state_manager - INFO - Marked video as processed: A5WZN0EV7Pg - 대한민국에도 드디어 이런 투자플랫폼이 나왔습니다
+2026-01-24 09:25:32,696 - state_manager - INFO - Marked video as processed: f33a0V44KkU - [월가아재] 어떻게 투자를 공부할 것인가? - 주식기초강의 30강
+2026-01-25 22:31:20,603 - state_manager - INFO - Run started
+2026-01-25 22:32:38,047 - state_manager - INFO - Marked video as processed: CwDM2eFXZ8w - 환율 -2% 급락이 보내는 경고 신호! (ft. 다보스 포럼)
+2026-01-25 22:33:05,733 - state_manager - INFO - Marked video as processed: 6dCer-qqFYs - 돈 내야 지켜준다.. 용병기업이 된 미국 (박종훈의 지식한방)
+2026-01-25 22:33:34,475 - state_manager - INFO - Marked video as processed: iwzlL2yf_fw - [월가아재] 트럼프의 변심? 차기 연준의장 전격 분석
+2026-01-25 22:33:55,629 - state_manager - INFO - Marked video as processed: xUiqpf4FIb4 - 【미국 증시 오늘의 요약】  슈퍼위크 앞둔 폭풍전야... 혼조세 속 개인투자자의 '63억불' 베팅  -  2026/01/23
+2026-01-25 22:34:16,183 - state_manager - INFO - Marked video as processed: 7tlPMID6_P4 - 【미국 증시 오늘의 요약】  테슬라 '무인' 로보택시 시작, 메타 5.7% 급등!  -  2026/01/22
+2026-01-25 22:34:38,272 - state_manager - INFO - Marked video as processed: Xxnb_oFqdlE - 【미국 증시 오늘의 요약】 트럼프 관세 철회! 돌아온 'TACO' 장세에 증시 급등    -  2026/01/21
+2026-01-25 22:35:12,340 - state_manager - INFO - Marked video as processed: OGwlXAhf5fY - 이번에도 적중? 다보스포럼에서 찍은 2026년 증시 최대 리스크
+2026-01-25 22:35:34,256 - state_manager - INFO - Marked video as processed: 28HIGvYc8cs - 【미국 증시 오늘의 요약】 그린란드 관세 리스크 + 일본 국채 발작... 주식·채권·달러 다 무너졌다  -  2026/01/20
+2026-01-25 22:35:59,563 - state_manager - INFO - Marked video as processed: Dr4nkUBigfs - 모든 자산이 오르는데 왜 불안할까? (ft. 국내 vs 미국 커버드콜 ETF)
+2026-01-25 22:36:29,799 - state_manager - INFO - Marked video as processed: sSvolxYeS_8 - 올해 증시 쇼크 못 피한다? 족집게 보고서의 경고, 이번에도 적중할까
+2026-01-25 22:36:59,304 - state_manager - INFO - Marked video as processed: aj0_S31MM7s - 반도체 전설도 급하게 매수? 미국 반도체 띄우기의 수혜주들
+2026-01-25 22:37:02,773 - state_manager - INFO - Run completed: 11 videos processed, 0 errors
+2026-01-26 22:42:18,313 - state_manager - INFO - Run started
+2026-01-26 22:43:39,971 - state_manager - INFO - Marked video as processed: EGNCZLYkJQ0 - 트럼프발 대혼돈에 미 증시에서 돈 빠져나간다? 25년 증시 쇼크 데자뷰일까
+2026-01-26 22:44:11,798 - state_manager - INFO - Marked video as processed: lrTo6or5xeQ - 금값 5,000달러 돌파, 트럼프가 노리는 것은? (박종훈의 지식한방)
+2026-01-26 22:44:39,764 - state_manager - INFO - Marked video as processed: IVq7S50JVZw - [월가아재] 트럼프가 생각을 바꾼 숨은 이유가 있었습니다
+2026-01-26 22:44:43,335 - state_manager - INFO - Run completed: 3 videos processed, 0 errors
+2026-01-27 23:00:02,522 - state_manager - INFO - Run started
+2026-01-27 23:01:39,379 - state_manager - INFO - Marked video as processed: AebHMl0TomM - 미국주식 6개월 후면 모든 게 달라질 수 있습니다.
+2026-01-27 23:02:02,609 - state_manager - INFO - Marked video as processed: utF8DycjVaI - 트럼프 행정부의 역대급 매수, 20년만의 슈퍼사이클 신호일까
+2026-01-27 23:02:32,697 - state_manager - INFO - Marked video as processed: wv5rNx-Ia3g - [월가아재x성상현] 노동 소득의 시대가 끝나고 있습니다. 탈출구는 이것입니다. 매크로 대담 1부.
+2026-01-27 23:02:51,685 - state_manager - INFO - Marked video as processed: VI3E2f5m0Qg - 【미국 증시 오늘의 요약】 트럼프 "한국 관세 25% 즉각 인상" 선전포고... 미 증시, 악재 뚫고 상승 마감  -  2026/01/26
+2026-01-27 23:02:54,994 - state_manager - INFO - Run completed: 4 videos processed, 0 errors
+2026-01-28 23:00:02,638 - state_manager - INFO - Run started
+2026-01-28 23:00:56,400 - state_manager - INFO - Run started
+2026-01-28 23:01:26,110 - state_manager - INFO - Marked video as processed: T68rjDE41Tg - GDP 7% 시대 시작된다? 혁신주 대가가 찍은 기술 혁명 수혜주들
+2026-01-28 23:01:54,422 - state_manager - INFO - Marked video as processed: dzR8EEkY9bc - [월가아재] 트럼프의 '골든 돔'과 일본 금리 급등, 엔캐리
+2026-01-28 23:02:12,363 - state_manager - INFO - Marked video as processed: SSR5YbMYzdc - 【미국 증시 오늘의 요약】S&P500 사상 최고치 경신! 근데 달러는 4년 만에 '대폭락'?   -  2026/01/27
+2026-01-28 23:02:14,464 - state_manager - INFO - Marked video as processed: T68rjDE41Tg - GDP 7% 시대 시작된다? 혁신주 대가가 찍은 기술 혁명 수혜주들
+2026-01-28 23:02:16,146 - state_manager - INFO - Run completed: 3 videos processed, 0 errors
+2026-01-28 23:02:49,069 - state_manager - INFO - Marked video as processed: dzR8EEkY9bc - [월가아재] 트럼프의 '골든 돔'과 일본 금리 급등, 엔캐리
+2026-01-28 23:03:07,512 - state_manager - INFO - Marked video as processed: SSR5YbMYzdc - 【미국 증시 오늘의 요약】S&P500 사상 최고치 경신! 근데 달러는 4년 만에 '대폭락'?   -  2026/01/27
+2026-01-28 23:03:11,715 - state_manager - INFO - Run completed: 3 videos processed, 0 errors
+2026-01-29 23:00:02,310 - state_manager - INFO - Run started

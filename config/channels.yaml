@@ -1,0 +1,21 @@
+# YouTube Channels to Monitor
+#
+# Add channels in one of two formats:
+# 1. Channel handle (starts with @): @channelname
+# 2. Channel ID: UCxxxxxxxxxxxxxxxxxxxxxx
+#
+# Examples:
+#   - "@mkbhd"
+#   - "UCBcRF18a7Qf58cCRy5xuWwQ"
+#
+# The system will automatically resolve @handles to channel IDs using yt-dlp
+# and use the UULF prefix for long-form videos only.
+
+channels:
+  - "@kpunch"
+  - "@wsaj"
+  - "@futuresnow"
+  - "@sosumonkey"
+  - "@mer_official"
+  - "@TV-wr8ex"
+  - "@supe-tv"

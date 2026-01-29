@@ -1,0 +1,61 @@
+[2026-01-29T13:46:45.953+0000] {taskinstance.py:1957} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: youtube_summary_system.get_new_videos scheduled__2026-01-01T23:00:00+00:00 [queued]>
+[2026-01-29T13:46:45.963+0000] {taskinstance.py:1957} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: youtube_summary_system.get_new_videos scheduled__2026-01-01T23:00:00+00:00 [queued]>
+[2026-01-29T13:46:45.964+0000] {taskinstance.py:2171} INFO - Starting attempt 1 of 3
+[2026-01-29T13:46:45.974+0000] {taskinstance.py:2192} INFO - Executing <Task(PythonOperator): get_new_videos> on 2026-01-01 23:00:00+00:00
+[2026-01-29T13:46:45.979+0000] {standard_task_runner.py:60} INFO - Started process 215 to run task
+[2026-01-29T13:46:45.983+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'youtube_summary_system', 'get_new_videos', 'scheduled__2026-01-01T23:00:00+00:00', '--job-id', '3', '--raw', '--subdir', 'DAGS_FOLDER/youtube_summary_dag.py', '--cfg-path', '/tmp/tmp6sz4wtta']
+[2026-01-29T13:46:45.986+0000] {standard_task_runner.py:88} INFO - Job 3: Subtask get_new_videos
+[2026-01-29T13:46:46.001+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/***/settings.py:195 DeprecationWarning: The sql_alchemy_conn option in [core] has been moved to the sql_alchemy_conn option in [database] - the old setting has been used, but please update your config.
+[2026-01-29T13:46:46.030+0000] {task_command.py:423} INFO - Running <TaskInstance: youtube_summary_system.get_new_videos scheduled__2026-01-01T23:00:00+00:00 [running]> on host ddeccb43e8b1
+[2026-01-29T13:46:46.087+0000] {taskinstance.py:2481} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='youtube_summary_system' AIRFLOW_CTX_TASK_ID='get_new_videos' AIRFLOW_CTX_EXECUTION_DATE='2026-01-01T23:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-01-01T23:00:00+00:00'
+[2026-01-29T13:46:46.172+0000] {logging_mixin.py:188} INFO - Already processed 33 videos
+[2026-01-29T13:46:46.175+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:46:46,175 - channel_monitor - INFO - Resolving handle @kpunch to channel ID...
+[2026-01-29T13:46:46.175+0000] {channel_monitor.py:64} INFO - Resolving handle @kpunch to channel ID...
+[2026-01-29T13:46:49.752+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:46:49,752 - channel_monitor - INFO - Resolved @kpunch to UCOB62fKRT7b73X7tRxMuN2g
+[2026-01-29T13:46:49.752+0000] {channel_monitor.py:85} INFO - Resolved @kpunch to UCOB62fKRT7b73X7tRxMuN2g
+[2026-01-29T13:46:50.362+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:46:50,361 - channel_monitor - INFO - Found 2 recent videos for Videos
+[2026-01-29T13:46:50.361+0000] {channel_monitor.py:234} INFO - Found 2 recent videos for Videos
+[2026-01-29T13:46:50.364+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:46:50,363 - channel_monitor - INFO - Resolving handle @wsaj to channel ID...
+[2026-01-29T13:46:50.363+0000] {channel_monitor.py:64} INFO - Resolving handle @wsaj to channel ID...
+[2026-01-29T13:47:01.473+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:01,472 - channel_monitor - INFO - Resolved @wsaj to UCpqD9_OJNtF6suPpi6mOQCQ
+[2026-01-29T13:47:01.472+0000] {channel_monitor.py:85} INFO - Resolved @wsaj to UCpqD9_OJNtF6suPpi6mOQCQ
+[2026-01-29T13:47:02.146+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:02,144 - channel_monitor - INFO - Found 4 recent videos for Videos
+[2026-01-29T13:47:02.144+0000] {channel_monitor.py:234} INFO - Found 4 recent videos for Videos
+[2026-01-29T13:47:02.147+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:02,146 - channel_monitor - INFO - Resolving handle @futuresnow to channel ID...
+[2026-01-29T13:47:02.146+0000] {channel_monitor.py:64} INFO - Resolving handle @futuresnow to channel ID...
+[2026-01-29T13:47:13.485+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:13,484 - channel_monitor - INFO - Resolved @futuresnow to UC_JJ_NhRqPKcIOj5Ko3W_3w
+[2026-01-29T13:47:13.484+0000] {channel_monitor.py:85} INFO - Resolved @futuresnow to UC_JJ_NhRqPKcIOj5Ko3W_3w
+[2026-01-29T13:47:14.097+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:14,095 - channel_monitor - INFO - Found 5 recent videos for Videos
+[2026-01-29T13:47:14.095+0000] {channel_monitor.py:234} INFO - Found 5 recent videos for Videos
+[2026-01-29T13:47:14.098+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:14,097 - channel_monitor - INFO - Resolving handle @sosumonkey to channel ID...
+[2026-01-29T13:47:14.097+0000] {channel_monitor.py:64} INFO - Resolving handle @sosumonkey to channel ID...
+[2026-01-29T13:47:25.429+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:25,428 - channel_monitor - INFO - Resolved @sosumonkey to UCC3yfxS5qC6PCwDzetUuEWg
+[2026-01-29T13:47:25.428+0000] {channel_monitor.py:85} INFO - Resolved @sosumonkey to UCC3yfxS5qC6PCwDzetUuEWg
+[2026-01-29T13:47:26.255+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:26,254 - channel_monitor - INFO - Found 3 recent videos for Videos
+[2026-01-29T13:47:26.254+0000] {channel_monitor.py:234} INFO - Found 3 recent videos for Videos
+[2026-01-29T13:47:26.256+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:26,256 - channel_monitor - INFO - Resolving handle @mer_official to channel ID...
+[2026-01-29T13:47:26.256+0000] {channel_monitor.py:64} INFO - Resolving handle @mer_official to channel ID...
+[2026-01-29T13:47:37.785+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:37,784 - channel_monitor - INFO - Resolved @mer_official to UC_l2qrs1qRv_8Rs8utay-PQ
+[2026-01-29T13:47:37.784+0000] {channel_monitor.py:85} INFO - Resolved @mer_official to UC_l2qrs1qRv_8Rs8utay-PQ
+[2026-01-29T13:47:38.513+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:38,512 - channel_monitor - INFO - Found 0 recent videos for Videos
+[2026-01-29T13:47:38.512+0000] {channel_monitor.py:234} INFO - Found 0 recent videos for Videos
+[2026-01-29T13:47:38.515+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:38,514 - channel_monitor - INFO - Resolving handle @TV-wr8ex to channel ID...
+[2026-01-29T13:47:38.514+0000] {channel_monitor.py:64} INFO - Resolving handle @TV-wr8ex to channel ID...
+[2026-01-29T13:47:42.001+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:42,000 - channel_monitor - INFO - Resolved @TV-wr8ex to UCge4_EUhf1O-EupOgRAMgPA
+[2026-01-29T13:47:42.000+0000] {channel_monitor.py:85} INFO - Resolved @TV-wr8ex to UCge4_EUhf1O-EupOgRAMgPA
+[2026-01-29T13:47:42.631+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:42,630 - channel_monitor - INFO - Found 0 recent videos for Videos
+[2026-01-29T13:47:42.630+0000] {channel_monitor.py:234} INFO - Found 0 recent videos for Videos
+[2026-01-29T13:47:42.632+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:42,631 - channel_monitor - INFO - Resolving handle @supe-tv to channel ID...
+[2026-01-29T13:47:42.631+0000] {channel_monitor.py:64} INFO - Resolving handle @supe-tv to channel ID...
+[2026-01-29T13:47:47.186+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:47,185 - channel_monitor - INFO - Resolved @supe-tv to UCfnqgWlC5IvJEAPTmyjaixA
+[2026-01-29T13:47:47.185+0000] {channel_monitor.py:85} INFO - Resolved @supe-tv to UCfnqgWlC5IvJEAPTmyjaixA
+[2026-01-29T13:47:47.758+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:47,756 - channel_monitor - INFO - Found 2 recent videos for Videos
+[2026-01-29T13:47:47.756+0000] {channel_monitor.py:234} INFO - Found 2 recent videos for Videos
+[2026-01-29T13:47:47.759+0000] {logging_mixin.py:188} WARNING - 2026-01-29 13:47:47,758 - channel_monitor - INFO - Found 1 new videos total
+[2026-01-29T13:47:47.758+0000] {channel_monitor.py:276} INFO - Found 1 new videos total
+[2026-01-29T13:47:47.759+0000] {logging_mixin.py:188} INFO - Found 1 new videos to process
+[2026-01-29T13:47:47.759+0000] {logging_mixin.py:188} INFO -   - [Videos] 【미국 증시 오늘의 요약】테슬라·메타 실적 호조, 마이크로소프트 AI 지출 우려… 엇갈린 빅테크   -  2026/01/28
+[2026-01-29T13:47:47.760+0000] {python.py:201} INFO - Done. Returned value was: [{'video_id': 'LzvLYG6l6h8', 'title': '【미국 증시 오늘의 요약】테슬라·메타 실적 호조, 마이크로소프트 AI 지출 우려… 엇갈린 빅테크   -  2026/01/28', 'channel_name': 'Videos', 'published_date': '2026-01-29T00:20:00', 'url': 'https://www.youtube.com/watch?v=LzvLYG6l6h8'}]
+[2026-01-29T13:47:47.778+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=youtube_summary_system, task_id=get_new_videos, execution_date=20260101T230000, start_date=20260129T134645, end_date=20260129T134747
+[2026-01-29T13:47:47.801+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2026-01-29T13:47:47.820+0000] {taskinstance.py:3281} INFO - 1 downstream tasks scheduled from follow-on schedule check

@@ -1,0 +1,15 @@
+# Apache Airflow requirements for YouTube Summary System
+# Install with: pip install -r requirements-airflow.txt
+
+# Airflow core (use constraint file for compatible versions)
+apache-airflow==2.8.0
+
+# Existing project dependencies (from requirements.txt)
+yt-dlp>=2024.12.0
+youtube-transcript-api>=0.6.2
+feedparser>=6.0.10
+anthropic>=0.40.0
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
+requests>=2.31.0
+python-dateutil>=2.8.2

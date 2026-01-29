@@ -1,0 +1,8 @@
+{
+  "last_run_time": "2026-01-28T23:03:11.714932",
+  "last_run_status": "running",
+  "current_run_start": "2026-01-29T23:00:02.309895",
+  "last_run_videos_processed": 3,
+  "last_run_errors": 0,
+  "last_run_error": "ANTHROPIC_API_KEY not configured. Please set it in config/.env file."
+}

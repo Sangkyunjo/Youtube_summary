@@ -1,0 +1,82 @@
+# YouTube Summary System Configuration
+
+# Anthropic Claude API settings
+anthropic:
+  model: "claude-sonnet-4-20250514"
+  max_tokens: 4096
+
+# Transcript extraction settings
+transcript:
+  # Language preference order (first available will be used)
+  # Korean first, then English fallback
+  languages:
+    - ko
+    - en
+  # Fall back to any available transcript if preferred not found
+  fallback_to_any: true
+
+# Email notification settings
+email:
+  smtp_server: "smtp.gmail.com"
+  smtp_port: 587
+  use_tls: true
+  # Sender and recipient configured in .env file
+
+# Scheduling settings
+schedule:
+  # Daily run time (24-hour format)
+  run_time: "23:00"
+  # Maximum age of videos to process (in days)
+  max_video_age_days: 7
+  # Enable catch-up for missed runs
+  catch_up_enabled: true
+
+# File paths (relative to project root)
+paths:
+  summaries_dir: "D:/OneDrive/Information/summaries"
+  logs_dir: "logs"
+  data_dir: "data"
+  state_file: "data/state.json"
+  last_run_file: "data/last_run.json"
+
+# Logging settings
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  max_file_size_mb: 10
+  backup_count: 5
+
+# Summary format template
+summary_template: |
+  ================================================================================
+  VIDEO SUMMARY
+  ================================================================================
+
+  Title: {title}
+  Channel: {channel}
+  Published: {published}
+  URL: {url}
+
+  --------------------------------------------------------------------------------
+  OVERVIEW
+  --------------------------------------------------------------------------------
+  {overview}
+
+  --------------------------------------------------------------------------------
+  KEY POINTS
+  --------------------------------------------------------------------------------
+  {key_points}
+
+  --------------------------------------------------------------------------------
+  NOTABLE QUOTES
+  --------------------------------------------------------------------------------
+  {quotes}
+
+  --------------------------------------------------------------------------------
+  KEY TAKEAWAYS
+  --------------------------------------------------------------------------------
+  {takeaways}
+
+  ================================================================================
+  Generated: {generated_at}
+  ================================================================================

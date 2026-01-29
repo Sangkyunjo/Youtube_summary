@@ -1,0 +1,20 @@
+2026-01-21 23:48:27,572 - email_notifier - WARNING - Email not configured. Missing: EMAIL_SENDER, EMAIL_RECIPIENT, EMAIL_APP_PASSWORD. Email notifications will be disabled.
+2026-01-21 23:49:42,253 - email_notifier - WARNING - Email not configured. Missing: EMAIL_SENDER, EMAIL_RECIPIENT, EMAIL_APP_PASSWORD. Email notifications will be disabled.
+2026-01-21 23:50:58,302 - email_notifier - WARNING - Email not configured. Missing: EMAIL_SENDER, EMAIL_RECIPIENT, EMAIL_APP_PASSWORD. Email notifications will be disabled.
+2026-01-21 23:51:48,727 - email_notifier - WARNING - Email not configured. Missing: EMAIL_SENDER, EMAIL_RECIPIENT, EMAIL_APP_PASSWORD. Email notifications will be disabled.
+2026-01-21 23:52:47,433 - email_notifier - WARNING - Email not configured. Missing: EMAIL_SENDER, EMAIL_RECIPIENT, EMAIL_APP_PASSWORD. Email notifications will be disabled.
+2026-01-21 23:53:49,854 - email_notifier - WARNING - Email not configured. Missing: EMAIL_SENDER, EMAIL_RECIPIENT, EMAIL_APP_PASSWORD. Email notifications will be disabled.
+2026-01-21 23:57:21,437 - email_notifier - INFO - Connecting to smtp.gmail.com:587
+2026-01-21 23:57:24,068 - email_notifier - ERROR - SMTP authentication failed. Please check your email and app password in .env file.
+2026-01-22 00:10:55,790 - email_notifier - INFO - Connecting to smtp.gmail.com:587
+2026-01-22 00:10:59,163 - email_notifier - INFO - Email sent successfully to trillionnt12@gmail.com
+2026-01-25 22:36:59,304 - email_notifier - INFO - Connecting to smtp.gmail.com:587
+2026-01-25 22:37:02,771 - email_notifier - INFO - Email sent successfully to trillionnt12@gmail.com
+2026-01-26 22:44:39,764 - email_notifier - INFO - Connecting to smtp.gmail.com:587
+2026-01-26 22:44:43,334 - email_notifier - INFO - Email sent successfully to trillionnt12@gmail.com
+2026-01-27 23:02:51,685 - email_notifier - INFO - Connecting to smtp.gmail.com:587
+2026-01-27 23:02:54,993 - email_notifier - INFO - Email sent successfully to trillionnt12@gmail.com
+2026-01-28 23:02:12,365 - email_notifier - INFO - Connecting to smtp.gmail.com:587
+2026-01-28 23:02:16,145 - email_notifier - INFO - Email sent successfully to trillionnt12@gmail.com
+2026-01-28 23:03:07,513 - email_notifier - INFO - Connecting to smtp.gmail.com:587
+2026-01-28 23:03:11,714 - email_notifier - INFO - Email sent successfully to trillionnt12@gmail.com, mynecrow@naver.com, tlsgur21@cksolution.co.kr

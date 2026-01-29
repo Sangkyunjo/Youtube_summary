@@ -1,0 +1,119 @@
+2026-01-21 23:52:59,708 - main - INFO - Found 3 new videos to process
+2026-01-21 23:52:59,709 - main - INFO - Processing: 천장 뚫린 은값, 지금 사면 늦었을까? (박종훈의 지식한방) (3CMWP0rd0Zc)
+2026-01-21 23:52:59,709 - main - WARNING - No transcript for: 천장 뚫린 은값, 지금 사면 늦었을까? (박종훈의 지식한방)
+2026-01-21 23:52:59,709 - main - INFO - Processing: 은(銀) 창고가 텅 비었다. 머스크 '이건 재앙이다' (박종훈의 지식한방) (KagPCgyNxGo)
+2026-01-21 23:52:59,709 - main - WARNING - No transcript for: 은(銀) 창고가 텅 비었다. 머스크 '이건 재앙이다' (박종훈의 지식한방)
+2026-01-21 23:52:59,709 - main - INFO - Processing: 트럼프의 무시무시한 그린란드 점령 전략 (박종훈의 지식한방) (25G6zymMFrA)
+2026-01-21 23:52:59,709 - main - WARNING - No transcript for: 트럼프의 무시무시한 그린란드 점령 전략 (박종훈의 지식한방)
+2026-01-21 23:54:01,763 - main - INFO - Found 3 new videos to process
+2026-01-21 23:54:01,763 - main - INFO - Processing: 천장 뚫린 은값, 지금 사면 늦었을까? (박종훈의 지식한방) (3CMWP0rd0Zc)
+2026-01-21 23:54:03,104 - main - ERROR - Failed to initialize summarizer: ANTHROPIC_API_KEY not configured. Please set it in config/.env file.
+2026-01-21 23:54:03,104 - main - ERROR - Run failed with error: ANTHROPIC_API_KEY not configured. Please set it in config/.env file.
+Traceback (most recent call last):
+  File "C:\Users\trill\Youtube_summary\src\main.py", line 185, in run
+    result = self.process_video(video)
+  File "C:\Users\trill\Youtube_summary\src\main.py", line 81, in process_video
+    self._ensure_summarizer()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\trill\Youtube_summary\src\main.py", line 47, in _ensure_summarizer
+    self.summarizer = Summarizer()
+                      ~~~~~~~~~~^^
+  File "C:\Users\trill\Youtube_summary\src\summarizer.py", line 72, in __init__
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: ANTHROPIC_API_KEY not configured. Please set it in config/.env file.
+2026-01-21 23:55:51,826 - main - INFO - Found 3 new videos to process
+2026-01-21 23:55:51,826 - main - INFO - Processing: 천장 뚫린 은값, 지금 사면 늦었을까? (박종훈의 지식한방) (3CMWP0rd0Zc)
+2026-01-21 23:56:22,709 - main - INFO - Summary saved: 2026-01-20_1225_videos_천장-뚫린-은값-지금-사면-늦었을까-박종훈의-지식한방.txt
+2026-01-21 23:56:22,709 - main - INFO - Processing: 은(銀) 창고가 텅 비었다. 머스크 '이건 재앙이다' (박종훈의 지식한방) (KagPCgyNxGo)
+2026-01-21 23:56:54,258 - main - INFO - Summary saved: 2026-01-19_1015_videos_은銀-창고가-텅-비었다-머스크-이건-재앙이다-박종훈의-지식한방.txt
+2026-01-21 23:56:54,259 - main - INFO - Processing: 트럼프의 무시무시한 그린란드 점령 전략 (박종훈의 지식한방) (25G6zymMFrA)
+2026-01-21 23:57:21,436 - main - INFO - Summary saved: 2026-01-17_1125_videos_트럼프의-무시무시한-그린란드-점령-전략-박종훈의-지식한방.txt
+2026-01-22 00:05:34,522 - main - INFO - Found 0 new videos to process
+2026-01-22 00:05:34,522 - main - INFO - No new videos to process
+2026-01-22 00:09:32,392 - main - INFO - Found 0 new videos to process
+2026-01-22 00:09:32,393 - main - INFO - No new videos to process
+2026-01-24 08:19:13,276 - main - INFO - Found 0 new videos to process
+2026-01-24 08:19:13,276 - main - INFO - No new videos to process
+2026-01-24 08:39:06,750 - main - INFO - Found 0 videos in date range
+2026-01-24 08:39:06,750 - main - INFO - No videos found in date range
+2026-01-24 08:39:38,245 - main - INFO - Found 0 videos in date range
+2026-01-24 08:39:38,245 - main - INFO - No videos found in date range
+2026-01-24 08:39:55,094 - main - INFO - Found 0 videos in date range
+2026-01-24 08:39:55,094 - main - INFO - No videos found in date range
+2026-01-24 08:48:04,414 - main - INFO - Found 3 videos in date range
+2026-01-24 09:21:22,805 - main - INFO - Found 9 videos in date range
+2026-01-24 09:21:22,805 - main - INFO - Processing: [월가아재] 트럼프가 돈을 풀고 있는 지금, 채권이냐 금이냐? (HHe2W-FLnlY)
+2026-01-24 09:21:52,827 - main - INFO - Summary saved: 2026-01-22_0000_월가아재의-과학적-투자_월가아재-트럼프가-돈을-풀고-있는-지금-채권이냐-금이냐.txt
+2026-01-24 09:21:52,828 - main - INFO - Processing: [월가아재] 지금부터 게임주를 주목해야 하는 이유 (CRpSqJJlumI)
+2026-01-24 09:22:21,000 - main - INFO - Summary saved: 2026-01-20_0000_월가아재의-과학적-투자_월가아재-지금부터-게임주를-주목해야-하는-이유.txt
+2026-01-24 09:22:21,001 - main - INFO - Processing: [월가아재] 2026년 주식시장의 리스크와 대응 총정리 (n1Zz8SZY3oQ)
+2026-01-24 09:22:45,927 - main - INFO - Summary saved: 2026-01-18_0000_월가아재의-과학적-투자_월가아재-2026년-주식시장의-리스크와-대응-총정리.txt
+2026-01-24 09:22:45,928 - main - INFO - Processing: [월가아재] 코인과 부동산, 트럼프가 작정하고 띄우는 진짜 이유 (DGujae905sQ)
+2026-01-24 09:23:11,645 - main - INFO - Summary saved: 2026-01-16_0000_월가아재의-과학적-투자_월가아재-코인과-부동산-트럼프가-작정하고-띄우는-진짜-이유.txt
+2026-01-24 09:23:11,645 - main - INFO - Processing: [월가아재]K방산 수출길 막혔다? 돌파구는 따로 있습니다 (tzz210md1ys)
+2026-01-24 09:23:40,220 - main - INFO - Summary saved: 2026-01-13_0000_월가아재의-과학적-투자_월가아재k방산-수출길-막혔다-돌파구는-따로-있습니다.txt
+2026-01-24 09:23:40,221 - main - INFO - Processing: [월가아재] 2200억 달러가 풀린다? 연준이 돈을 푸는 방식이 바뀌었습니다. (Sj3kvGEEqaE)
+2026-01-24 09:24:09,076 - main - INFO - Summary saved: 2026-01-09_0000_월가아재의-과학적-투자_월가아재-2200억-달러가-풀린다-연준이-돈을-푸는-방식이-바뀌었습니다.txt
+2026-01-24 09:24:09,076 - main - INFO - Processing: [월가아재] 팀 쿡도 줍줍한 나이키, 월드컵을 노려보자 (FIUelEbywmk)
+2026-01-24 09:24:37,926 - main - INFO - Summary saved: 2026-01-08_0000_월가아재의-과학적-투자_월가아재-팀-쿡도-줍줍한-나이키-월드컵을-노려보자.txt
+2026-01-24 09:24:37,927 - main - INFO - Processing: 대한민국에도 드디어 이런 투자플랫폼이 나왔습니다 (A5WZN0EV7Pg)
+2026-01-24 09:25:03,703 - main - INFO - Summary saved: 2026-01-02_0000_월가아재의-과학적-투자_대한민국에도-드디어-이런-투자플랫폼이-나왔습니다.txt
+2026-01-24 09:25:03,704 - main - INFO - Processing: [월가아재] 어떻게 투자를 공부할 것인가? - 주식기초강의 30강 (f33a0V44KkU)
+2026-01-24 09:25:32,695 - main - INFO - Summary saved: 2026-01-01_0000_월가아재의-과학적-투자_월가아재-어떻게-투자를-공부할-것인가---주식기초강의-30강.txt
+2026-01-25 22:32:09,566 - main - INFO - Found 11 new videos to process
+2026-01-25 22:32:09,566 - main - INFO - Processing: 환율 -2% 급락이 보내는 경고 신호! (ft. 다보스 포럼) (CwDM2eFXZ8w)
+2026-01-25 22:32:38,047 - main - INFO - Summary saved: 2026-01-24_1100_videos_환율--2-급락이-보내는-경고-신호-ft-다보스-포럼.txt
+2026-01-25 22:32:38,047 - main - INFO - Processing: 돈 내야 지켜준다.. 용병기업이 된 미국 (박종훈의 지식한방) (6dCer-qqFYs)
+2026-01-25 22:33:05,732 - main - INFO - Summary saved: 2026-01-24_1045_videos_돈-내야-지켜준다-용병기업이-된-미국-박종훈의-지식한방.txt
+2026-01-25 22:33:05,733 - main - INFO - Processing: [월가아재] 트럼프의 변심? 차기 연준의장 전격 분석 (iwzlL2yf_fw)
+2026-01-25 22:33:34,475 - main - INFO - Summary saved: 2026-01-24_0301_videos_월가아재-트럼프의-변심-차기-연준의장-전격-분석.txt
+2026-01-25 22:33:34,476 - main - INFO - Processing: 【미국 증시 오늘의 요약】  슈퍼위크 앞둔 폭풍전야... 혼조세 속 개인투자자의 '63억불' 베팅  -  2026/01/23 (xUiqpf4FIb4)
+2026-01-25 22:33:55,629 - main - INFO - Summary saved: 2026-01-23_2323_videos_미국-증시-오늘의-요약-슈퍼위크-앞둔-폭풍전야-혼조세-속-개인투자자의-63억불-베팅---2.txt
+2026-01-25 22:33:55,629 - main - INFO - Processing: 【미국 증시 오늘의 요약】  테슬라 '무인' 로보택시 시작, 메타 5.7% 급등!  -  2026/01/22 (7tlPMID6_P4)
+2026-01-25 22:34:16,182 - main - INFO - Summary saved: 2026-01-22_2343_videos_미국-증시-오늘의-요약-테슬라-무인-로보택시-시작-메타-57-급등---20260122.txt
+2026-01-25 22:34:16,183 - main - INFO - Processing: 【미국 증시 오늘의 요약】 트럼프 관세 철회! 돌아온 'TACO' 장세에 증시 급등    -  2026/01/21 (Xxnb_oFqdlE)
+2026-01-25 22:34:38,271 - main - INFO - Summary saved: 2026-01-21_2315_videos_미국-증시-오늘의-요약-트럼프-관세-철회-돌아온-taco-장세에-증시-급등---202601.txt
+2026-01-25 22:34:38,272 - main - INFO - Processing: 이번에도 적중? 다보스포럼에서 찍은 2026년 증시 최대 리스크 (OGwlXAhf5fY)
+2026-01-25 22:35:12,339 - main - INFO - Summary saved: 2026-01-21_1000_videos_이번에도-적중-다보스포럼에서-찍은-2026년-증시-최대-리스크.txt
+2026-01-25 22:35:12,340 - main - INFO - Processing: 【미국 증시 오늘의 요약】 그린란드 관세 리스크 + 일본 국채 발작... 주식·채권·달러 다 무너졌다  -  2026/01/20 (28HIGvYc8cs)
+2026-01-25 22:35:34,255 - main - INFO - Summary saved: 2026-01-20_2323_videos_미국-증시-오늘의-요약-그린란드-관세-리스크--일본-국채-발작-주식채권달러-다-무너졌다.txt
+2026-01-25 22:35:34,256 - main - INFO - Processing: 모든 자산이 오르는데 왜 불안할까? (ft. 국내 vs 미국 커버드콜 ETF) (Dr4nkUBigfs)
+2026-01-25 22:35:59,563 - main - INFO - Summary saved: 2026-01-20_1100_videos_모든-자산이-오르는데-왜-불안할까-ft-국내-vs-미국-커버드콜-etf.txt
+2026-01-25 22:35:59,563 - main - INFO - Processing: 올해 증시 쇼크 못 피한다? 족집게 보고서의 경고, 이번에도 적중할까 (sSvolxYeS_8)
+2026-01-25 22:36:29,799 - main - INFO - Summary saved: 2026-01-20_1040_videos_올해-증시-쇼크-못-피한다-족집게-보고서의-경고-이번에도-적중할까.txt
+2026-01-25 22:36:29,799 - main - INFO - Processing: 반도체 전설도 급하게 매수? 미국 반도체 띄우기의 수혜주들 (aj0_S31MM7s)
+2026-01-25 22:36:59,303 - main - INFO - Summary saved: 2026-01-19_1059_videos_반도체-전설도-급하게-매수-미국-반도체-띄우기의-수혜주들.txt
+2026-01-26 22:43:11,357 - main - INFO - Found 3 new videos to process
+2026-01-26 22:43:11,357 - main - INFO - Processing: 트럼프발 대혼돈에 미 증시에서 돈 빠져나간다? 25년 증시 쇼크 데자뷰일까 (EGNCZLYkJQ0)
+2026-01-26 22:43:39,970 - main - INFO - Summary saved: 2026-01-26_1116_videos_트럼프발-대혼돈에-미-증시에서-돈-빠져나간다-25년-증시-쇼크-데자뷰일까.txt
+2026-01-26 22:43:39,971 - main - INFO - Processing: 금값 5,000달러 돌파, 트럼프가 노리는 것은? (박종훈의 지식한방) (lrTo6or5xeQ)
+2026-01-26 22:44:11,797 - main - INFO - Summary saved: 2026-01-26_1015_videos_금값-5000달러-돌파-트럼프가-노리는-것은-박종훈의-지식한방.txt
+2026-01-26 22:44:11,798 - main - INFO - Processing: [월가아재] 트럼프가 생각을 바꾼 숨은 이유가 있었습니다 (IVq7S50JVZw)
+2026-01-26 22:44:39,763 - main - INFO - Summary saved: 2026-01-26_0927_videos_월가아재-트럼프가-생각을-바꾼-숨은-이유가-있었습니다.txt
+2026-01-27 23:01:08,349 - main - INFO - Found 4 new videos to process
+2026-01-27 23:01:08,349 - main - INFO - Processing: 미국주식 6개월 후면 모든 게 달라질 수 있습니다. (AebHMl0TomM)
+2026-01-27 23:01:39,378 - main - INFO - Summary saved: 2026-01-27_1100_videos_미국주식-6개월-후면-모든-게-달라질-수-있습니다.txt
+2026-01-27 23:01:39,380 - main - INFO - Processing: 트럼프 행정부의 역대급 매수, 20년만의 슈퍼사이클 신호일까 (utF8DycjVaI)
+2026-01-27 23:02:02,608 - main - INFO - Summary saved: 2026-01-27_1026_videos_트럼프-행정부의-역대급-매수-20년만의-슈퍼사이클-신호일까.txt
+2026-01-27 23:02:02,610 - main - INFO - Processing: [월가아재x성상현] 노동 소득의 시대가 끝나고 있습니다. 탈출구는 이것입니다. 매크로 대담 1부. (wv5rNx-Ia3g)
+2026-01-27 23:02:32,697 - main - INFO - Summary saved: 2026-01-27_0907_videos_월가아재x성상현-노동-소득의-시대가-끝나고-있습니다-탈출구는-이것입니다-매크로-대담-1부.txt
+2026-01-27 23:02:32,698 - main - INFO - Processing: 【미국 증시 오늘의 요약】 트럼프 "한국 관세 25% 즉각 인상" 선전포고... 미 증시, 악재 뚫고 상승 마감  -  2026/01/26 (VI3E2f5m0Qg)
+2026-01-27 23:02:51,684 - main - INFO - Summary saved: 2026-01-26_2325_videos_미국-증시-오늘의-요약-트럼프-한국-관세-25-즉각-인상-선전포고-미-증시-악재-뚫고-상승.txt
+2026-01-28 23:00:56,827 - main - INFO - Found 3 new videos to process
+2026-01-28 23:00:56,827 - main - INFO - Processing: GDP 7% 시대 시작된다? 혁신주 대가가 찍은 기술 혁명 수혜주들 (T68rjDE41Tg)
+2026-01-28 23:01:26,109 - main - INFO - Summary saved: 2026-01-28_1137_videos_gdp-7-시대-시작된다-혁신주-대가가-찍은-기술-혁명-수혜주들.txt
+2026-01-28 23:01:26,111 - main - INFO - Processing: [월가아재] 트럼프의 '골든 돔'과 일본 금리 급등, 엔캐리 (dzR8EEkY9bc)
+2026-01-28 23:01:45,984 - main - INFO - Found 3 new videos to process
+2026-01-28 23:01:45,984 - main - INFO - Processing: GDP 7% 시대 시작된다? 혁신주 대가가 찍은 기술 혁명 수혜주들 (T68rjDE41Tg)
+2026-01-28 23:01:54,421 - main - INFO - Summary saved: 2026-01-28_1052_videos_월가아재-트럼프의-골든-돔과-일본-금리-급등-엔캐리.txt
+2026-01-28 23:01:54,422 - main - INFO - Processing: 【미국 증시 오늘의 요약】S&P500 사상 최고치 경신! 근데 달러는 4년 만에 '대폭락'?   -  2026/01/27 (SSR5YbMYzdc)
+2026-01-28 23:02:12,362 - main - INFO - Summary saved: 2026-01-27_2346_videos_미국-증시-오늘의-요약sp500-사상-최고치-경신-근데-달러는-4년-만에-대폭락---202.txt
+2026-01-28 23:02:14,463 - main - INFO - Summary saved: 2026-01-28_1137_videos_gdp-7-시대-시작된다-혁신주-대가가-찍은-기술-혁명-수혜주들.txt
+2026-01-28 23:02:14,464 - main - INFO - Processing: [월가아재] 트럼프의 '골든 돔'과 일본 금리 급등, 엔캐리 (dzR8EEkY9bc)
+2026-01-28 23:02:49,068 - main - INFO - Summary saved: 2026-01-28_1052_videos_월가아재-트럼프의-골든-돔과-일본-금리-급등-엔캐리.txt
+2026-01-28 23:02:49,069 - main - INFO - Processing: 【미국 증시 오늘의 요약】S&P500 사상 최고치 경신! 근데 달러는 4년 만에 '대폭락'?   -  2026/01/27 (SSR5YbMYzdc)
+2026-01-28 23:03:07,510 - main - INFO - Summary saved: 2026-01-27_2346_videos_미국-증시-오늘의-요약sp500-사상-최고치-경신-근데-달러는-4년-만에-대폭락---202.txt
+2026-01-29 23:00:51,291 - main - INFO - Found 1 new videos to process
+2026-01-29 23:00:51,291 - main - INFO - Processing: 【미국 증시 오늘의 요약】테슬라·메타 실적 호조, 마이크로소프트 AI 지출 우려… 엇갈린 빅테크   -  2026/01/28 (LzvLYG6l6h8)

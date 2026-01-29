@@ -1,0 +1,129 @@
+# Docker Compose for YouTube Summary System with Airflow
+# Usage: docker-compose up -d
+# Access: http://localhost:8080 (airflow/airflow)
+
+version: '3.8'
+
+x-airflow-common: &airflow-common
+  image: apache/airflow:2.8.0-python3.10
+  environment:
+    &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__FERNET_KEY: ''
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 30
+    # Project environment variables (loaded from .env)
+    ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    EMAIL_SENDER: ${EMAIL_SENDER}
+    EMAIL_RECIPIENT: ${EMAIL_RECIPIENT}
+    EMAIL_APP_PASSWORD: ${EMAIL_APP_PASSWORD}
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./src:/opt/airflow/src
+    - ./config:/opt/airflow/config
+    - ./data:/opt/airflow/data
+    - ./logs:/opt/airflow/logs
+    - ./summaries:/opt/airflow/summaries
+    - airflow-logs:/opt/airflow/logs/airflow
+  user: "${AIRFLOW_UID:-50000}:0"
+  depends_on:
+    &airflow-common-depends-on
+    postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+    restart: always
+
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        # Install project dependencies
+        pip install --no-cache-dir \
+          yt-dlp>=2024.12.0 \
+          youtube-transcript-api>=0.6.2 \
+          feedparser>=6.0.10 \
+          anthropic>=0.40.0 \
+          pyyaml>=6.0.1 \
+          python-dotenv>=1.0.0 \
+          requests>=2.31.0 \
+          python-dateutil>=2.8.2
+
+        # Initialize database
+        airflow db init
+
+        # Create admin user
+        airflow users create \
+          --username airflow \
+          --password airflow \
+          --firstname Airflow \
+          --lastname Admin \
+          --role Admin \
+          --email admin@example.com || true
+    environment:
+      <<: *airflow-common-env
+      _AIRFLOW_DB_MIGRATE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: airflow
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: >
+      bash -c "
+        pip install --no-cache-dir yt-dlp youtube-transcript-api feedparser anthropic pyyaml python-dotenv requests python-dateutil &&
+        airflow webserver
+      "
+    ports:
+      - "8081:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: >
+      bash -c "
+        pip install --no-cache-dir yt-dlp youtube-transcript-api feedparser anthropic pyyaml python-dotenv requests python-dateutil &&
+        airflow scheduler
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "airflow jobs check --job-type SchedulerJob --hostname $(hostname)"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+volumes:
+  postgres-db-volume:
+  airflow-logs:
