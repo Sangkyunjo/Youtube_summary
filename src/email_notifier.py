@@ -12,7 +12,7 @@ from email import encoders
 from datetime import datetime
 from typing import Optional
 
-from utils import load_config, get_env, setup_logging
+from utils import load_config, get_env, setup_logging, get_summaries_dir
 
 logger = setup_logging("email_notifier")
 
@@ -83,13 +83,17 @@ class EmailNotifier:
         # Create plain text content
         text_content = self._create_text_report(processed_videos)
 
-        # Build list of attachment file paths
+        # Build list of attachment file paths using absolute path
+        summaries_dir = get_summaries_dir()
         attachments = []
         for video in processed_videos:
             summary_file = video.get("summary_file")
             if summary_file:
-                filepath = os.path.join(self.summaries_dir, summary_file)
-                attachments.append(filepath)
+                # Ensure filename ends with .txt
+                if not summary_file.endswith('.txt'):
+                    summary_file = f"{summary_file}.txt"
+                filepath = summaries_dir / summary_file
+                attachments.append((str(filepath), summary_file))
 
         return self._send_email(subject, html_content, text_content, attachments)
 
@@ -187,16 +191,45 @@ class EmailNotifier:
 
         return "\n".join(lines)
 
-    def _attach_file(self, msg: MIMEMultipart, filepath: str) -> bool:
-        """Attach a file to the email message."""
+    def _attach_file(self, msg: MIMEMultipart, attachment_info) -> bool:
+        """
+        Attach a file to the email message.
+
+        Args:
+            msg: The email message to attach to
+            attachment_info: Either a string (filepath) or tuple (filepath, filename)
+        """
         try:
-            filename = os.path.basename(filepath)
-            with open(filepath, 'rb') as f:
-                part = MIMEBase('application', 'octet-stream')
-                part.set_payload(f.read())
-            encoders.encode_base64(part)
-            part.add_header('Content-Disposition', f'attachment; filename="{filename}"')
+            # Handle both tuple (filepath, filename) and string (filepath only)
+            if isinstance(attachment_info, tuple):
+                filepath, filename = attachment_info
+            else:
+                filepath = attachment_info
+                filename = os.path.basename(filepath)
+
+            # Ensure filename ends with .txt
+            if not filename.endswith('.txt'):
+                filename = f"{filename}.txt"
+
+            logger.info(f"Attaching file: {filename} from {filepath}")
+
+            # Read file content as text (UTF-8)
+            with open(filepath, 'r', encoding='utf-8') as f:
+                content = f.read()
+
+            # Create text attachment with proper encoding
+            part = MIMEText(content, 'plain', 'utf-8')
+
+            # Set Content-Disposition with filename
+            # Use RFC 2231 encoding for non-ASCII characters
+            part.add_header(
+                'Content-Disposition',
+                'attachment',
+                filename=('utf-8', '', filename)
+            )
+
             msg.attach(part)
+            logger.info(f"Successfully attached: {filename}")
             return True
         except FileNotFoundError:
             logger.warning(f"Attachment file not found: {filepath}")

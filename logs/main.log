@@ -117,3 +117,4 @@ ValueError: ANTHROPIC_API_KEY not configured. Please set it in config/.env file.
 2026-01-28 23:03:07,510 - main - INFO - Summary saved: 2026-01-27_2346_videos_미국-증시-오늘의-요약sp500-사상-최고치-경신-근데-달러는-4년-만에-대폭락---202.txt
 2026-01-29 23:00:51,291 - main - INFO - Found 1 new videos to process
 2026-01-29 23:00:51,291 - main - INFO - Processing: 【미국 증시 오늘의 요약】테슬라·메타 실적 호조, 마이크로소프트 AI 지출 우려… 엇갈린 빅테크   -  2026/01/28 (LzvLYG6l6h8)
+2026-01-29 23:07:33,491 - main - INFO - Summary saved: 2026-01-29_0020_videos_미국-증시-오늘의-요약테슬라메타-실적-호조-마이크로소프트-ai-지출-우려-엇갈린-빅테크.txt

@@ -57,3 +57,5 @@
 2026-01-28 23:03:07,512 - state_manager - INFO - Marked video as processed: SSR5YbMYzdc - 【미국 증시 오늘의 요약】S&P500 사상 최고치 경신! 근데 달러는 4년 만에 '대폭락'?   -  2026/01/27
 2026-01-28 23:03:11,715 - state_manager - INFO - Run completed: 3 videos processed, 0 errors
 2026-01-29 23:00:02,310 - state_manager - INFO - Run started
+2026-01-29 23:07:33,493 - state_manager - INFO - Marked video as processed: LzvLYG6l6h8 - 【미국 증시 오늘의 요약】테슬라·메타 실적 호조, 마이크로소프트 AI 지출 우려… 엇갈린 빅테크   -  2026/01/28
+2026-01-29 23:07:37,592 - state_manager - INFO - Run completed: 1 videos processed, 0 errors

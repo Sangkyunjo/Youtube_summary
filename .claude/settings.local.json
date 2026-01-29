@@ -17,7 +17,8 @@
       "Bash(copy:*)",
       "Bash(powershell -Command:*)",
       "Bash(timeout:*)",
-      "Bash(docker exec:*)"
+      "Bash(docker exec:*)",
+      "Bash(dir:*)"
     ]
   }
 }
