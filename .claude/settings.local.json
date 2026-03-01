@@ -1,4 +1,28 @@
 {
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/update-changelog.sh\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/update-changelog.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(dir \"C:\\\\Users\\\\trill\\\\Youtube_summary\")",
@@ -18,7 +42,12 @@
       "Bash(powershell -Command:*)",
       "Bash(timeout:*)",
       "Bash(docker exec:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(npx skills add:*)",
+      "Bash(git:*)",
+      "Bash(bash:*)",
+      "Bash(jq:*)",
+      "Bash(chmod +x:*)"
     ]
   }
 }
