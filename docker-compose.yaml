@@ -1,25 +1,34 @@
-# Docker Compose for YouTube Summary System with Airflow
+# Docker Compose for Airflow — Youtube_summary + FinanceHub
 # Usage: docker-compose up -d
-# Access: http://localhost:8080 (airflow/airflow)
+# Access: http://localhost:8081 (airflow/airflow)
 
 version: '3.8'
 
 x-airflow-common: &airflow-common
-  image: apache/airflow:2.8.0-python3.10
+  build:
+    context: ../FinanceHub/airflow
+    dockerfile: Dockerfile
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__PARALLELISM: 32
+    AIRFLOW__CORE__MAX_ACTIVE_TASKS_PER_DAG: 16
     AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 30
-    # Project environment variables (loaded from .env)
+    # Youtube_summary
     ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
     EMAIL_SENDER: ${EMAIL_SENDER}
     EMAIL_RECIPIENT: ${EMAIL_RECIPIENT}
     EMAIL_APP_PASSWORD: ${EMAIL_APP_PASSWORD}
+    # FinanceHub — override DB_HOST and BACKUP_DIR for Docker networking/paths
+    DB_HOST: host.docker.internal
+    BACKUP_DIR: /opt/airflow/financehub/backups
+    PYTHONPATH: /opt/airflow/financehub:/opt/airflow/src
   volumes:
+    # Youtube_summary
     - ./dags:/opt/airflow/dags
     - ./src:/opt/airflow/src
     - ./config:/opt/airflow/config
@@ -27,6 +36,11 @@ x-airflow-common: &airflow-common
     - ./logs:/opt/airflow/logs
     - ./summaries:/opt/airflow/summaries
     - airflow-logs:/opt/airflow/logs/airflow
+    # FinanceHub
+    - ../FinanceHub:/opt/airflow/financehub
+    - ../FinanceHub/airflow/dags:/opt/airflow/dags/financehub
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -54,17 +68,6 @@ services:
     command:
       - -c
       - |
-        # Install project dependencies
-        pip install --no-cache-dir \
-          yt-dlp>=2024.12.0 \
-          youtube-transcript-api>=0.6.2 \
-          feedparser>=6.0.10 \
-          anthropic>=0.40.0 \
-          pyyaml>=6.0.1 \
-          python-dotenv>=1.0.0 \
-          requests>=2.31.0 \
-          python-dateutil>=2.8.2
-
         # Initialize database
         airflow db init
 
@@ -88,11 +91,7 @@ services:
 
   airflow-webserver:
     <<: *airflow-common
-    command: >
-      bash -c "
-        pip install --no-cache-dir yt-dlp youtube-transcript-api feedparser anthropic pyyaml python-dotenv requests python-dateutil &&
-        airflow webserver
-      "
+    command: airflow webserver
     ports:
       - "8081:8080"
     healthcheck:
@@ -108,11 +107,7 @@ services:
 
   airflow-scheduler:
     <<: *airflow-common
-    command: >
-      bash -c "
-        pip install --no-cache-dir yt-dlp youtube-transcript-api feedparser anthropic pyyaml python-dotenv requests python-dateutil &&
-        airflow scheduler
-      "
+    command: airflow scheduler
     healthcheck:
       test: ["CMD-SHELL", "airflow jobs check --job-type SchedulerJob --hostname $(hostname)"]
       interval: 10s

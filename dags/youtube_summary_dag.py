@@ -58,6 +58,13 @@ def _setup_path():
     if src_path not in sys.path:
         sys.path.insert(0, src_path)
 
+    # Clear cached 'utils' module if it's from a different project (e.g., financehub)
+    # to avoid import collisions in shared Airflow environments
+    if 'utils' in sys.modules:
+        mod_file = getattr(sys.modules['utils'], '__file__', '') or ''
+        if src_path not in mod_file:
+            del sys.modules['utils']
+
     # Load .env file if exists (for local development)
     env_file = PROJECT_DIR / "config" / ".env"
     if env_file.exists():
@@ -392,7 +399,7 @@ with DAG(
     description="YouTube Channel Monitoring and Summarization System",
     schedule_interval="0 23 * * *",  # Daily at 11:00 PM
     start_date=datetime(2026, 1, 1),
-    catchup=True,  # Enable backfill for missed runs
+    catchup=False,
     max_active_runs=1,  # Only one run at a time
     tags=["youtube", "summarization", "claude"],
     doc_md=__doc__,
