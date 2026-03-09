@@ -1,8 +1,8 @@
 {
-  "last_run_time": "2026-01-29T23:07:37.591615",
+  "last_run_time": "2026-03-09T21:42:03.339241",
   "last_run_status": "success",
-  "current_run_start": "2026-01-29T23:00:02.309895",
-  "last_run_videos_processed": 1,
+  "current_run_start": "2026-03-09T21:36:09.475753",
+  "last_run_videos_processed": 12,
   "last_run_errors": 0,
-  "last_run_error": "ANTHROPIC_API_KEY not configured. Please set it in config/.env file."
+  "last_run_error": "OPENAI_API_KEY not configured. Please set it in config/.env file."
 }

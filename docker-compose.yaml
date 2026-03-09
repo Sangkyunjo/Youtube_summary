@@ -26,7 +26,7 @@ x-airflow-common: &airflow-common
     # FinanceHub — override DB_HOST and BACKUP_DIR for Docker networking/paths
     DB_HOST: host.docker.internal
     BACKUP_DIR: /opt/airflow/financehub/backups
-    PYTHONPATH: /opt/airflow/financehub:/opt/airflow/src
+    PYTHONPATH: /opt/airflow/financehub:/opt/airflow/src:/opt/airflow/sentinel/backend
   volumes:
     # Youtube_summary
     - ./dags:/opt/airflow/dags
@@ -39,6 +39,8 @@ x-airflow-common: &airflow-common
     # FinanceHub
     - ../FinanceHub:/opt/airflow/financehub
     - ../FinanceHub/airflow/dags:/opt/airflow/dags/financehub
+    # SENTINEL (WarAlarm)
+    - ../WarAlarm:/opt/airflow/sentinel
   extra_hosts:
     - "host.docker.internal:host-gateway"
   user: "${AIRFLOW_UID:-50000}:0"

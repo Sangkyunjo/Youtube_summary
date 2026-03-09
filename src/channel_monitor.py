@@ -29,6 +29,7 @@ class VideoInfo:
     channel_id: str
     published_date: datetime
     url: str
+    channel_handle: Optional[str] = None
 
 
 class ChannelMonitor:
@@ -224,7 +225,8 @@ class ChannelMonitor:
                         channel_name=channel_name,
                         channel_id=channel_id,
                         published_date=published_date,
-                        url=video_url
+                        url=video_url,
+                        channel_handle=channel_input
                     ))
 
                 except (AttributeError, KeyError) as e:

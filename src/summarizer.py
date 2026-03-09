@@ -1,11 +1,11 @@
 """
-Summarization module using Anthropic Claude API.
+Summarization module using OpenAI API.
 Generates structured summaries with overview, key points, quotes, and takeaways.
 """
 
 from typing import Optional
 
-import anthropic
+import openai
 
 from utils import load_config, get_env, setup_logging, format_summary
 
@@ -13,68 +13,67 @@ logger = setup_logging("summarizer")
 
 
 class Summarizer:
-    """Generates video summaries using Claude API."""
+    """Generates video summaries using OpenAI API."""
 
     SYSTEM_PROMPT = """You are an expert content summarizer. Your task is to analyze video transcripts and create comprehensive, well-structured summaries.
 
 For each transcript, provide:
-1. OVERVIEW: A 2-3 paragraph summary of the main topic and content
-2. KEY POINTS: 5-8 bullet points covering the most important information
-3. NOTABLE QUOTES: 2-4 direct quotes that are particularly insightful or memorable
-4. KEY TAKEAWAYS: 3-5 actionable insights or main conclusions
+1. 개요: A 2-3 paragraph summary of the main topic and content
+2. 핵심 포인트: 5-8 bullet points covering the most important information
+3. 주요 인용구: 2-4 direct quotes that are particularly insightful or memorable
+4. 핵심 요점: 3-5 actionable insights or main conclusions
 
 Guidelines:
+- Always write the summary in Korean, regardless of the transcript language
 - Be accurate and faithful to the original content
-- Use clear, professional language
-- If the content is in Korean, write the summary in Korean
-- If the content is in English, write the summary in English
+- Use clear, professional Korean language
 - Maintain the tone and style of the original content
 - Focus on substantive information, not filler content"""
 
-    USER_PROMPT_TEMPLATE = """Please analyze the following video transcript and create a structured summary.
+    USER_PROMPT_TEMPLATE = """다음 영상 스크립트를 분석하여 구조화된 요약을 한국어로 작성해 주세요.
 
-Video Title: {title}
-Channel: {channel}
+영상 제목: {title}
+채널: {channel}
 
-TRANSCRIPT:
+스크립트:
 {transcript}
 
 ---
 
-Please provide your summary in the following format:
+다음 형식으로 요약을 제공해 주세요:
 
-**OVERVIEW**
-[Your overview here]
+**개요**
+[개요 내용]
 
-**KEY POINTS**
-- [Point 1]
-- [Point 2]
+**핵심 포인트**
+- [포인트 1]
+- [포인트 2]
 ...
 
-**NOTABLE QUOTES**
-- "[Quote 1]"
-- "[Quote 2]"
+**주요 인용구**
+- "[인용구 1]"
+- "[인용구 2]"
 ...
 
-**KEY TAKEAWAYS**
-- [Takeaway 1]
-- [Takeaway 2]
+**핵심 요점**
+- [요점 1]
+- [요점 2]
 ..."""
 
     def __init__(self):
         self.config = load_config()
-        anthropic_config = self.config.get("anthropic", {})
-        self.model = anthropic_config.get("model", "claude-sonnet-4-20250514")
-        self.max_tokens = anthropic_config.get("max_tokens", 4096)
+        openai_config = self.config.get("openai", {})
+        self.model = openai_config.get("model", "gpt-4.1-mini")
+        self.max_tokens = openai_config.get("max_tokens", 4096)
 
-        api_key = get_env("ANTHROPIC_API_KEY")
-        if not api_key or api_key == "your_anthropic_api_key_here":
+        api_key = get_env("OPENAI_API_KEY")
+        if not api_key or api_key == "your_openai_api_key_here":
             raise ValueError(
-                "ANTHROPIC_API_KEY not configured. "
+                "OPENAI_API_KEY not configured. "
                 "Please set it in config/.env file."
             )
 
-        self.client = anthropic.Anthropic(api_key=api_key)
+        self.client = openai.OpenAI(api_key=api_key)
         logger.info(f"Summarizer initialized with model: {self.model}")
 
     def summarize(
@@ -109,16 +108,16 @@ Please provide your summary in the following format:
                 transcript=transcript
             )
 
-            message = self.client.messages.create(
+            response = self.client.chat.completions.create(
                 model=self.model,
                 max_tokens=self.max_tokens,
-                system=self.SYSTEM_PROMPT,
                 messages=[
+                    {"role": "system", "content": self.SYSTEM_PROMPT},
                     {"role": "user", "content": user_prompt}
                 ]
             )
 
-            response_text = message.content[0].text
+            response_text = response.choices[0].message.content
             logger.info(f"Summary generated for: {title}")
 
             # Parse the response into sections
@@ -126,13 +125,13 @@ Please provide your summary in the following format:
 
             return sections
 
-        except anthropic.APIConnectionError as e:
+        except openai.APIConnectionError as e:
             logger.error(f"API connection error: {e}")
             return None
-        except anthropic.RateLimitError as e:
+        except openai.RateLimitError as e:
             logger.error(f"Rate limit exceeded: {e}")
             return None
-        except anthropic.APIStatusError as e:
+        except openai.APIStatusError as e:
             logger.error(f"API status error: {e}")
             return None
         except Exception as e:
@@ -162,36 +161,36 @@ Please provide your summary in the following format:
 
         # Extract overview
         overview_match = re.search(
-            r'\*\*OVERVIEW\*\*\s*(.*?)(?=\*\*KEY POINTS\*\*|\*\*NOTABLE|\*\*KEY TAKEAWAYS|$)',
+            r'\*\*개요\*\*\s*(.*?)(?=\*\*핵심 포인트\*\*|\*\*주요 인용구\*\*|\*\*핵심 요점\*\*|$)',
             response,
-            re.DOTALL | re.IGNORECASE
+            re.DOTALL
         )
         if overview_match:
             sections["overview"] = overview_match.group(1).strip()
 
         # Extract key points
         key_points_match = re.search(
-            r'\*\*KEY POINTS\*\*\s*(.*?)(?=\*\*NOTABLE|\*\*KEY TAKEAWAYS|$)',
+            r'\*\*핵심 포인트\*\*\s*(.*?)(?=\*\*주요 인용구\*\*|\*\*핵심 요점\*\*|$)',
             response,
-            re.DOTALL | re.IGNORECASE
+            re.DOTALL
         )
         if key_points_match:
             sections["key_points"] = key_points_match.group(1).strip()
 
         # Extract quotes
         quotes_match = re.search(
-            r'\*\*NOTABLE QUOTES\*\*\s*(.*?)(?=\*\*KEY TAKEAWAYS|$)',
+            r'\*\*주요 인용구\*\*\s*(.*?)(?=\*\*핵심 요점\*\*|$)',
             response,
-            re.DOTALL | re.IGNORECASE
+            re.DOTALL
         )
         if quotes_match:
             sections["quotes"] = quotes_match.group(1).strip()
 
         # Extract takeaways
         takeaways_match = re.search(
-            r'\*\*KEY TAKEAWAYS\*\*\s*(.*?)$',
+            r'\*\*핵심 요점\*\*\s*(.*?)$',
             response,
-            re.DOTALL | re.IGNORECASE
+            re.DOTALL
         )
         if takeaways_match:
             sections["takeaways"] = takeaways_match.group(1).strip()

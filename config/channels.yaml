@@ -10,6 +10,9 @@
 #
 # The system will automatically resolve @handles to channel IDs using yt-dlp
 # and use the UULF prefix for long-form videos only.
+#
+# Channels under 'categories' are saved to their own output directory.
+# Channels under the top-level 'channels' list use the default summaries_dir.
 
 channels:
   - "@kpunch"
@@ -19,3 +22,14 @@ channels:
   - "@mer_official"
   - "@TV-wr8ex"
   - "@supe-tv"
+  - "@MK_Invest"
+  - "@videomug0"
+
+categories:
+  programming:
+    output_dir: "D:/OneDrive/Information/summaries/programming"
+    channels:
+      - "@codefactory_official"
+      - "@개발동생"
+      - "@maker-evan"
+

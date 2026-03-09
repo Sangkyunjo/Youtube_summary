@@ -115,7 +115,8 @@ class HistoricalFetcher:
                         channel_name=channel_name,
                         channel_id=channel_id,
                         published_date=upload_date,
-                        url=video_url
+                        url=video_url,
+                        channel_handle=channel_input
                     ))
                 except Exception as e:
                     logger.warning(f"Failed to parse video line: {e}")

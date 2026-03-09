@@ -106,7 +106,7 @@ class YouTubeSummarySystem:
             video_title=video.title,
             published_date=video.published_date
         )
-        summary_path = get_summaries_dir() / filename
+        summary_path = get_summaries_dir(channel_handle=video.channel_handle) / filename
 
         try:
             with open(summary_path, "w", encoding="utf-8") as f:
@@ -114,7 +114,8 @@ class YouTubeSummarySystem:
 
             result["success"] = True
             result["summary_file"] = filename
-            logger.info(f"Summary saved: {filename}")
+            result["summary_path"] = str(summary_path)
+            logger.info(f"Summary saved: {summary_path}")
 
             # Mark as processed
             self.state_manager.mark_video_processed(
@@ -192,6 +193,7 @@ class YouTubeSummarySystem:
                         "title": result["title"],
                         "channel": result["channel"],
                         "summary_file": result["summary_file"],
+                        "summary_path": result.get("summary_path"),
                         "published_date": video.published_date.strftime("%Y-%m-%d")
                     })
                 elif result["error"] == "No transcript available":
@@ -302,6 +304,7 @@ class YouTubeSummarySystem:
                     "title": result["title"],
                     "channel": result["channel"],
                     "summary_file": result["summary_file"],
+                    "summary_path": result.get("summary_path"),
                     "published_date": video.published_date.strftime("%Y-%m-%d")
                 })
             elif result["error"] == "No transcript available":

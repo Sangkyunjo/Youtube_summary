@@ -83,7 +83,7 @@ class EmailNotifier:
         # Create plain text content
         text_content = self._create_text_report(processed_videos)
 
-        # Build list of attachment file paths using absolute path
+        # Build list of attachment file paths
         summaries_dir = get_summaries_dir()
         attachments = []
         for video in processed_videos:
@@ -92,8 +92,9 @@ class EmailNotifier:
                 # Ensure filename ends with .txt
                 if not summary_file.endswith('.txt'):
                     summary_file = f"{summary_file}.txt"
-                filepath = summaries_dir / summary_file
-                attachments.append((str(filepath), summary_file))
+                # Use full path if available, otherwise fall back to default dir
+                filepath = video.get("summary_path") or str(summaries_dir / summary_file)
+                attachments.append((filepath, summary_file))
 
         return self._send_email(subject, html_content, text_content, attachments)
 

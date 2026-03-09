@@ -3,6 +3,7 @@ Utility functions for the YouTube Summary System.
 Handles configuration loading, logging setup, and filename generation.
 """
 
+import functools
 import os
 import re
 import logging
@@ -26,12 +27,37 @@ def load_config() -> dict:
         return yaml.safe_load(f)
 
 
-def load_channels() -> list:
-    """Load the channels list from channels.yaml."""
+@functools.lru_cache(maxsize=1)
+def _load_channels_data() -> dict:
+    """Load and cache the raw channels.yaml data."""
     channels_path = get_project_root() / "config" / "channels.yaml"
     with open(channels_path, "r", encoding="utf-8") as f:
-        data = yaml.safe_load(f)
-    return data.get("channels", []) or []
+        return yaml.safe_load(f)
+
+
+def load_channels() -> list:
+    """Load all channels (default + category) from channels.yaml."""
+    data = _load_channels_data()
+    all_channels = list(data.get("channels", []) or [])
+    for cat_info in (data.get("categories") or {}).values():
+        all_channels.extend(cat_info.get("channels", []))
+    return all_channels
+
+
+def get_channel_output_dir_map() -> dict:
+    """
+    Build a mapping of channel handle -> output directory.
+    Channels in categories get their category's output_dir.
+    Channels not in any category return None (use default).
+    """
+    data = _load_channels_data()
+    mapping = {}
+    for cat_info in (data.get("categories") or {}).values():
+        output_dir = cat_info.get("output_dir")
+        if output_dir:
+            for ch in cat_info.get("channels", []):
+                mapping[ch] = output_dir
+    return mapping
 
 
 def load_env():
@@ -128,8 +154,27 @@ def generate_summary_filename(
     return f"{date_str}_{time_str}_{channel_clean}_{title_clean}.txt"
 
 
-def get_summaries_dir() -> Path:
-    """Get the summaries output directory."""
+def get_summaries_dir(channel_handle: str = None) -> Path:
+    """
+    Get the summaries output directory.
+    If channel_handle belongs to a category with a custom output_dir, use that.
+    Otherwise use the default summaries_dir from config.
+    """
+    logger = logging.getLogger("utils")
+    if channel_handle:
+        mapping = get_channel_output_dir_map()
+        custom_dir = mapping.get(channel_handle)
+        if custom_dir:
+            p = Path(custom_dir)
+            if not p.is_absolute():
+                logger.warning(
+                    f"Relative output_dir '{custom_dir}' for {channel_handle}, "
+                    "resolving relative to project root"
+                )
+                p = get_project_root() / p
+            p = p.resolve()
+            p.mkdir(parents=True, exist_ok=True)
+            return p
     config = load_config()
     summaries_dir = get_project_root() / config["paths"]["summaries_dir"]
     summaries_dir.mkdir(parents=True, exist_ok=True)
