@@ -79,3 +79,135 @@
 ### [2026-03-09 21:51:06] Edited: `src/utils.py`
 - **Action:** Edited
 - **File:** `src/utils.py`
+
+### [2026-03-10 21:12:03] Edited: `src/transcript_extractor.py`
+- **Action:** Edited
+- **File:** `src/transcript_extractor.py`
+
+### [2026-03-10 21:12:18] Edited: `src/transcript_extractor.py`
+- **Action:** Edited
+- **File:** `src/transcript_extractor.py`
+
+### [2026-03-10 21:12:31] Edited: `src/transcript_extractor.py`
+- **Action:** Edited
+- **File:** `src/transcript_extractor.py`
+
+### [2026-03-10 21:12:46] Edited: `config/config.yaml`
+- **Action:** Edited
+- **File:** `config/config.yaml`
+
+### [2026-03-10 21:27:32] Edited: `.gitignore`
+- **Action:** Edited
+- **File:** `.gitignore`
+
+### [2026-03-10 21:29:11] Edited: `src/transcript_extractor.py`
+- **Action:** Edited
+- **File:** `src/transcript_extractor.py`
+
+### [2026-03-20 08:19:45] Created: `src/youtube_api.py`
+- **Action:** Created
+- **File:** `src/youtube_api.py`
+
+### [2026-03-20 08:20:18] Created: `src/channel_monitor.py`
+- **Action:** Created
+- **File:** `src/channel_monitor.py`
+
+### [2026-03-20 08:20:45] Created: `src/historical_fetcher.py`
+- **Action:** Created
+- **File:** `src/historical_fetcher.py`
+
+### [2026-03-20 08:21:02] Edited: `config/config.yaml`
+- **Action:** Edited
+- **File:** `config/config.yaml`
+
+### [2026-03-20 08:21:33] Edited: `requirements.txt`
+- **Action:** Edited
+- **File:** `requirements.txt`
+
+### [2026-03-20 08:21:58] Edited: `CLAUDE.md`
+- **Action:** Edited
+- **File:** `CLAUDE.md`
+
+### [2026-03-20 08:22:15] Edited: `CLAUDE.md`
+- **Action:** Edited
+- **File:** `CLAUDE.md`
+
+### [2026-03-20 08:22:31] Edited: `CLAUDE.md`
+- **Action:** Edited
+- **File:** `CLAUDE.md`
+
+### [2026-03-20 08:22:53] Edited: `CLAUDE.md`
+- **Action:** Edited
+- **File:** `CLAUDE.md`
+
+### [2026-03-20 08:23:09] Edited: `CLAUDE.md`
+- **Action:** Edited
+- **File:** `CLAUDE.md`
+
+### [2026-03-20 08:25:00] Edited: `src/youtube_api.py`
+- **Action:** Edited
+- **File:** `src/youtube_api.py`
+
+### [2026-03-20 08:25:15] Edited: `src/channel_monitor.py`
+- **Action:** Edited
+- **File:** `src/channel_monitor.py`
+
+### [2026-03-20 08:25:36] Edited: `src/channel_monitor.py`
+- **Action:** Edited
+- **File:** `src/channel_monitor.py`
+
+### [2026-03-20 08:25:56] Edited: `src/channel_monitor.py`
+- **Action:** Edited
+- **File:** `src/channel_monitor.py`
+
+### [2026-03-20 08:26:23] Edited: `src/channel_monitor.py`
+- **Action:** Edited
+- **File:** `src/channel_monitor.py`
+
+### [2026-03-20 08:26:49] Created: `src/historical_fetcher.py`
+- **Action:** Created
+- **File:** `src/historical_fetcher.py`
+
+### [2026-03-20 08:28:42] Edited: `src/youtube_api.py`
+- **Action:** Edited
+- **File:** `src/youtube_api.py`
+
+### [2026-03-20 08:29:17] Edited: `src/youtube_api.py`
+- **Action:** Edited
+- **File:** `src/youtube_api.py`
+
+### [2026-03-20 08:29:41] Edited: `src/youtube_api.py`
+- **Action:** Edited
+- **File:** `src/youtube_api.py`
+
+### [2026-03-20 08:29:57] Edited: `src/youtube_api.py`
+- **Action:** Edited
+- **File:** `src/youtube_api.py`
+
+### [2026-03-20 08:30:12] Edited: `src/youtube_api.py`
+- **Action:** Edited
+- **File:** `src/youtube_api.py`
+
+### [2026-03-20 08:30:27] Edited: `src/youtube_api.py`
+- **Action:** Edited
+- **File:** `src/youtube_api.py`
+
+### [2026-03-20 08:30:43] Edited: `src/youtube_api.py`
+- **Action:** Edited
+- **File:** `src/youtube_api.py`
+
+### [2026-03-20 08:31:01] Edited: `src/channel_monitor.py`
+- **Action:** Edited
+- **File:** `src/channel_monitor.py`
+
+### [2026-03-20 08:31:21] Edited: `src/historical_fetcher.py`
+- **Action:** Edited
+- **File:** `src/historical_fetcher.py`
+
+### [2026-03-20 08:31:39] Edited: `src/historical_fetcher.py`
+- **Action:** Edited
+- **File:** `src/historical_fetcher.py`
+
+### [2026-03-20 08:31:56] Edited: `src/channel_monitor.py`
+- **Action:** Edited
+- **File:** `src/channel_monitor.py`

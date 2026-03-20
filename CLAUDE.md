@@ -5,7 +5,7 @@
 YouTube channel monitor that extracts transcripts and summarizes videos using the OpenAI API, then emails a daily digest.
 
 **LLM:** OpenAI GPT (currently `gpt-4.1-mini`) — configured in `config/config.yaml`
-**API key env var:** `OPENAI_API_KEY` in `config/.env`
+**API key env vars (in `config/.env`):** `OPENAI_API_KEY`, `YOUTUBE_API_KEY`
 
 ---
 
@@ -15,12 +15,13 @@ YouTube channel monitor that extracts transcripts and summarizes videos using th
 |------|------|
 | `src/main.py` | Entry point, CLI args, orchestrates all components |
 | `src/summarizer.py` | OpenAI API calls — the main LLM integration |
-| `src/channel_monitor.py` | Polls YouTube RSS feeds for new videos |
+| `src/youtube_api.py` | YouTube Data API v3 client (shared by monitor & fetcher) |
+| `src/channel_monitor.py` | Lists recent uploads via YouTube Data API |
 | `src/transcript_extractor.py` | Downloads transcripts via youtube-transcript-api |
 | `src/email_notifier.py` | Sends Gmail digest with summaries |
 | `src/scheduler.py` | Decides whether to run based on last run time |
 | `src/state_manager.py` | Persists processed video IDs in `data/state.json` |
-| `src/historical_fetcher.py` | Fetches videos by date range for backfill |
+| `src/historical_fetcher.py` | Fetches videos by date range via YouTube Data API |
 | `src/utils.py` | Shared helpers: config loading, logging, filename generation |
 | `config/config.yaml` | Main config: model, schedule, paths, email settings |
 | `config/channels.yaml` | List of YouTube channels to monitor |
@@ -32,12 +33,13 @@ YouTube channel monitor that extracts transcripts and summarizes videos using th
 ## Architecture
 
 ```
-ChannelMonitor → new VideoInfo list
-  → TranscriptExtractor → transcript text
-    → Summarizer (OpenAI) → sections dict
-      → format + save .txt file
-        → EmailNotifier → Gmail digest
-          → StateManager → mark as processed
+YouTubeAPI (Data API v3)
+  → ChannelMonitor → new VideoInfo list
+    → TranscriptExtractor → transcript text
+      → Summarizer (OpenAI) → sections dict
+        → format + save .txt file
+          → EmailNotifier → Gmail digest
+            → StateManager → mark as processed
 ```
 
 All components are initialized in `YouTubeSummarySystem.__init__()` in `main.py`. The `Summarizer` is lazy-initialized on first use.
@@ -101,13 +103,12 @@ Each module writes to its own log file in `logs/`:
 
 ```
 openai>=1.0.0
-youtube-transcript-api
-feedparser
-yt-dlp
-pyyaml
-python-dotenv
-requests
-python-dateutil
+google-api-python-client>=2.100.0
+youtube-transcript-api>=0.6.2
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
+requests>=2.31.0
+python-dateutil>=2.8.2
 ```
 
 ---

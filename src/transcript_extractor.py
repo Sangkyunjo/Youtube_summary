@@ -1,12 +1,17 @@
 """
 Transcript extraction module for YouTube videos.
 Uses youtube-transcript-api with Korean first, English fallback.
+Supports cookies (to bypass IP bans) and proxy configuration.
 """
 
+import http.cookiejar
+import os
 import re
 from typing import Optional
 
+import requests
 from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api.proxies import GenericProxyConfig
 from youtube_transcript_api._errors import (
     TranscriptsDisabled,
     NoTranscriptFound,
@@ -27,7 +32,46 @@ class TranscriptExtractor:
         transcript_config = self.config.get("transcript", {})
         self.preferred_languages = transcript_config.get("languages", ["ko", "en"])
         self.fallback_to_any = transcript_config.get("fallback_to_any", True)
-        self.api = YouTubeTranscriptApi()
+
+        # Build API client with optional cookie/proxy support
+        proxy_config = self._build_proxy_config(transcript_config)
+        http_client = self._build_http_client(transcript_config)
+        self.api = YouTubeTranscriptApi(
+            proxy_config=proxy_config,
+            http_client=http_client,
+        )
+
+    def _build_proxy_config(self, transcript_config: dict) -> Optional[GenericProxyConfig]:
+        """Build proxy config from config.yaml settings."""
+        proxy = transcript_config.get("proxy", {})
+        http_url = proxy.get("http_url")
+        https_url = proxy.get("https_url")
+        if http_url or https_url:
+            logger.info("Using proxy for transcript requests")
+            return GenericProxyConfig(http_url=http_url, https_url=https_url)
+        return None
+
+    def _build_http_client(self, transcript_config: dict) -> Optional[requests.Session]:
+        """Build requests.Session with cookies if a cookie file is configured."""
+        cookie_file = transcript_config.get("cookie_file")
+        if cookie_file:
+            # Resolve relative paths from project root
+            if not os.path.isabs(cookie_file):
+                project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                cookie_file = os.path.join(project_root, cookie_file)
+            if os.path.exists(cookie_file):
+                logger.info("Loading YouTube cookies from configured cookie file")
+                try:
+                    session = requests.Session()
+                    cookie_jar = http.cookiejar.MozillaCookieJar(cookie_file)
+                    cookie_jar.load(ignore_discard=True, ignore_expires=True)
+                    session.cookies = cookie_jar
+                    return session
+                except (http.cookiejar.LoadError, OSError, PermissionError) as e:
+                    logger.warning(f"Failed to load cookie file, proceeding without cookies: {e}")
+            else:
+                logger.warning("Configured cookie file not found, proceeding without cookies")
+        return None
 
     def extract(self, video_id: str) -> Optional[str]:
         """
@@ -89,11 +133,11 @@ class TranscriptExtractor:
         except VideoUnavailable:
             logger.warning(f"Video unavailable: {video_id}")
             return None
-        except CouldNotRetrieveTranscript:
-            logger.warning(f"Could not retrieve transcript for video: {video_id}")
+        except CouldNotRetrieveTranscript as e:
+            logger.warning(f"Could not retrieve transcript for video {video_id} ({type(e).__name__}): {e}")
             return None
         except Exception as e:
-            logger.error(f"Error extracting transcript for {video_id}: {e}")
+            logger.error(f"Error extracting transcript for {video_id} ({type(e).__name__}): {e}")
             return None
 
     def _clean_transcript(self, text: str) -> str:

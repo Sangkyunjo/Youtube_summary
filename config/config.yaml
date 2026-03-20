@@ -6,6 +6,13 @@ openai:
   model: "gpt-4.1-mini"
   max_tokens: 4096
 
+# YouTube Data API v3
+# API key stored in config/.env as YOUTUBE_API_KEY
+# Get one at: https://console.cloud.google.com/ → APIs & Services → Credentials
+youtube:
+  # Rate limit delay between API calls (seconds)
+  request_delay: 0.5
+
 # Transcript extraction settings
 transcript:
   # Language preference order (first available will be used)
@@ -15,6 +22,14 @@ transcript:
     - en
   # Fall back to any available transcript if preferred not found
   fallback_to_any: true
+  # Cookie file for YouTube authentication (bypasses IP bans)
+  # Export from browser using a cookie export extension (Netscape/Mozilla format)
+  # Path relative to project root, or absolute path
+  cookie_file: "config/youtube_cookies.txt"
+  # Proxy settings (optional, alternative to cookies)
+  # proxy:
+  #   http_url: "http://user:pass@proxy:port"
+  #   https_url: "http://user:pass@proxy:port"
 
 # Email notification settings
 email:
