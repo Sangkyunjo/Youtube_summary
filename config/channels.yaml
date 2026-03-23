@@ -24,6 +24,7 @@ channels:
   - "@supe-tv"
   - "@MK_Invest"
   - "@videomug0"
+  - "@sbs_explained"
 
 categories:
   programming:
@@ -32,4 +33,6 @@ categories:
       - "@codefactory_official"
       - "@개발동생"
       - "@maker-evan"
+      - "@waltechman"
+      - "@gymcoding"
 

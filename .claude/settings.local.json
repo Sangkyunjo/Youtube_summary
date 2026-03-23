@@ -1,28 +1,4 @@
 {
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/update-changelog.sh\"",
-            "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/update-changelog.sh\"",
-            "timeout": 10
-          }
-        ]
-      }
-    ]
-  },
   "permissions": {
     "allow": [
       "Bash(dir \"C:\\\\Users\\\\trill\\\\Youtube_summary\")",
@@ -47,7 +23,33 @@
       "Bash(git:*)",
       "Bash(bash:*)",
       "Bash(jq:*)",
-      "Bash(chmod +x:*)"
+      "Bash(chmod +x:*)",
+      "Bash(pip show youtube-transcript-api 2>&1)",
+      "Bash(yt-dlp --cookies-from-browser chrome --cookies - --no-download \"https://www.youtube.com/watch?v=0RH4hcq6O5U\" 2>&1 | head -20)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/update-changelog.sh\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/update-changelog.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   }
 }

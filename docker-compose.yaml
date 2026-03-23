@@ -23,9 +23,8 @@ x-airflow-common: &airflow-common
     EMAIL_SENDER: ${EMAIL_SENDER}
     EMAIL_RECIPIENT: ${EMAIL_RECIPIENT}
     EMAIL_APP_PASSWORD: ${EMAIL_APP_PASSWORD}
-    # FinanceHub — override DB_HOST and BACKUP_DIR for Docker networking/paths
+    # FinanceHub — override DB_HOST for Docker networking
     DB_HOST: host.docker.internal
-    BACKUP_DIR: /opt/airflow/financehub/backups
     PYTHONPATH: /opt/airflow/financehub:/opt/airflow/src:/opt/airflow/sentinel/backend
   volumes:
     # Youtube_summary
@@ -39,6 +38,7 @@ x-airflow-common: &airflow-common
     # FinanceHub
     - ../FinanceHub:/opt/airflow/financehub
     - ../FinanceHub/airflow/dags:/opt/airflow/dags/financehub
+    - D:/OneDrive/BackUp/PostgreSQL:/opt/airflow/backups
     # SENTINEL (WarAlarm)
     - ../WarAlarm:/opt/airflow/sentinel
   extra_hosts:

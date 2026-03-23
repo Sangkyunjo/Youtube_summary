@@ -10,7 +10,7 @@ from datetime import datetime
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from channel_monitor import ChannelMonitor
-from historical_fetcher import HistoricalFetcher
+from historical_fetcher import HistoricalFetche
 from state_manager import StateManager
 
 

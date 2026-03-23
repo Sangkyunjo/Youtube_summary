@@ -1,5 +1,7 @@
 # ignore .env file
 *.env
+# YouTube cookies (contains auth tokens)
+*cookies*.txt
 /summaries/
 .claude
 CLAUDE.md
