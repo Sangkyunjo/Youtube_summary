@@ -545,3 +545,518 @@ ValueError: OPENAI_API_KEY not configured. Please set it in config/.env file.
 2026-03-09 21:41:56,717 - main - WARNING - No transcript for: [홍장원의 불앤베어] 유가 올려 트럼프 식물정부 만들기가 이란 목표인가
 2026-03-09 21:41:56,717 - main - INFO - Processing: 직원을 해고하면 주가가 폭등하는 시대. 아직 늦지 않았습니다. (No4eGJfrTxg)
 2026-03-09 21:41:58,694 - main - WARNING - No transcript for: 직원을 해고하면 주가가 폭등하는 시대. 아직 늦지 않았습니다.
+2026-03-10 21:05:06,427 - main - INFO - Found 29 new videos to process
+2026-03-10 21:05:06,427 - main - INFO - Processing: 전쟁보다 중요한 신호? 국내 자사주 소각 수혜주를 찾았습니다. (0RH4hcq6O5U)
+2026-03-10 21:05:07,955 - main - WARNING - No transcript for: 전쟁보다 중요한 신호? 국내 자사주 소각 수혜주를 찾았습니다.
+2026-03-10 21:05:07,955 - main - INFO - Processing: [월가아재] 이미 많이 오른 원자재, 그런데 한 가지 더 생각해 봐야 합니다 (TgwPCMEo8Pc)
+2026-03-10 21:05:09,369 - main - WARNING - No transcript for: [월가아재] 이미 많이 오른 원자재, 그런데 한 가지 더 생각해 봐야 합니다
+2026-03-10 21:05:09,369 - main - INFO - Processing: 전체 인구의 36%가 고령층인 담양, 이곳의 어르신들에겐 '늙지 않는 비결'이 있다? / 비디오머그 (rG6nRIurv3Q)
+2026-03-10 21:05:11,028 - main - WARNING - No transcript for: 전체 인구의 36%가 고령층인 담양, 이곳의 어르신들에겐 '늙지 않는 비결'이 있다? / 비디오머그
+2026-03-10 21:05:11,028 - main - INFO - Processing: 클로드코드 왜 나만 느리지? 이 순서 몰랐던 겁니다 (d-iNXwtwdFU)
+2026-03-10 21:05:12,510 - main - WARNING - No transcript for: 클로드코드 왜 나만 느리지? 이 순서 몰랐던 겁니다
+2026-03-10 21:05:12,510 - main - INFO - Processing: 【미국 증시 오늘의 요약】 트럼프 "전쟁 곧 끝났다" 한마디에…급락장이 순식간에 뒤집혔다    -  2026/03/09 (PTcs1yxbZhw)
+2026-03-10 21:05:13,910 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 트럼프 "전쟁 곧 끝났다" 한마디에…급락장이 순식간에 뒤집혔다    -  2026/03/09
+2026-03-10 21:05:13,910 - main - INFO - Processing: [홍장원의 불앤베어] 트럼프 "아주 잠깐의 원정이다. 그것은 짧다. 매우 짧다." (lQGWyVncb-8)
+2026-03-10 21:05:15,640 - main - WARNING - No transcript for: [홍장원의 불앤베어] 트럼프 "아주 잠깐의 원정이다. 그것은 짧다. 매우 짧다."
+2026-03-10 21:05:15,641 - main - INFO - Processing: 도 넘은 유가 폭등, 미국-이란 전쟁에 증시 혼란 길어질까 (6ehbTsPhmYg)
+2026-03-10 21:05:17,299 - main - WARNING - No transcript for: 도 넘은 유가 폭등, 미국-이란 전쟁에 증시 혼란 길어질까
+2026-03-10 21:05:17,299 - main - INFO - Processing: 앤쓰로픽 개발자가 알려준 12가지… 이걸 알면 살아남고 모르면 도태됩니다 (OaxAQ_4CCwI)
+2026-03-10 21:05:18,978 - main - WARNING - No transcript for: 앤쓰로픽 개발자가 알려준 12가지… 이걸 알면 살아남고 모르면 도태됩니다
+2026-03-10 21:05:18,978 - main - INFO - Processing: 폴더 하나로 AI를 우리 팀 전문가로 만드는 법 (yXKFQzeRiSY)
+2026-03-10 21:05:20,458 - main - WARNING - No transcript for: 폴더 하나로 AI를 우리 팀 전문가로 만드는 법
+2026-03-10 21:05:20,458 - main - INFO - Processing: 17년 만에 환율 1500원 돌파, 위기일까? (LI-u39BftJA)
+2026-03-10 21:05:22,083 - main - WARNING - No transcript for: 17년 만에 환율 1500원 돌파, 위기일까?
+2026-03-10 21:05:22,083 - main - INFO - Processing: 랭그래프 선택하셨나요? 저라면 안 씁니다 (9gAaZPCJLyU)
+2026-03-10 21:05:23,602 - main - WARNING - No transcript for: 랭그래프 선택하셨나요? 저라면 안 씁니다
+2026-03-10 21:05:23,602 - main - INFO - Processing: 【미국 증시 오늘의 요약】 고용 쇼크에 유가 90불 돌파! 스태그플레이션 공포?    -  2026/03/06 (xFfFGcgLKuA)
+2026-03-10 21:05:25,152 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 고용 쇼크에 유가 90불 돌파! 스태그플레이션 공포?    -  2026/03/06
+2026-03-10 21:05:25,152 - main - INFO - Processing: [홍장원의 불앤베어] BofA 하트넷 "이란 사태 길어지면 한국 팔고 '이것' 사라". 이 조건 나오기 전 증시 크게는 못간다 (32iEc2PmAtU)
+2026-03-10 21:05:26,574 - main - WARNING - No transcript for: [홍장원의 불앤베어] BofA 하트넷 "이란 사태 길어지면 한국 팔고 '이것' 사라". 이 조건 나오기 전 증시 크게는 못간다
+2026-03-10 21:05:26,574 - main - INFO - Processing: [속보] 트럼프 "이란 완전한 항복해야". 시장에 커진 스태그 공포 l 홍장원의 불앤베어 (TdgIvMXmwLY)
+2026-03-10 21:05:28,214 - main - WARNING - No transcript for: [속보] 트럼프 "이란 완전한 항복해야". 시장에 커진 스태그 공포 l 홍장원의 불앤베어
+2026-03-10 21:05:28,214 - main - INFO - Processing: AI 도입 3개월 했는데 혼자만 쓰고 있었습니다 (l6zoiJ3Wb2U)
+2026-03-10 21:05:29,610 - main - WARNING - No transcript for: AI 도입 3개월 했는데 혼자만 쓰고 있었습니다
+2026-03-10 21:05:29,610 - main - INFO - Processing: 프론트엔드 400개 라이브러리를 학습한 AI Agent | Kombai (50% 할인 쿠폰) (qi-tliqg25I)
+2026-03-10 21:05:31,069 - main - WARNING - No transcript for: 프론트엔드 400개 라이브러리를 학습한 AI Agent | Kombai (50% 할인 쿠폰)
+2026-03-10 21:05:31,069 - main - INFO - Processing: 미사일보다 강력한 붓? 사형수 안중근 앞에 일본군들이 줄 서서 기다린 진짜 이유 / 비디오머그 (-VXrZcL5jB0)
+2026-03-10 21:05:32,756 - main - WARNING - No transcript for: 미사일보다 강력한 붓? 사형수 안중근 앞에 일본군들이 줄 서서 기다린 진짜 이유 / 비디오머그
+2026-03-10 21:05:32,756 - main - INFO - Processing: Redis, Elasticsearch 다 버렸습니다. 결과는? (2-AFK8JJpig)
+2026-03-10 21:05:34,164 - main - WARNING - No transcript for: Redis, Elasticsearch 다 버렸습니다. 결과는?
+2026-03-10 21:05:34,164 - main - INFO - Processing: 바이브 코딩 고수들이 숨기는 언어 선택 비밀 (nYQBnJO8Cx4)
+2026-03-10 21:05:35,481 - main - WARNING - No transcript for: 바이브 코딩 고수들이 숨기는 언어 선택 비밀
+2026-03-10 21:05:35,481 - main - INFO - Processing: 이상할 정도로 너무 좋아져버린 GPT 5.4 (gnzox1NGedw)
+2026-03-10 21:05:36,880 - main - WARNING - No transcript for: 이상할 정도로 너무 좋아져버린 GPT 5.4
+2026-03-10 21:05:36,880 - main - INFO - Processing: “미국 부동산 폭락 없다” 내 집 마련이 불가능해진 진짜 이유 | 매일뉴욕 스페셜 | 홍성용 특파원 (obsrbdQI9Cw)
+2026-03-10 21:05:38,321 - main - WARNING - No transcript for: “미국 부동산 폭락 없다” 내 집 마련이 불가능해진 진짜 이유 | 매일뉴욕 스페셜 | 홍성용 특파원
+2026-03-10 21:05:38,321 - main - INFO - Processing: 【미국 증시 오늘의 요약】 유가 2년 최고치 돌파에 증시 하락   -  2026/03/05 (I-Xp2SLPpv8)
+2026-03-10 21:05:39,737 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 유가 2년 최고치 돌파에 증시 하락   -  2026/03/05
+2026-03-10 21:05:39,737 - main - INFO - Processing: [홍장원의 불앤베어] 유가 올려 트럼프 식물정부 만들기가 이란 목표인가 (VwSA6zSjU1Q)
+2026-03-10 21:05:41,380 - main - WARNING - No transcript for: [홍장원의 불앤베어] 유가 올려 트럼프 식물정부 만들기가 이란 목표인가
+2026-03-10 21:05:41,380 - main - INFO - Processing: 제가 챗GPT 버리고 클로드로 다시 돌아간 진짜 이유 (Ht3xGvqCX6g)
+2026-03-10 21:05:42,775 - main - WARNING - No transcript for: 제가 챗GPT 버리고 클로드로 다시 돌아간 진짜 이유
+2026-03-10 21:05:42,775 - main - INFO - Processing: 개발자 75%가 해고됐습니다… AI 때문에 (rv6SvGJmU8k)
+2026-03-10 21:05:44,389 - main - WARNING - No transcript for: 개발자 75%가 해고됐습니다… AI 때문에
+2026-03-10 21:05:44,389 - main - INFO - Processing: AI한테 설명서 줬더니 오히려 망했습니다 (e7Rl4yEVYAk)
+2026-03-10 21:05:46,136 - main - WARNING - No transcript for: AI한테 설명서 줬더니 오히려 망했습니다
+2026-03-10 21:05:46,136 - main - INFO - Processing: AI 스킬 9가지… 이거 모르면 내년에 도태됩니다 (v8T7u3IJZ7Q)
+2026-03-10 21:05:47,588 - main - WARNING - No transcript for: AI 스킬 9가지… 이거 모르면 내년에 도태됩니다
+2026-03-10 21:05:47,588 - main - INFO - Processing: 코딩 한 줄 몰라도 됩니다… 사업가가 4시간 만에 자동화한 방법 (vUo86pWGyNk)
+2026-03-10 21:05:49,091 - main - WARNING - No transcript for: 코딩 한 줄 몰라도 됩니다… 사업가가 4시간 만에 자동화한 방법
+2026-03-10 21:05:49,091 - main - INFO - Processing: 하니스 완전 공개 — Claude Code AI를 내 전담 직원으로 만드는 법 (8ExzWKXRLiM)
+2026-03-10 21:05:50,795 - main - WARNING - No transcript for: 하니스 완전 공개 — Claude Code AI를 내 전담 직원으로 만드는 법
+2026-03-12 21:41:42,540 - main - INFO - Found 33 new videos to process
+2026-03-12 21:41:42,540 - main - INFO - Processing: 마누스 꼭 써보십쇼.. 여러분을 위해 선착순 1000명 무료 크레딧 받아왔습니다. (o3ywhppWjZ4)
+2026-03-12 21:41:57,208 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-12_0901_videos_마누스-꼭-써보십쇼-여러분을-위해-선착순-1000명-무료-크레딧-받아왔습니다.txt
+2026-03-12 21:41:57,210 - main - INFO - Processing: 호르무즈 봉쇄 뚫은 단 3척…이란전에 중국이 침묵하는 진짜 이유 / 비디오머그 (zT_yux0bJ5s)
+2026-03-12 21:42:15,071 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-12_0900_videos_호르무즈-봉쇄-뚫은-단-3척이란전에-중국이-침묵하는-진짜-이유-비디오머그.txt
+2026-03-12 21:42:15,073 - main - INFO - Processing: 【미국 증시 오늘의 요약】 사상 최대 비축유 풀었는데 유가 87불 돌파? JP모건이 불지핀 '사모신용 위기설'까지...     -  2026/03/11 (syFbJVuN7DQ)
+2026-03-12 21:42:29,989 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-11_2301_videos_미국-증시-오늘의-요약-사상-최대-비축유-풀었는데-유가-87불-돌파-jp모건이-불지핀-사모.txt
+2026-03-12 21:42:29,991 - main - INFO - Processing: [홍장원의 불앤베어] 이란 "기름값 200달러 갈 것" 유가 올랐지만 반도체 주가는 상승 (KAHOPbthsek)
+2026-03-12 21:42:46,005 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-11_2227_videos_홍장원의-불앤베어-이란-기름값-200달러-갈-것-유가-올랐지만-반도체-주가는-상승.txt
+2026-03-12 21:42:46,006 - main - INFO - Processing: 드디어 Replit Agent 4가 출시되었습니다! | 역대급 업데이트네요 (14qbXiJKCy4)
+2026-03-12 21:42:58,109 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-11_2100_videos_드디어-replit-agent-4가-출시되었습니다-역대급-업데이트네요.txt
+2026-03-12 21:42:58,111 - main - INFO - Processing: 미 국방부 vs 앤트로픽... AI 안전을 놓고 벌인 전쟁 / 오그랲 / 비디오머그 (eYt8o1KgU5A)
+2026-03-12 21:43:22,873 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-11_1201_videos_미-국방부-vs-앤트로픽-ai-안전을-놓고-벌인-전쟁-오그랲-비디오머그.txt
+2026-03-12 21:43:22,875 - main - INFO - Processing: [어바웃 뉴욕] "미국 독주 끝났다" 요즘 월가 투자 공식은?  | 길금희 특파원 (3kMY82mYxtE)
+2026-03-12 21:43:36,866 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-11_0300_videos_어바웃-뉴욕-미국-독주-끝났다-요즘-월가-투자-공식은-길금희-특파원.txt
+2026-03-12 21:43:36,869 - main - INFO - Processing: 【미국 증시 오늘의 요약】 상승분 다 토해낸 미 증시, 엇갈린 호르무즈 보도에 '혼돈'     -  2026/03/10 (l6Oung-sshc)
+2026-03-12 21:43:49,417 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-10_2245_videos_미국-증시-오늘의-요약-상승분-다-토해낸-미-증시-엇갈린-호르무즈-보도에-혼돈---2026.txt
+2026-03-12 21:43:49,419 - main - INFO - Processing: [홍장원의 불앤베어] 트럼프는 이제 유가를 끌어내릴 방법만 모색하고 있다 (iBjzaJ6a9Xw)
+2026-03-12 21:44:02,583 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-10_2229_videos_홍장원의-불앤베어-트럼프는-이제-유가를-끌어내릴-방법만-모색하고-있다.txt
+2026-03-12 21:44:02,586 - main - INFO - Processing: 폭락한 우량주 매수하기 시작한 내부자들, 분위기 반전 신호일까 (F59aNkRNywQ)
+2026-03-12 21:44:20,282 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-10_1226_videos_폭락한-우량주-매수하기-시작한-내부자들-분위기-반전-신호일까.txt
+2026-03-12 21:44:20,285 - main - INFO - Processing: 전쟁보다 중요한 신호? 국내 자사주 소각 수혜주를 찾았습니다. (0RH4hcq6O5U)
+2026-03-12 21:44:33,899 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-10_1145_videos_전쟁보다-중요한-신호-국내-자사주-소각-수혜주를-찾았습니다.txt
+2026-03-12 21:44:33,901 - main - INFO - Processing: [월가아재] 이미 많이 오른 원자재, 그런데 한 가지 더 생각해 봐야 합니다 (TgwPCMEo8Pc)
+2026-03-12 21:44:46,433 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-10_0902_videos_월가아재-이미-많이-오른-원자재-그런데-한-가지-더-생각해-봐야-합니다.txt
+2026-03-12 21:44:46,435 - main - INFO - Processing: 고령화된 마을에 웃음이 끊이지 않는 이유?  / 비디오머그 (rG6nRIurv3Q)
+2026-03-12 21:44:47,587 - main - WARNING - No transcript for: 고령화된 마을에 웃음이 끊이지 않는 이유?  / 비디오머그
+2026-03-12 21:44:47,588 - main - INFO - Processing: 클로드코드 잘 쓰는 10단계 — 순서 틀리면 90%가 포기합니다 (d-iNXwtwdFU)
+2026-03-12 21:44:48,881 - main - WARNING - No transcript for: 클로드코드 잘 쓰는 10단계 — 순서 틀리면 90%가 포기합니다
+2026-03-12 21:44:48,881 - main - INFO - Processing: 【미국 증시 오늘의 요약】 트럼프 "전쟁 곧 끝났다" 한마디에…급락장이 순식간에 뒤집혔다    -  2026/03/09 (PTcs1yxbZhw)
+2026-03-12 21:44:50,242 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 트럼프 "전쟁 곧 끝났다" 한마디에…급락장이 순식간에 뒤집혔다    -  2026/03/09
+2026-03-12 21:44:50,242 - main - INFO - Processing: [홍장원의 불앤베어] 트럼프 "아주 잠깐의 원정이다. 그것은 짧다. 매우 짧다." (lQGWyVncb-8)
+2026-03-12 21:44:51,354 - main - WARNING - No transcript for: [홍장원의 불앤베어] 트럼프 "아주 잠깐의 원정이다. 그것은 짧다. 매우 짧다."
+2026-03-12 21:44:51,354 - main - INFO - Processing: 도 넘은 유가 폭등, 미국-이란 전쟁에 증시 혼란 길어질까 (6ehbTsPhmYg)
+2026-03-12 21:44:52,808 - main - WARNING - No transcript for: 도 넘은 유가 폭등, 미국-이란 전쟁에 증시 혼란 길어질까
+2026-03-12 21:44:52,808 - main - INFO - Processing: 앤쓰로픽 개발자가 알려준 12가지… 이걸 알면 살아남고 모르면 도태됩니다 (OaxAQ_4CCwI)
+2026-03-12 21:44:54,114 - main - WARNING - No transcript for: 앤쓰로픽 개발자가 알려준 12가지… 이걸 알면 살아남고 모르면 도태됩니다
+2026-03-12 21:44:54,114 - main - INFO - Processing: 폴더 하나로 AI를 우리 팀 전문가로 만드는 법 (yXKFQzeRiSY)
+2026-03-12 21:44:55,415 - main - WARNING - No transcript for: 폴더 하나로 AI를 우리 팀 전문가로 만드는 법
+2026-03-12 21:44:55,415 - main - INFO - Processing: 17년 만에 환율 1500원 돌파, 위기일까? (LI-u39BftJA)
+2026-03-12 21:44:56,625 - main - WARNING - No transcript for: 17년 만에 환율 1500원 돌파, 위기일까?
+2026-03-12 21:44:56,625 - main - INFO - Processing: 랭그래프 선택하셨나요? 저라면 안 씁니다 (9gAaZPCJLyU)
+2026-03-12 21:44:58,011 - main - WARNING - No transcript for: 랭그래프 선택하셨나요? 저라면 안 씁니다
+2026-03-12 21:44:58,011 - main - INFO - Processing: 【미국 증시 오늘의 요약】 고용 쇼크에 유가 90불 돌파! 스태그플레이션 공포?    -  2026/03/06 (xFfFGcgLKuA)
+2026-03-12 21:44:59,096 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 고용 쇼크에 유가 90불 돌파! 스태그플레이션 공포?    -  2026/03/06
+2026-03-12 21:44:59,096 - main - INFO - Processing: [홍장원의 불앤베어] BofA 하트넷 "이란 사태 길어지면 한국 팔고 '이것' 사라". 이 조건 나오기 전 증시 크게는 못간다 (32iEc2PmAtU)
+2026-03-12 21:45:00,369 - main - WARNING - No transcript for: [홍장원의 불앤베어] BofA 하트넷 "이란 사태 길어지면 한국 팔고 '이것' 사라". 이 조건 나오기 전 증시 크게는 못간다
+2026-03-12 21:45:00,370 - main - INFO - Processing: [속보] 트럼프 "이란 완전한 항복해야". 시장에 커진 스태그 공포 l 홍장원의 불앤베어 (TdgIvMXmwLY)
+2026-03-12 21:45:02,321 - main - WARNING - No transcript for: [속보] 트럼프 "이란 완전한 항복해야". 시장에 커진 스태그 공포 l 홍장원의 불앤베어
+2026-03-12 21:45:02,321 - main - INFO - Processing: AI 도입 3개월 했는데 혼자만 쓰고 있었습니다 (l6zoiJ3Wb2U)
+2026-03-12 21:45:03,864 - main - WARNING - No transcript for: AI 도입 3개월 했는데 혼자만 쓰고 있었습니다
+2026-03-12 21:45:03,864 - main - INFO - Processing: 프론트엔드 400개 라이브러리를 학습한 AI Agent | Kombai (50% 할인 쿠폰) (qi-tliqg25I)
+2026-03-12 21:45:05,206 - main - WARNING - No transcript for: 프론트엔드 400개 라이브러리를 학습한 AI Agent | Kombai (50% 할인 쿠폰)
+2026-03-12 21:45:05,206 - main - INFO - Processing: 미사일보다 강력한 붓? 사형수 안중근 앞에 일본군들이 줄 서서 기다린 진짜 이유 / 비디오머그 (-VXrZcL5jB0)
+2026-03-12 21:45:07,636 - main - WARNING - No transcript for: 미사일보다 강력한 붓? 사형수 안중근 앞에 일본군들이 줄 서서 기다린 진짜 이유 / 비디오머그
+2026-03-12 21:45:07,636 - main - INFO - Processing: Redis, Elasticsearch 다 버렸습니다. 결과는? (2-AFK8JJpig)
+2026-03-12 21:45:08,965 - main - WARNING - No transcript for: Redis, Elasticsearch 다 버렸습니다. 결과는?
+2026-03-12 21:45:08,965 - main - INFO - Processing: 바이브 코딩 고수들이 숨기는 언어 선택 비밀 (nYQBnJO8Cx4)
+2026-03-12 21:45:10,324 - main - WARNING - No transcript for: 바이브 코딩 고수들이 숨기는 언어 선택 비밀
+2026-03-12 21:45:10,324 - main - INFO - Processing: 이상할 정도로 너무 좋아져버린 GPT 5.4 (gnzox1NGedw)
+2026-03-12 21:45:11,661 - main - WARNING - No transcript for: 이상할 정도로 너무 좋아져버린 GPT 5.4
+2026-03-12 21:45:11,661 - main - INFO - Processing: “미국 부동산 폭락 없다” 내 집 마련이 불가능해진 진짜 이유 | 매일뉴욕 스페셜 | 홍성용 특파원 (obsrbdQI9Cw)
+2026-03-12 21:45:13,027 - main - WARNING - No transcript for: “미국 부동산 폭락 없다” 내 집 마련이 불가능해진 진짜 이유 | 매일뉴욕 스페셜 | 홍성용 특파원
+2026-03-12 21:45:13,027 - main - INFO - Processing: 【미국 증시 오늘의 요약】 유가 2년 최고치 돌파에 증시 하락   -  2026/03/05 (I-Xp2SLPpv8)
+2026-03-12 21:45:14,228 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 유가 2년 최고치 돌파에 증시 하락   -  2026/03/05
+2026-03-12 21:45:14,228 - main - INFO - Processing: [홍장원의 불앤베어] 유가 올려 트럼프 식물정부 만들기가 이란 목표인가 (VwSA6zSjU1Q)
+2026-03-12 21:45:15,655 - main - WARNING - No transcript for: [홍장원의 불앤베어] 유가 올려 트럼프 식물정부 만들기가 이란 목표인가
+2026-03-18 23:42:23,789 - main - INFO - Found 41 new videos to process
+2026-03-18 23:42:23,789 - main - INFO - Processing: [통합본] "개미들이 옳았다" 삼성전자, 전례 없는 사업 모델 보유했나...불붙은 반도체 투톱은 어디까지 시장 흔들까 / 교양이를 부탁해 (UNQVdRP3l2s)
+2026-03-18 23:42:42,630 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-18_1334_videos_통합본-개미들이-옳았다-삼성전자-전례-없는-사업-모델-보유했나불붙은-반도체-투톱은-어디까지.txt
+2026-03-18 23:42:42,633 - main - INFO - Processing: 개발자 근황: 우리도 코딩 안함 / 오그랲 / 비디오머그 (C9aQKsL2NVM)
+2026-03-18 23:42:58,622 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-18_1200_videos_개발자-근황-우리도-코딩-안함-오그랲-비디오머그.txt
+2026-03-18 23:42:58,624 - main - INFO - Processing: [지식뉴스] "평생 일했는데도 온통 빚더미"...50대 대규모 구조조정 시작, 5060세대에게 은퇴가 두려운 진짜 이유 (ft.이철희 서울대 경제학부 교수) / 교양이를 부탁해 (t1HOxjLaw-Q)
+2026-03-18 23:43:11,922 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-18_1151_videos_지식뉴스-평생-일했는데도-온통-빚더미50대-대규모-구조조정-시작-5060세대에게-은퇴가-두.txt
+2026-03-18 23:43:11,925 - main - INFO - Processing: Claude Skills V2 업데이트! (t81f188Tvec)
+2026-03-18 23:43:36,125 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-18_0929_videos_claude-skills-v2-업데이트.txt
+2026-03-18 23:43:36,127 - main - INFO - Processing: AI 쓰는 기업 88%인데, 돈 버는 건 6%입니다 (An-suF56dno)
+2026-03-18 23:43:47,728 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-18_0900_videos_ai-쓰는-기업-88인데-돈-버는-건-6입니다.txt
+2026-03-18 23:43:47,730 - main - INFO - Processing: [어바웃 뉴욕] "안경 기업 아니랄까봐" 돈 되는 사업 기가 막히게 알아본다 | 길금희 특파원 (417V2fEDqdY)
+2026-03-18 23:44:04,337 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-18_0300_videos_어바웃-뉴욕-안경-기업-아니랄까봐-돈-되는-사업-기가-막히게-알아본다-길금희-특파원.txt
+2026-03-18 23:44:04,340 - main - INFO - Processing: [홍장원의 불앤베어] "이란 사태 오래가지 않을 것" 글로벌 펀드매니저의 선택 (VISN0k-VpMw)
+2026-03-18 23:44:15,507 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-17_2242_videos_홍장원의-불앤베어-이란-사태-오래가지-않을-것-글로벌-펀드매니저의-선택.txt
+2026-03-18 23:44:15,510 - main - INFO - Processing: 【미국 증시 오늘의 요약】 이란 전쟁 속 이틀 연속 상승…연준 금리 결정 앞두고 시장 촉각    -  2026/03/17 (iYXK7-93eZc)
+2026-03-18 23:44:30,802 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-17_2215_videos_미국-증시-오늘의-요약-이란-전쟁-속-이틀-연속-상승연준-금리-결정-앞두고-시장-촉각.txt
+2026-03-18 23:44:30,804 - main - INFO - Processing: 엔비디아 1조 달러 vs FOMC 금리 결정 (ft. 젠슨황 포트폴리오) (-zFYtCsfZpA)
+2026-03-18 23:44:58,260 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-17_1100_videos_엔비디아-1조-달러-vs-fomc-금리-결정-ft-젠슨황-포트폴리오.txt
+2026-03-18 23:44:58,263 - main - INFO - Processing: AI투자 → 대량 해고 쓰나미 시작? 최악의 시나리오 현실화될까 (8NWdGpym8Ws)
+2026-03-18 23:45:18,617 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-17_0954_videos_ai투자--대량-해고-쓰나미-시작-최악의-시나리오-현실화될까.txt
+2026-03-18 23:45:18,620 - main - INFO - Processing: [월가아재] 시장은 완전히 속았습니다. 지정학 1타 강사가 말하는 이란 전쟁의 진짜 결말 (HB1x5r1dNVw)
+2026-03-18 23:45:19,740 - main - WARNING - No transcript for: [월가아재] 시장은 완전히 속았습니다. 지정학 1타 강사가 말하는 이란 전쟁의 진짜 결말
+2026-03-18 23:45:19,740 - main - INFO - Processing: 코팩의 화이트데이 선물. 뇌빼고 써도 되는 병렬 워크트리 Skill + Hook 무료 배포 (L40tTQ8TpaM)
+2026-03-18 23:45:32,137 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-17_0900_videos_코팩의-화이트데이-선물-뇌빼고-써도-되는-병렬-워크트리-skill--hook-무료-배포.txt
+2026-03-18 23:45:32,140 - main - INFO - Processing: 이 5가지 없으면 AI 도입해도 3개월 뒤 끝납니다 (-1OZWrsZq_M)
+2026-03-18 23:45:33,676 - main - WARNING - No transcript for: 이 5가지 없으면 AI 도입해도 3개월 뒤 끝납니다
+2026-03-18 23:45:33,677 - main - INFO - Processing: 【미국 증시 오늘의 요약】 엔비디아 GTC 호재에 유가 하락까지 겹쳤다!    -  2026/03/16 (gbe4k9Ngio0)
+2026-03-18 23:45:35,130 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 엔비디아 GTC 호재에 유가 하락까지 겹쳤다!    -  2026/03/16
+2026-03-18 23:45:35,130 - main - INFO - Processing: [홍장원의 불앤베어] 유가 하락에 증시는 반등했지만... (165KWNF9qUs)
+2026-03-18 23:45:36,816 - main - WARNING - No transcript for: [홍장원의 불앤베어] 유가 하락에 증시는 반등했지만...
+2026-03-18 23:45:36,816 - main - INFO - Processing: AI 코딩 에이전트 전용 터미널 cmux, 왜 개발자들이 열광할까요? | 신상 터미널입니다 (jGj9yCqN08s)
+2026-03-18 23:45:38,198 - main - WARNING - No transcript for: AI 코딩 에이전트 전용 터미널 cmux, 왜 개발자들이 열광할까요? | 신상 터미널입니다
+2026-03-18 23:45:38,198 - main - INFO - Processing: 트럼프의 강력 힌트, 벼랑 끝에 선 미 증시 살려낼까 (NseuX7PjrI8)
+2026-03-18 23:45:39,852 - main - WARNING - No transcript for: 트럼프의 강력 힌트, 벼랑 끝에 선 미 증시 살려낼까
+2026-03-18 23:45:39,852 - main - INFO - Processing: 저렴하지만 너무 강력한 MiniMax (GdHFt2ZPHyg)
+2026-03-18 23:45:41,691 - main - WARNING - No transcript for: 저렴하지만 너무 강력한 MiniMax
+2026-03-18 23:45:41,691 - main - INFO - Processing: [홍장원의 불앤베어] 중국 압박하는 트럼프 "미중 정상회담 연기할 수 있다" (E-M8cHlq_HQ)
+2026-03-18 23:45:43,388 - main - WARNING - No transcript for: [홍장원의 불앤베어] 중국 압박하는 트럼프 "미중 정상회담 연기할 수 있다"
+2026-03-18 23:45:43,388 - main - INFO - Processing: [지식뉴스] 삼전닉스 또 메모리 가격 급등...빅테크가 'AI 슈퍼컴퓨터'에 돈 쏟아붓는 진짜 이유 (ft.이효석 대표) / 교양이를 부탁해 (7Lnwc9UzI38)
+2026-03-18 23:45:44,947 - main - WARNING - No transcript for: [지식뉴스] 삼전닉스 또 메모리 가격 급등...빅테크가 'AI 슈퍼컴퓨터'에 돈 쏟아붓는 진짜 이유 (ft.이효석 대표) / 교양이를 부탁해
+2026-03-18 23:45:44,947 - main - INFO - Processing: "이란 전쟁, 역대 최악 석유공급 차질" _차트온260315 (kcdcrnHTYWU)
+2026-03-18 23:45:46,219 - main - WARNING - No transcript for: "이란 전쟁, 역대 최악 석유공급 차질" _차트온260315
+2026-03-18 23:45:46,220 - main - INFO - Processing: "이란전, 우리 전쟁 아냐" 사면초가 트럼프, 그는 왜 전쟁을 벌였을까?...호르무즈 전면 충돌 이후에 닥칠 일 (ft.유신익 KB은행) / 교양이를 부탁해 / 비디오머그 (njVUroud5Pw)
+2026-03-18 23:45:47,665 - main - WARNING - No transcript for: "이란전, 우리 전쟁 아냐" 사면초가 트럼프, 그는 왜 전쟁을 벌였을까?...호르무즈 전면 충돌 이후에 닥칠 일 (ft.유신익 KB은행) / 교양이를 부탁해 / 비디오머그
+2026-03-18 23:45:47,665 - main - INFO - Processing: AI, 천천히 도입해야 하는 이유 "잘 쓰는 게 중요하다" (ft. 이상욱 교수) | 💡지식의발견  | 비디오머그 (vPe67D4x4IE)
+2026-03-18 23:45:49,214 - main - WARNING - No transcript for: AI, 천천히 도입해야 하는 이유 "잘 쓰는 게 중요하다" (ft. 이상욱 교수) | 💡지식의발견  | 비디오머그
+2026-03-18 23:45:49,214 - main - INFO - Processing: [속보] "미국과 이스라엘 빼면 호르무즈 열려있다" 원유시장은 이란 발언을 신뢰할까? I 홍장원의 불앤베어 (li4iXDx1Pp0)
+2026-03-18 23:45:50,875 - main - WARNING - No transcript for: [속보] "미국과 이스라엘 빼면 호르무즈 열려있다" 원유시장은 이란 발언을 신뢰할까? I 홍장원의 불앤베어
+2026-03-18 23:45:50,875 - main - INFO - Processing: [통합본] “트럼프, 한국 콕 집어 전함 보내달라”…호르무즈 석유길 확보 총력전, 이란 공습이 미 중간선거 진짜 자충수 될까 / 교양이를 부탁해 (B6s2hZPxA-Y)
+2026-03-18 23:45:52,524 - main - WARNING - No transcript for: [통합본] “트럼프, 한국 콕 집어 전함 보내달라”…호르무즈 석유길 확보 총력전, 이란 공습이 미 중간선거 진짜 자충수 될까 / 교양이를 부탁해
+2026-03-18 23:45:52,524 - main - INFO - Processing: [홍장원의 불앤베어] 결국 미중 대리전으로 흘러가고 있다. 美 "중국 군함 파견해달라" vs 이란 "중국 가는 배는 호르무즈 프리패스" (4Q-B7B-5FU4)
+2026-03-18 23:45:54,468 - main - WARNING - No transcript for: [홍장원의 불앤베어] 결국 미중 대리전으로 흘러가고 있다. 美 "중국 군함 파견해달라" vs 이란 "중국 가는 배는 호르무즈 프리패스"
+2026-03-18 23:45:54,468 - main - INFO - Processing: [통합본] "일본 주둔 미 해병대까지 중동 급파"...혼돈의 호르무즈 해협, 치솟는 국제유가에 공포 속 이란 전쟁 3개월 후 닥칠 일 / 교양이를 부탁해 (0P1OCDwEf_Y)
+2026-03-18 23:45:56,022 - main - WARNING - No transcript for: [통합본] "일본 주둔 미 해병대까지 중동 급파"...혼돈의 호르무즈 해협, 치솟는 국제유가에 공포 속 이란 전쟁 3개월 후 닥칠 일 / 교양이를 부탁해
+2026-03-18 23:45:56,022 - main - INFO - Processing: "사모펀드 부도율 급증" 월가의 자금 탈출 시작됐다! (AcmbJYWeo4g)
+2026-03-18 23:45:57,534 - main - WARNING - No transcript for: "사모펀드 부도율 급증" 월가의 자금 탈출 시작됐다!
+2026-03-18 23:45:57,535 - main - INFO - Processing: "스타벅스 직원은 팁 노동자 아니다" 카페에서 팁 안내도 괜찮은 이유 | 홍키자의 美쿡 | 홍성용 특파원 (oYJ79_y-aY0)
+2026-03-18 23:45:59,033 - main - WARNING - No transcript for: "스타벅스 직원은 팁 노동자 아니다" 카페에서 팁 안내도 괜찮은 이유 | 홍키자의 美쿡 | 홍성용 특파원
+2026-03-18 23:45:59,033 - main - INFO - Processing: 코드 한 줄 안 짰는데 1등이래요 (VwT_0XdFc4I)
+2026-03-18 23:46:00,513 - main - WARNING - No transcript for: 코드 한 줄 안 짰는데 1등이래요
+2026-03-18 23:46:00,514 - main - INFO - Processing: [어바웃 뉴욕] "중국 저가 커피의 반란" 블루보틀 인수의 속내는? | 길금희 특파원 (CNfKAAE4Db4)
+2026-03-18 23:46:02,378 - main - WARNING - No transcript for: [어바웃 뉴욕] "중국 저가 커피의 반란" 블루보틀 인수의 속내는? | 길금희 특파원
+2026-03-18 23:46:02,379 - main - INFO - Processing: [속보] 또 터진 트럼프의 한방. 이번에는 이란 석유핵심시설 '하르그섬' I 홍장원의 불앤베어 (_3RHVNgoeB4)
+2026-03-18 23:46:04,282 - main - WARNING - No transcript for: [속보] 또 터진 트럼프의 한방. 이번에는 이란 석유핵심시설 '하르그섬' I 홍장원의 불앤베어
+2026-03-18 23:46:04,282 - main - INFO - Processing: 알고리즘은 어떻게 우리 뇌를 해킹하나? 유튜브와 챗GPT가 숨긴 '중독'의 설계자들 (ft. 이상욱 교수) | 💡지식의발견  | 비디오머그 (56OsubtLJSM)
+2026-03-18 23:46:05,826 - main - WARNING - No transcript for: 알고리즘은 어떻게 우리 뇌를 해킹하나? 유튜브와 챗GPT가 숨긴 '중독'의 설계자들 (ft. 이상욱 교수) | 💡지식의발견  | 비디오머그
+2026-03-18 23:46:05,826 - main - INFO - Processing: 【미국 증시 오늘의 요약】 이란 전쟁 장기화 우려… 유가 상승에 S&P500 상승분 반납   -  2026/03/13 (Ks_x7NoXSII)
+2026-03-18 23:46:07,616 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 이란 전쟁 장기화 우려… 유가 상승에 S&P500 상승분 반납   -  2026/03/13
+2026-03-18 23:46:07,616 - main - INFO - Processing: [홍장원의 불앤베어] 이란 "구글과 마이크로소프트도 우리의 적이다" (rWhVHdr5ufY)
+2026-03-18 23:46:09,250 - main - WARNING - No transcript for: [홍장원의 불앤베어] 이란 "구글과 마이크로소프트도 우리의 적이다"
+2026-03-18 23:46:09,250 - main - INFO - Processing: [지식뉴스] "미, 해병대 병력 전격 투입"...중동전쟁 확전 일촉즉발, 트럼프가 호르무즈 잃으면 닥칠 일 (ft.성일광 서강대 유로메나연구소 교수) / 교양이를 부탁해 (sgzx6S_WFT0)
+2026-03-18 23:46:11,040 - main - WARNING - No transcript for: [지식뉴스] "미, 해병대 병력 전격 투입"...중동전쟁 확전 일촉즉발, 트럼프가 호르무즈 잃으면 닥칠 일 (ft.성일광 서강대 유로메나연구소 교수) / 교양이를 부탁해
+2026-03-18 23:46:11,040 - main - INFO - Processing: 미국 주방가전 100년 역사에 겁도 없이 뛰어든 국내 브랜드. 결과는 대반전이었습니다. / B하인드 / 비디오머그 (juCvAFHljk4)
+2026-03-18 23:46:13,884 - main - WARNING - No transcript for: 미국 주방가전 100년 역사에 겁도 없이 뛰어든 국내 브랜드. 결과는 대반전이었습니다. / B하인드 / 비디오머그
+2026-03-18 23:46:13,885 - main - INFO - Processing: 클로드 무적 필살기 SHOW ME 업데이트 (RtX3dYj3JoM)
+2026-03-18 23:46:15,320 - main - WARNING - No transcript for: 클로드 무적 필살기 SHOW ME 업데이트
+2026-03-18 23:46:15,320 - main - INFO - Processing: [홍장원의 불앤베어] 트럼프 새논리? "유가 오르면 미국이 돈번다. 그러나" (5Mrh9U8JuV0)
+2026-03-18 23:46:17,229 - main - WARNING - No transcript for: [홍장원의 불앤베어] 트럼프 새논리? "유가 오르면 미국이 돈번다. 그러나"
+2026-03-18 23:46:17,230 - main - INFO - Processing: 【미국 증시 오늘의 요약】 이란발 유가 폭등에 사모신용 '환매 중단'까지 덮친 월가..     -  2026/03/12 (1iujZhgOoRw)
+2026-03-18 23:46:18,794 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 이란발 유가 폭등에 사모신용 '환매 중단'까지 덮친 월가..     -  2026/03/12
+2026-03-18 23:46:18,795 - main - INFO - Processing: [지식뉴스] "중국도 다 하잖아!!"...미 국방부, 앤트로픽 전면 퇴출에 숨긴 속내 (ft.이효석 HS아카데미 대표) / 교양이를 부탁해 (b_RFcKfWYd8)
+2026-03-18 23:46:20,474 - main - WARNING - No transcript for: [지식뉴스] "중국도 다 하잖아!!"...미 국방부, 앤트로픽 전면 퇴출에 숨긴 속내 (ft.이효석 HS아카데미 대표) / 교양이를 부탁해
+2026-03-19 21:30:00,515 - main - INFO - Found 36 new videos to process
+2026-03-19 21:30:00,515 - main - INFO - Processing: Stitch 2.0 is so Hype Boy (wIUZYr8QtTU)
+2026-03-19 21:30:02,179 - main - WARNING - No transcript for: Stitch 2.0 is so Hype Boy
+2026-03-19 21:30:02,179 - main - INFO - Processing: "이미 내 보험금에 떠넘겼다"... 제2의 금융위기 시작됐다? / 똑소리E / 비디오머그 (pEglUWCsjhY)
+2026-03-19 21:30:03,544 - main - WARNING - No transcript for: "이미 내 보험금에 떠넘겼다"... 제2의 금융위기 시작됐다? / 똑소리E / 비디오머그
+2026-03-19 21:30:03,544 - main - INFO - Processing: GTC 10분 요약.."AI 예약주문 1500조" (X3Srdwkuor4)
+2026-03-19 21:30:04,766 - main - WARNING - No transcript for: GTC 10분 요약.."AI 예약주문 1500조"
+2026-03-19 21:30:04,767 - main - INFO - Processing: 실리콘밸리에서 핫한 클로드 스킬과 오픈클로를 쉽게 사용하는 법 (_TZhiX4qajk)
+2026-03-19 21:30:06,162 - main - WARNING - No transcript for: 실리콘밸리에서 핫한 클로드 스킬과 오픈클로를 쉽게 사용하는 법
+2026-03-19 21:30:06,163 - main - INFO - Processing: AI한테 맡긴 디자인 99%는 같습니다 (Eg8tacNOlwQ)
+2026-03-19 21:30:07,601 - main - WARNING - No transcript for: AI한테 맡긴 디자인 99%는 같습니다
+2026-03-19 21:30:07,601 - main - INFO - Processing: 【미국 증시 오늘의 요약】 유가 폭등에 금리 동결까지... 파월 "진전 없으면 금리 인하 없다"     -  2026/03/18 (sydqv3nKScw)
+2026-03-19 21:30:08,693 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 유가 폭등에 금리 동결까지... 파월 "진전 없으면 금리 인하 없다"     -  2026/03/18
+2026-03-19 21:30:08,693 - main - INFO - Processing: [홍장원의 불앤베어] 마이크론 사상 최초 5년 초장기 칩 공급계약 (-8u3naQGhwE)
+2026-03-19 21:30:10,092 - main - WARNING - No transcript for: [홍장원의 불앤베어] 마이크론 사상 최초 5년 초장기 칩 공급계약
+2026-03-19 21:30:10,093 - main - INFO - Processing: 3월 FOMC l 윤제성 아레타노바컨설팅 설립자 인터뷰 (ID7IZeTZT6w)
+2026-03-19 21:30:11,453 - main - WARNING - No transcript for: 3월 FOMC l 윤제성 아레타노바컨설팅 설립자 인터뷰
+2026-03-19 21:30:11,454 - main - INFO - Processing: 안보면 후회할 클로드 꿀팁 영상.."한마디"만 추가하세요 (bhUquS_r3zA)
+2026-03-19 21:30:12,850 - main - WARNING - No transcript for: 안보면 후회할 클로드 꿀팁 영상.."한마디"만 추가하세요
+2026-03-19 21:30:12,850 - main - INFO - Processing: [월가아재] 시장은 완전히 속았습니다. 지정학 1타 강사가 말하는 이란 전쟁의 진짜 결말 (HB1x5r1dNVw)
+2026-03-19 21:30:13,845 - main - WARNING - No transcript for: [월가아재] 시장은 완전히 속았습니다. 지정학 1타 강사가 말하는 이란 전쟁의 진짜 결말
+2026-03-19 21:30:13,845 - main - INFO - Processing: 이 5가지 없으면 AI 도입해도 3개월 뒤 끝납니다 (-1OZWrsZq_M)
+2026-03-19 21:30:15,315 - main - WARNING - No transcript for: 이 5가지 없으면 AI 도입해도 3개월 뒤 끝납니다
+2026-03-19 21:30:15,315 - main - INFO - Processing: 【미국 증시 오늘의 요약】 엔비디아 GTC 호재에 유가 하락까지 겹쳤다!    -  2026/03/16 (gbe4k9Ngio0)
+2026-03-19 21:30:16,843 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 엔비디아 GTC 호재에 유가 하락까지 겹쳤다!    -  2026/03/16
+2026-03-19 21:30:16,843 - main - INFO - Processing: [홍장원의 불앤베어] 유가 하락에 증시는 반등했지만... (165KWNF9qUs)
+2026-03-19 21:30:18,395 - main - WARNING - No transcript for: [홍장원의 불앤베어] 유가 하락에 증시는 반등했지만...
+2026-03-19 21:30:18,395 - main - INFO - Processing: AI 코딩 에이전트 전용 터미널 cmux, 왜 개발자들이 열광할까요? | 신상 터미널입니다 (jGj9yCqN08s)
+2026-03-19 21:30:19,512 - main - WARNING - No transcript for: AI 코딩 에이전트 전용 터미널 cmux, 왜 개발자들이 열광할까요? | 신상 터미널입니다
+2026-03-19 21:30:19,512 - main - INFO - Processing: 트럼프의 강력 힌트, 벼랑 끝에 선 미 증시 살려낼까 (NseuX7PjrI8)
+2026-03-19 21:30:20,694 - main - WARNING - No transcript for: 트럼프의 강력 힌트, 벼랑 끝에 선 미 증시 살려낼까
+2026-03-19 21:30:20,694 - main - INFO - Processing: 저렴하지만 너무 강력한 MiniMax (GdHFt2ZPHyg)
+2026-03-19 21:30:22,072 - main - WARNING - No transcript for: 저렴하지만 너무 강력한 MiniMax
+2026-03-19 21:30:22,072 - main - INFO - Processing: [홍장원의 불앤베어] 중국 압박하는 트럼프 "미중 정상회담 연기할 수 있다" (E-M8cHlq_HQ)
+2026-03-19 21:30:23,432 - main - WARNING - No transcript for: [홍장원의 불앤베어] 중국 압박하는 트럼프 "미중 정상회담 연기할 수 있다"
+2026-03-19 21:30:23,432 - main - INFO - Processing: "이란 전쟁, 역대 최악 석유공급 차질" _차트온260315 (kcdcrnHTYWU)
+2026-03-19 21:30:25,041 - main - WARNING - No transcript for: "이란 전쟁, 역대 최악 석유공급 차질" _차트온260315
+2026-03-19 21:30:25,041 - main - INFO - Processing: "이란전, 우리 전쟁 아냐" 사면초가 트럼프, 그는 왜 전쟁을 벌였을까?...호르무즈 전면 충돌 이후에 닥칠 일 (ft.유신익 KB은행) / 교양이를 부탁해 / 비디오머그 (njVUroud5Pw)
+2026-03-19 21:30:26,391 - main - WARNING - No transcript for: "이란전, 우리 전쟁 아냐" 사면초가 트럼프, 그는 왜 전쟁을 벌였을까?...호르무즈 전면 충돌 이후에 닥칠 일 (ft.유신익 KB은행) / 교양이를 부탁해 / 비디오머그
+2026-03-19 21:30:26,391 - main - INFO - Processing: AI, 천천히 도입해야 하는 이유 "잘 쓰는 게 중요하다" (ft. 이상욱 교수) | 💡지식의발견  | 비디오머그 (vPe67D4x4IE)
+2026-03-19 21:30:27,848 - main - WARNING - No transcript for: AI, 천천히 도입해야 하는 이유 "잘 쓰는 게 중요하다" (ft. 이상욱 교수) | 💡지식의발견  | 비디오머그
+2026-03-19 21:30:27,848 - main - INFO - Processing: [속보] "미국과 이스라엘 빼면 호르무즈 열려있다" 원유시장은 이란 발언을 신뢰할까? I 홍장원의 불앤베어 (li4iXDx1Pp0)
+2026-03-19 21:30:29,029 - main - WARNING - No transcript for: [속보] "미국과 이스라엘 빼면 호르무즈 열려있다" 원유시장은 이란 발언을 신뢰할까? I 홍장원의 불앤베어
+2026-03-19 21:30:29,029 - main - INFO - Processing: [홍장원의 불앤베어] 결국 미중 대리전으로 흘러가고 있다. 美 "중국 군함 파견해달라" vs 이란 "중국 가는 배는 호르무즈 프리패스" (4Q-B7B-5FU4)
+2026-03-19 21:30:30,365 - main - WARNING - No transcript for: [홍장원의 불앤베어] 결국 미중 대리전으로 흘러가고 있다. 美 "중국 군함 파견해달라" vs 이란 "중국 가는 배는 호르무즈 프리패스"
+2026-03-19 21:30:30,366 - main - INFO - Processing: "사모펀드 부도율 급증" 월가의 자금 탈출 시작됐다! (AcmbJYWeo4g)
+2026-03-19 21:30:31,785 - main - WARNING - No transcript for: "사모펀드 부도율 급증" 월가의 자금 탈출 시작됐다!
+2026-03-19 21:30:31,785 - main - INFO - Processing: "스타벅스 직원은 팁 노동자 아니다" 카페에서 팁 안내도 괜찮은 이유 | 홍키자의 美쿡 | 홍성용 특파원 (oYJ79_y-aY0)
+2026-03-19 21:30:33,188 - main - WARNING - No transcript for: "스타벅스 직원은 팁 노동자 아니다" 카페에서 팁 안내도 괜찮은 이유 | 홍키자의 美쿡 | 홍성용 특파원
+2026-03-19 21:30:33,188 - main - INFO - Processing: 코드 한 줄 안 짰는데 1등이래요 (VwT_0XdFc4I)
+2026-03-19 21:30:34,560 - main - WARNING - No transcript for: 코드 한 줄 안 짰는데 1등이래요
+2026-03-19 21:30:34,560 - main - INFO - Processing: [어바웃 뉴욕] "중국 저가 커피의 반란" 블루보틀 인수의 속내는? | 길금희 특파원 (CNfKAAE4Db4)
+2026-03-19 21:30:35,896 - main - WARNING - No transcript for: [어바웃 뉴욕] "중국 저가 커피의 반란" 블루보틀 인수의 속내는? | 길금희 특파원
+2026-03-19 21:30:35,896 - main - INFO - Processing: [속보] 또 터진 트럼프의 한방. 이번에는 이란 석유핵심시설 '하르그섬' I 홍장원의 불앤베어 (_3RHVNgoeB4)
+2026-03-19 21:30:37,355 - main - WARNING - No transcript for: [속보] 또 터진 트럼프의 한방. 이번에는 이란 석유핵심시설 '하르그섬' I 홍장원의 불앤베어
+2026-03-19 21:30:37,355 - main - INFO - Processing: 알고리즘은 어떻게 우리 뇌를 해킹하나? 유튜브와 챗GPT가 숨긴 '중독'의 설계자들 (ft. 이상욱 교수) | 💡지식의발견  | 비디오머그 (56OsubtLJSM)
+2026-03-19 21:30:38,771 - main - WARNING - No transcript for: 알고리즘은 어떻게 우리 뇌를 해킹하나? 유튜브와 챗GPT가 숨긴 '중독'의 설계자들 (ft. 이상욱 교수) | 💡지식의발견  | 비디오머그
+2026-03-19 21:30:38,771 - main - INFO - Processing: 【미국 증시 오늘의 요약】 이란 전쟁 장기화 우려… 유가 상승에 S&P500 상승분 반납   -  2026/03/13 (Ks_x7NoXSII)
+2026-03-19 21:30:40,036 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 이란 전쟁 장기화 우려… 유가 상승에 S&P500 상승분 반납   -  2026/03/13
+2026-03-19 21:30:40,036 - main - INFO - Processing: [홍장원의 불앤베어] 이란 "구글과 마이크로소프트도 우리의 적이다" (rWhVHdr5ufY)
+2026-03-19 21:30:41,738 - main - WARNING - No transcript for: [홍장원의 불앤베어] 이란 "구글과 마이크로소프트도 우리의 적이다"
+2026-03-19 21:30:41,738 - main - INFO - Processing: 2008년과 놀랍도록 닮았다...역사는 반복되는가? (j-nmef9zIHk)
+2026-03-19 21:30:43,477 - main - WARNING - No transcript for: 2008년과 놀랍도록 닮았다...역사는 반복되는가?
+2026-03-19 21:30:43,477 - main - INFO - Processing: 미국 주방가전 100년 역사에 겁도 없이 뛰어든 국내 브랜드. 결과는 대반전이었습니다. / B하인드 / 비디오머그 (juCvAFHljk4)
+2026-03-19 21:30:45,152 - main - WARNING - No transcript for: 미국 주방가전 100년 역사에 겁도 없이 뛰어든 국내 브랜드. 결과는 대반전이었습니다. / B하인드 / 비디오머그
+2026-03-19 21:30:45,152 - main - INFO - Processing: 월가가 주목하는 26년 "압도적 성장 테마" (ekerS_cwqtw)
+2026-03-19 21:30:46,585 - main - WARNING - No transcript for: 월가가 주목하는 26년 "압도적 성장 테마"
+2026-03-19 21:30:46,585 - main - INFO - Processing: 클로드 무적 필살기 SHOW ME 업데이트 (RtX3dYj3JoM)
+2026-03-19 21:30:48,157 - main - WARNING - No transcript for: 클로드 무적 필살기 SHOW ME 업데이트
+2026-03-19 21:30:48,157 - main - INFO - Processing: [홍장원의 불앤베어] 트럼프 새논리? "유가 오르면 미국이 돈번다. 그러나" (5Mrh9U8JuV0)
+2026-03-19 21:30:49,668 - main - WARNING - No transcript for: [홍장원의 불앤베어] 트럼프 새논리? "유가 오르면 미국이 돈번다. 그러나"
+2026-03-19 21:30:49,669 - main - INFO - Processing: 【미국 증시 오늘의 요약】 이란발 유가 폭등에 사모신용 '환매 중단'까지 덮친 월가..     -  2026/03/12 (1iujZhgOoRw)
+2026-03-19 21:30:51,020 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 이란발 유가 폭등에 사모신용 '환매 중단'까지 덮친 월가..     -  2026/03/12
+2026-03-20 09:29:26,014 - main - INFO - Found 42 new videos to process
+2026-03-20 09:29:26,014 - main - INFO - Processing: [홍장원의 불앤베어] 이란 외무장관 "우리도 참고 있다. 반격에 최선을 다하지 않았다" (ypMUzNpOjt0)
+2026-03-20 09:29:27,397 - main - WARNING - No transcript for: [홍장원의 불앤베어] 이란 외무장관 "우리도 참고 있다. 반격에 최선을 다하지 않았다"
+2026-03-20 09:29:27,397 - main - INFO - Processing: 【미국 증시 오늘의 요약】 이스라엘 "조기 종전" 시사에 유가 진정… 증시는 '세 마녀의 날' 경계감     -  2026/03/19 (JhHA5HiaAZc)
+2026-03-20 09:29:28,396 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 이스라엘 "조기 종전" 시사에 유가 진정… 증시는 '세 마녀의 날' 경계감     -  2026/03/19
+2026-03-20 09:29:28,396 - main - INFO - Processing: [지식뉴스] ※미 경제 상황, 긴급점검※ "FOMC, 최악의 케이스가 나왔다"...트럼프가 조급해진 진짜 이유 (ft.김명실 iM증권 투자전략부 애널리스트) / 교양이를 부탁해 (nHNIMfA29jc)
+2026-03-20 09:29:29,434 - main - WARNING - No transcript for: [지식뉴스] ※미 경제 상황, 긴급점검※ "FOMC, 최악의 케이스가 나왔다"...트럼프가 조급해진 진짜 이유 (ft.김명실 iM증권 투자전략부 애널리스트) / 교양이를 부탁해
+2026-03-20 09:29:29,434 - main - INFO - Processing: Stitch 2.0 is so Hype Boy (wIUZYr8QtTU)
+2026-03-20 09:29:30,444 - main - WARNING - No transcript for: Stitch 2.0 is so Hype Boy
+2026-03-20 09:29:30,444 - main - INFO - Processing: "이미 내 보험금에 떠넘겼다"... 제2의 금융위기 시작됐다? / 똑소리E / 비디오머그 (pEglUWCsjhY)
+2026-03-20 09:29:31,347 - main - WARNING - No transcript for: "이미 내 보험금에 떠넘겼다"... 제2의 금융위기 시작됐다? / 똑소리E / 비디오머그
+2026-03-20 09:29:31,347 - main - INFO - Processing: GTC 10분 요약.."AI 예약주문 1500조" (X3Srdwkuor4)
+2026-03-20 09:29:32,221 - main - WARNING - No transcript for: GTC 10분 요약.."AI 예약주문 1500조"
+2026-03-20 09:29:32,221 - main - INFO - Processing: 실리콘밸리에서 핫한 클로드 스킬과 오픈클로를 쉽게 사용하는 법 (_TZhiX4qajk)
+2026-03-20 09:29:33,237 - main - WARNING - No transcript for: 실리콘밸리에서 핫한 클로드 스킬과 오픈클로를 쉽게 사용하는 법
+2026-03-20 09:29:33,237 - main - INFO - Processing: AI로 만든 웹사이트, 3초면 티납니다 (Eg8tacNOlwQ)
+2026-03-20 09:29:34,433 - main - WARNING - No transcript for: AI로 만든 웹사이트, 3초면 티납니다
+2026-03-20 09:29:34,433 - main - INFO - Processing: 【미국 증시 오늘의 요약】 유가 폭등에 금리 동결까지... 파월 "진전 없으면 금리 인하 없다"     -  2026/03/18 (sydqv3nKScw)
+2026-03-20 09:29:35,404 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 유가 폭등에 금리 동결까지... 파월 "진전 없으면 금리 인하 없다"     -  2026/03/18
+2026-03-20 09:29:35,404 - main - INFO - Processing: [홍장원의 불앤베어] 마이크론 사상 최초 5년 초장기 칩 공급계약 (-8u3naQGhwE)
+2026-03-20 09:29:36,274 - main - WARNING - No transcript for: [홍장원의 불앤베어] 마이크론 사상 최초 5년 초장기 칩 공급계약
+2026-03-20 09:29:36,274 - main - INFO - Processing: 3월 FOMC l 윤제성 아레타노바컨설팅 설립자 인터뷰 (ID7IZeTZT6w)
+2026-03-20 09:29:37,209 - main - WARNING - No transcript for: 3월 FOMC l 윤제성 아레타노바컨설팅 설립자 인터뷰
+2026-03-20 09:29:37,209 - main - INFO - Processing: [지식뉴스] "레드라인 건드린 이란, 걸프국 결집 분위기"...이러다 전면전 시작되나? 확전 징후에 '초긴장' (ft.유신익 KB WM 수석이코노미스트) / 교양이를 부탁해 (7t8LiWrRQU4)
+2026-03-20 09:29:38,238 - main - WARNING - No transcript for: [지식뉴스] "레드라인 건드린 이란, 걸프국 결집 분위기"...이러다 전면전 시작되나? 확전 징후에 '초긴장' (ft.유신익 KB WM 수석이코노미스트) / 교양이를 부탁해
+2026-03-20 09:29:38,238 - main - INFO - Processing: 안보면 후회할 클로드 꿀팁 영상.."한마디"만 추가하세요 (bhUquS_r3zA)
+2026-03-20 09:29:39,344 - main - WARNING - No transcript for: 안보면 후회할 클로드 꿀팁 영상.."한마디"만 추가하세요
+2026-03-20 09:29:39,344 - main - INFO - Processing: [월가아재] 시장은 완전히 속았습니다. 지정학 1타 강사가 말하는 이란 전쟁의 진짜 결말 (HB1x5r1dNVw)
+2026-03-20 09:29:40,012 - main - WARNING - No transcript for: [월가아재] 시장은 완전히 속았습니다. 지정학 1타 강사가 말하는 이란 전쟁의 진짜 결말
+2026-03-20 09:29:40,012 - main - INFO - Processing: 이 5가지 없으면 AI 도입해도 3개월 뒤 끝납니다 (-1OZWrsZq_M)
+2026-03-20 09:29:41,231 - main - WARNING - No transcript for: 이 5가지 없으면 AI 도입해도 3개월 뒤 끝납니다
+2026-03-20 09:29:41,232 - main - INFO - Processing: 【미국 증시 오늘의 요약】 엔비디아 GTC 호재에 유가 하락까지 겹쳤다!    -  2026/03/16 (gbe4k9Ngio0)
+2026-03-20 09:29:42,369 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 엔비디아 GTC 호재에 유가 하락까지 겹쳤다!    -  2026/03/16
+2026-03-20 09:29:42,369 - main - INFO - Processing: [홍장원의 불앤베어] 유가 하락에 증시는 반등했지만... (165KWNF9qUs)
+2026-03-20 09:29:43,552 - main - WARNING - No transcript for: [홍장원의 불앤베어] 유가 하락에 증시는 반등했지만...
+2026-03-20 09:29:43,553 - main - INFO - Processing: AI 코딩 에이전트 전용 터미널 cmux, 왜 개발자들이 열광할까요? | 신상 터미널입니다 (jGj9yCqN08s)
+2026-03-20 09:29:44,708 - main - WARNING - No transcript for: AI 코딩 에이전트 전용 터미널 cmux, 왜 개발자들이 열광할까요? | 신상 터미널입니다
+2026-03-20 09:29:44,708 - main - INFO - Processing: 트럼프의 강력 힌트, 벼랑 끝에 선 미 증시 살려낼까 (NseuX7PjrI8)
+2026-03-20 09:29:45,993 - main - WARNING - No transcript for: 트럼프의 강력 힌트, 벼랑 끝에 선 미 증시 살려낼까
+2026-03-20 09:29:45,994 - main - INFO - Processing: 저렴하지만 너무 강력한 MiniMax (GdHFt2ZPHyg)
+2026-03-20 09:29:47,112 - main - WARNING - No transcript for: 저렴하지만 너무 강력한 MiniMax
+2026-03-20 09:29:47,112 - main - INFO - Processing: [홍장원의 불앤베어] 중국 압박하는 트럼프 "미중 정상회담 연기할 수 있다" (E-M8cHlq_HQ)
+2026-03-20 09:29:48,214 - main - WARNING - No transcript for: [홍장원의 불앤베어] 중국 압박하는 트럼프 "미중 정상회담 연기할 수 있다"
+2026-03-20 09:29:48,214 - main - INFO - Processing: [지식뉴스] 삼전닉스 또 메모리 가격 급등...빅테크가 'AI 슈퍼컴퓨터'에 돈 쏟아붓는 진짜 이유 (ft.이효석 대표) / 교양이를 부탁해 (7Lnwc9UzI38)
+2026-03-20 09:29:49,109 - main - WARNING - No transcript for: [지식뉴스] 삼전닉스 또 메모리 가격 급등...빅테크가 'AI 슈퍼컴퓨터'에 돈 쏟아붓는 진짜 이유 (ft.이효석 대표) / 교양이를 부탁해
+2026-03-20 09:29:49,109 - main - INFO - Processing: "이란 전쟁, 역대 최악 석유공급 차질" _차트온260315 (kcdcrnHTYWU)
+2026-03-20 09:29:49,990 - main - WARNING - No transcript for: "이란 전쟁, 역대 최악 석유공급 차질" _차트온260315
+2026-03-20 09:29:49,990 - main - INFO - Processing: "이란전, 우리 전쟁 아냐" 사면초가 트럼프, 그는 왜 전쟁을 벌였을까?...호르무즈 전면 충돌 이후에 닥칠 일 (ft.유신익 KB은행) / 교양이를 부탁해 / 비디오머그 (njVUroud5Pw)
+2026-03-20 09:29:51,086 - main - WARNING - No transcript for: "이란전, 우리 전쟁 아냐" 사면초가 트럼프, 그는 왜 전쟁을 벌였을까?...호르무즈 전면 충돌 이후에 닥칠 일 (ft.유신익 KB은행) / 교양이를 부탁해 / 비디오머그
+2026-03-20 09:29:51,086 - main - INFO - Processing: AI, 천천히 도입해야 하는 이유 "잘 쓰는 게 중요하다" (ft. 이상욱 교수) | 💡지식의발견  | 비디오머그 (vPe67D4x4IE)
+2026-03-20 09:29:52,229 - main - WARNING - No transcript for: AI, 천천히 도입해야 하는 이유 "잘 쓰는 게 중요하다" (ft. 이상욱 교수) | 💡지식의발견  | 비디오머그
+2026-03-20 09:29:52,229 - main - INFO - Processing: [속보] "미국과 이스라엘 빼면 호르무즈 열려있다" 원유시장은 이란 발언을 신뢰할까? I 홍장원의 불앤베어 (li4iXDx1Pp0)
+2026-03-20 09:29:53,322 - main - WARNING - No transcript for: [속보] "미국과 이스라엘 빼면 호르무즈 열려있다" 원유시장은 이란 발언을 신뢰할까? I 홍장원의 불앤베어
+2026-03-20 09:29:53,322 - main - INFO - Processing: [통합본] “트럼프, 한국 콕 집어 전함 보내달라”…호르무즈 석유길 확보 총력전, 이란 공습이 미 중간선거 진짜 자충수 될까 / 교양이를 부탁해 (B6s2hZPxA-Y)
+2026-03-20 09:29:54,517 - main - WARNING - No transcript for: [통합본] “트럼프, 한국 콕 집어 전함 보내달라”…호르무즈 석유길 확보 총력전, 이란 공습이 미 중간선거 진짜 자충수 될까 / 교양이를 부탁해
+2026-03-20 09:29:54,517 - main - INFO - Processing: [홍장원의 불앤베어] 결국 미중 대리전으로 흘러가고 있다. 美 "중국 군함 파견해달라" vs 이란 "중국 가는 배는 호르무즈 프리패스" (4Q-B7B-5FU4)
+2026-03-20 09:29:55,633 - main - WARNING - No transcript for: [홍장원의 불앤베어] 결국 미중 대리전으로 흘러가고 있다. 美 "중국 군함 파견해달라" vs 이란 "중국 가는 배는 호르무즈 프리패스"
+2026-03-20 09:29:55,633 - main - INFO - Processing: [통합본] "일본 주둔 미 해병대까지 중동 급파"...혼돈의 호르무즈 해협, 치솟는 국제유가에 공포 속 이란 전쟁 3개월 후 닥칠 일 / 교양이를 부탁해 (0P1OCDwEf_Y)
+2026-03-20 09:29:56,637 - main - WARNING - No transcript for: [통합본] "일본 주둔 미 해병대까지 중동 급파"...혼돈의 호르무즈 해협, 치솟는 국제유가에 공포 속 이란 전쟁 3개월 후 닥칠 일 / 교양이를 부탁해
+2026-03-20 09:29:56,637 - main - INFO - Processing: "사모펀드 부도율 급증" 월가의 자금 탈출 시작됐다! (AcmbJYWeo4g)
+2026-03-20 09:29:57,666 - main - WARNING - No transcript for: "사모펀드 부도율 급증" 월가의 자금 탈출 시작됐다!
+2026-03-20 09:29:57,666 - main - INFO - Processing: "스타벅스 직원은 팁 노동자 아니다" 카페에서 팁 안내도 괜찮은 이유 | 홍키자의 美쿡 | 홍성용 특파원 (oYJ79_y-aY0)
+2026-03-20 09:29:58,785 - main - WARNING - No transcript for: "스타벅스 직원은 팁 노동자 아니다" 카페에서 팁 안내도 괜찮은 이유 | 홍키자의 美쿡 | 홍성용 특파원
+2026-03-20 09:29:58,785 - main - INFO - Processing: 코드 한 줄 안 짰는데 1등이래요 (VwT_0XdFc4I)
+2026-03-20 09:29:59,869 - main - WARNING - No transcript for: 코드 한 줄 안 짰는데 1등이래요
+2026-03-20 09:29:59,869 - main - INFO - Processing: [어바웃 뉴욕] "중국 저가 커피의 반란" 블루보틀 인수의 속내는? | 길금희 특파원 (CNfKAAE4Db4)
+2026-03-20 09:30:01,000 - main - WARNING - No transcript for: [어바웃 뉴욕] "중국 저가 커피의 반란" 블루보틀 인수의 속내는? | 길금희 특파원
+2026-03-20 09:30:01,000 - main - INFO - Processing: [속보] 또 터진 트럼프의 한방. 이번에는 이란 석유핵심시설 '하르그섬' I 홍장원의 불앤베어 (_3RHVNgoeB4)
+2026-03-20 09:30:02,220 - main - WARNING - No transcript for: [속보] 또 터진 트럼프의 한방. 이번에는 이란 석유핵심시설 '하르그섬' I 홍장원의 불앤베어
+2026-03-20 09:30:02,220 - main - INFO - Processing: 알고리즘은 어떻게 우리 뇌를 해킹하나? 유튜브와 챗GPT가 숨긴 '중독'의 설계자들 (ft. 이상욱 교수) | 💡지식의발견  | 비디오머그 (56OsubtLJSM)
+2026-03-20 09:30:03,307 - main - WARNING - No transcript for: 알고리즘은 어떻게 우리 뇌를 해킹하나? 유튜브와 챗GPT가 숨긴 '중독'의 설계자들 (ft. 이상욱 교수) | 💡지식의발견  | 비디오머그
+2026-03-20 09:30:03,307 - main - INFO - Processing: 【미국 증시 오늘의 요약】 이란 전쟁 장기화 우려… 유가 상승에 S&P500 상승분 반납   -  2026/03/13 (Ks_x7NoXSII)
+2026-03-20 09:30:04,369 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 이란 전쟁 장기화 우려… 유가 상승에 S&P500 상승분 반납   -  2026/03/13
+2026-03-20 09:30:04,369 - main - INFO - Processing: [홍장원의 불앤베어] 이란 "구글과 마이크로소프트도 우리의 적이다" (rWhVHdr5ufY)
+2026-03-20 09:30:05,382 - main - WARNING - No transcript for: [홍장원의 불앤베어] 이란 "구글과 마이크로소프트도 우리의 적이다"
+2026-03-20 09:30:05,382 - main - INFO - Processing: 2008년과 놀랍도록 닮았다...역사는 반복되는가? (j-nmef9zIHk)
+2026-03-20 09:30:06,295 - main - WARNING - No transcript for: 2008년과 놀랍도록 닮았다...역사는 반복되는가?
+2026-03-20 09:30:06,295 - main - INFO - Processing: [지식뉴스] "미, 해병대 병력 전격 투입"...중동전쟁 확전 일촉즉발, 트럼프가 호르무즈 잃으면 닥칠 일 (ft.성일광 서강대 유로메나연구소 교수) / 교양이를 부탁해 (sgzx6S_WFT0)
+2026-03-20 09:30:07,487 - main - WARNING - No transcript for: [지식뉴스] "미, 해병대 병력 전격 투입"...중동전쟁 확전 일촉즉발, 트럼프가 호르무즈 잃으면 닥칠 일 (ft.성일광 서강대 유로메나연구소 교수) / 교양이를 부탁해
+2026-03-20 09:30:07,487 - main - INFO - Processing: 미국 주방가전 100년 역사에 겁도 없이 뛰어든 국내 브랜드. 결과는 대반전이었습니다. / B하인드 / 비디오머그 (juCvAFHljk4)
+2026-03-20 09:30:08,564 - main - WARNING - No transcript for: 미국 주방가전 100년 역사에 겁도 없이 뛰어든 국내 브랜드. 결과는 대반전이었습니다. / B하인드 / 비디오머그
+2026-03-20 09:30:08,564 - main - INFO - Processing: 월가가 주목하는 26년 "압도적 성장 테마" (ekerS_cwqtw)
+2026-03-20 09:30:09,668 - main - WARNING - No transcript for: 월가가 주목하는 26년 "압도적 성장 테마"
+2026-03-20 09:30:09,668 - main - INFO - Processing: 클로드 무적 필살기 SHOW ME 업데이트 (RtX3dYj3JoM)
+2026-03-20 09:30:10,828 - main - WARNING - No transcript for: 클로드 무적 필살기 SHOW ME 업데이트
+2026-03-22 22:05:44,548 - main - INFO - Found 42 new videos to process
+2026-03-22 22:05:44,548 - main - INFO - Processing: [월가아재] 증시가 22% 폭락할 때, 62% 수익을 낸 방법 - 폴 튜더 존스 2부 (6FDfIjQbeZg)
+2026-03-22 22:06:03,975 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-22_0737_월가아재의-과학적-투자_월가아재-증시가-22-폭락할-때-62-수익을-낸-방법---폴-튜더-존스-2부.txt
+2026-03-22 22:06:03,978 - main - INFO - Processing: 불안의 시대, 금이 ‘최후의 자산’이 되는 이유! 역사가 말하는 안전 자산 (ft.김재원 역사학자) |💡지식의발견 | 비디오머그 (FHY9KbZ4u7Q)
+2026-03-22 22:06:18,494 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-22_0700_비디오머그---videomug_불안의-시대-금이-최후의-자산이-되는-이유-역사가-말하는-안전-자산-ft김재원-역사학자-지.txt
+2026-03-22 22:06:18,497 - main - INFO - Processing: AI가 변호사, 회계사 확실히 뛰어 넘었네요.. 역대급 신기능 (qhNLvjK3BKw)
+2026-03-22 22:06:34,292 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-22_0134_월텍남---월스트리트-테크남_ai가-변호사-회계사-확실히-뛰어-넘었네요-역대급-신기능.txt
+2026-03-22 22:06:34,294 - main - INFO - Processing: [홍장원의 불앤베어] 미국, 이란 협상 당사자가 누군지를 찾고 있다 (8sF5a7xa32w)
+2026-03-22 22:06:48,540 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-21_2354_매경-월가월부_홍장원의-불앤베어-미국-이란-협상-당사자가-누군지를-찾고-있다.txt
+2026-03-22 22:06:48,543 - main - INFO - Processing: [지식뉴스] "월요일이 안 왔으면 좋겠어요" 트럼프, 결국 확전 택하나 '불안 최고조'...지금 뉴스 이렇게 보셔야 합니다 (ft.이선엽 AFW파트너스 대표) / 교양이를 부탁해 (rP_h6YLA3R4)
+2026-03-22 22:07:15,754 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-21_2333_교양이를-부탁해_지식뉴스-월요일이-안-왔으면-좋겠어요-트럼프-결국-확전-택하나-불안-최고조지금-뉴스-이렇게.txt
+2026-03-22 22:07:15,758 - main - INFO - Processing: TMUX 마스터클래스 | 여러분 아직도 tmux 안쓰시면 꼭 봐주시길 바랍니다 ㅠㅠㅠ (vlg8X0N8z08)
+2026-03-22 22:07:44,148 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-21_1159_개발동생_tmux-마스터클래스-여러분-아직도-tmux-안쓰시면-꼭-봐주시길-바랍니다-ㅠㅠㅠ.txt
+2026-03-22 22:07:44,150 - main - INFO - Processing: 미국주식 비싸서 못샀는데 싸니까 더 못산다? (WooGQymvhcM)
+2026-03-22 22:07:57,830 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-21_0945_수페tv_미국주식-비싸서-못샀는데-싸니까-더-못산다.txt
+2026-03-22 22:07:57,833 - main - INFO - Processing: 얼마전 업데이트된 가장 쉽게 SaaS 창업을 해보고싶다면 무조건 써봐야하는 AI (4WB-G3FAA5E)
+2026-03-22 22:08:27,698 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-21_0900_코드팩토리_얼마전-업데이트된-가장-쉽게-saas-창업을-해보고싶다면-무조건-써봐야하는-ai.txt
+2026-03-22 22:08:27,701 - main - INFO - Processing: "빈 병 밀수해 돈 번다" 미국 영수증이 만든 지하 경제 | 홍키자의 美쿡 | 홍성용 특파원 (sr-h3LJrZPA)
+2026-03-22 22:08:51,028 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-21_0801_매경-월가월부_빈-병-밀수해-돈-번다-미국-영수증이-만든-지하-경제-홍키자의-美쿡-홍성용-특파원.txt
+2026-03-22 22:08:51,030 - main - INFO - Processing: [어바웃 뉴욕] "전력 전쟁 시작됐다" AI 시대, 진짜 돈은 여기서 나온다 | 길금희 특파원 (CKa91uZhTt4)
+2026-03-22 22:09:05,325 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-21_0300_매경-월가월부_어바웃-뉴욕-전력-전쟁-시작됐다-ai-시대-진짜-돈은-여기서-나온다-길금희-특파원.txt
+2026-03-22 22:09:05,328 - main - INFO - Processing: 투자 잘하는 뇌는 따로 있다? 뇌과학으로 본 투자의 심리 (ft. 장동선 뇌과학자) |💡지식의발견 | 비디오머그 (886oW7sq3MQ)
+2026-03-22 22:09:22,275 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-21_0100_비디오머그---videomug_투자-잘하는-뇌는-따로-있다-뇌과학으로-본-투자의-심리-ft-장동선-뇌과학자-지식의발견-비.txt
+2026-03-22 22:09:22,278 - main - INFO - Processing: [지식뉴스] “그렇게 먹고 일하다간 정말 큰일 납니다”…당신이 살찌는 진짜 이유는 '이것' (ft.우창윤 내분비내과 전문의) / 교양이를 부탁해 (qGFImqJhrz4)
+2026-03-22 22:09:39,525 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-21_0015_교양이를-부탁해_지식뉴스-그렇게-먹고-일하다간-정말-큰일-납니다당신이-살찌는-진짜-이유는-이것-ft우창윤.txt
+2026-03-22 22:09:39,528 - main - INFO - Processing: [홍장원의 불앤베어] 트럼프 "이란 군사 작전 축소 고려중이다. 우리는 거의 목표에 도달했다" (yfMM2Iy_YB8)
+2026-03-22 22:09:50,724 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-20_2233_매경-월가월부_홍장원의-불앤베어-트럼프-이란-군사-작전-축소-고려중이다-우리는-거의-목표에-도달했다.txt
+2026-03-22 22:09:50,727 - main - INFO - Processing: 【미국 증시 오늘의 요약】 전쟁 공포로 하락한 시장… 그런데 마지막에 바뀌었다?    -  2026/03/20 (CyBagX-c0A0)
+2026-03-22 22:10:02,656 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-20_2220_오선의-미국-증시-라이브_미국-증시-오늘의-요약-전쟁-공포로-하락한-시장-그런데-마지막에-바뀌었다---2026032.txt
+2026-03-22 22:10:02,659 - main - INFO - Processing: [지식뉴스] "어마어마한 전쟁 비용 감당 안 돼" 결국 300조 추경 요청...초조한 트럼프, 이번 주말 유가 잡을 수 있을까 (f.이선엽 AFW파트너스 대표) / 교양이를 부탁해 (vWhU2ENRB7Q)
+2026-03-22 22:10:16,370 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-20_1041_교양이를-부탁해_지식뉴스-어마어마한-전쟁-비용-감당-안-돼-결국-300조-추경-요청초조한-트럼프-이번-주말.txt
+2026-03-22 22:10:16,373 - main - INFO - Processing: [월가아재] 블랙먼데이를 예측한 전설의 트레이더. 48개월간 단 한 번 빼고 모두 수익을 낸 비결 - 폴 튜더 존스 1부 (k_NwQvQK_1M)
+2026-03-22 22:10:33,234 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-20_0901_월가아재의-과학적-투자_월가아재-블랙먼데이를-예측한-전설의-트레이더-48개월간-단-한-번-빼고-모두-수익을-낸-비.txt
+2026-03-22 22:10:33,237 - main - INFO - Processing: 맥미니 구매하지 않고 완전 초보도 1클릭으로 OpenClaw 설치 하는법 (tDnxBO-pmZI)
+2026-03-22 22:10:44,090 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-20_0901_코드팩토리_맥미니-구매하지-않고-완전-초보도-1클릭으로-openclaw-설치-하는법.txt
+2026-03-22 22:10:44,092 - main - INFO - Processing: 4시간전에 나온 따끈따끈한 클로드 채널 업데이트. 이제 어떤 서비스든 클로드 코드에 연동 가능! (uub34E4DwZI)
+2026-03-22 22:10:55,431 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-20_0410_코드팩토리_4시간전에-나온-따끈따끈한-클로드-채널-업데이트-이제-어떤-서비스든-클로드-코드에-연동-가.txt
+2026-03-22 22:10:55,433 - main - INFO - Processing: "노숙자 1명에 1.3억 썼다" 길거리 텐트가 줄지 않는 미국 | 매일뉴욕 스페셜 | 홍성용 특파원 (HqXtO_5IrYs)
+2026-03-22 22:10:56,712 - main - WARNING - No transcript for: "노숙자 1명에 1.3억 썼다" 길거리 텐트가 줄지 않는 미국 | 매일뉴욕 스페셜 | 홍성용 특파원
+2026-03-22 22:10:56,712 - main - INFO - Processing: [홍장원의 불앤베어] 이란 외무장관 "우리도 참고 있다. 반격에 최선을 다하지 않았다" (ypMUzNpOjt0)
+2026-03-22 22:10:57,826 - main - WARNING - No transcript for: [홍장원의 불앤베어] 이란 외무장관 "우리도 참고 있다. 반격에 최선을 다하지 않았다"
+2026-03-22 22:10:57,826 - main - INFO - Processing: 【미국 증시 오늘의 요약】 이스라엘 "조기 종전" 시사에 유가 진정… 증시는 '세 마녀의 날' 경계감     -  2026/03/19 (JhHA5HiaAZc)
+2026-03-22 22:10:59,261 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 이스라엘 "조기 종전" 시사에 유가 진정… 증시는 '세 마녀의 날' 경계감     -  2026/03/19
+2026-03-22 22:10:59,261 - main - INFO - Processing: [지식뉴스] ※미 경제 상황, 긴급점검※ "FOMC, 최악의 케이스가 나왔다"...트럼프가 조급해진 진짜 이유 (ft.김명실 iM증권 투자전략부 애널리스트) / 교양이를 부탁해 (nHNIMfA29jc)
+2026-03-22 22:11:00,455 - main - WARNING - No transcript for: [지식뉴스] ※미 경제 상황, 긴급점검※ "FOMC, 최악의 케이스가 나왔다"...트럼프가 조급해진 진짜 이유 (ft.김명실 iM증권 투자전략부 애널리스트) / 교양이를 부탁해
+2026-03-22 22:11:00,455 - main - INFO - Processing: Stitch 2.0 is so Hype Boy (wIUZYr8QtTU)
+2026-03-22 22:11:01,640 - main - WARNING - No transcript for: Stitch 2.0 is so Hype Boy
+2026-03-22 22:11:01,641 - main - INFO - Processing: "이미 내 보험금에 떠넘겼다"... 제2의 금융위기 시작됐다? / 똑소리E / 비디오머그 (pEglUWCsjhY)
+2026-03-22 22:11:02,869 - main - WARNING - No transcript for: "이미 내 보험금에 떠넘겼다"... 제2의 금융위기 시작됐다? / 똑소리E / 비디오머그
+2026-03-22 22:11:02,869 - main - INFO - Processing: GTC 10분 요약.."AI 예약주문 1500조" (X3Srdwkuor4)
+2026-03-22 22:11:04,447 - main - WARNING - No transcript for: GTC 10분 요약.."AI 예약주문 1500조"
+2026-03-22 22:11:04,447 - main - INFO - Processing: 실리콘밸리에서 핫한 클로드 스킬과 오픈클로를 쉽게 사용하는 법 (_TZhiX4qajk)
+2026-03-22 22:11:05,980 - main - WARNING - No transcript for: 실리콘밸리에서 핫한 클로드 스킬과 오픈클로를 쉽게 사용하는 법
+2026-03-22 22:11:05,980 - main - INFO - Processing: AI로 만든 웹사이트, 3초면 티납니다 (Eg8tacNOlwQ)
+2026-03-22 22:11:07,211 - main - WARNING - No transcript for: AI로 만든 웹사이트, 3초면 티납니다
+2026-03-22 22:11:07,211 - main - INFO - Processing: 【미국 증시 오늘의 요약】 유가 폭등에 금리 동결까지... 파월 "진전 없으면 금리 인하 없다"     -  2026/03/18 (sydqv3nKScw)
+2026-03-22 22:11:08,592 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 유가 폭등에 금리 동결까지... 파월 "진전 없으면 금리 인하 없다"     -  2026/03/18
+2026-03-22 22:11:08,592 - main - INFO - Processing: [홍장원의 불앤베어] 마이크론 사상 최초 5년 초장기 칩 공급계약 (-8u3naQGhwE)
+2026-03-22 22:11:10,081 - main - WARNING - No transcript for: [홍장원의 불앤베어] 마이크론 사상 최초 5년 초장기 칩 공급계약
+2026-03-22 22:11:10,081 - main - INFO - Processing: 3월 FOMC l 윤제성 아레타노바컨설팅 설립자 인터뷰 (ID7IZeTZT6w)
+2026-03-22 22:11:11,480 - main - WARNING - No transcript for: 3월 FOMC l 윤제성 아레타노바컨설팅 설립자 인터뷰
+2026-03-22 22:11:11,480 - main - INFO - Processing: [지식뉴스] "레드라인 건드린 이란, 걸프국 결집 분위기"...이러다 전면전 시작되나? 확전 징후에 '초긴장' (ft.유신익 KB WM 수석이코노미스트) / 교양이를 부탁해 (7t8LiWrRQU4)
+2026-03-22 22:11:12,834 - main - WARNING - No transcript for: [지식뉴스] "레드라인 건드린 이란, 걸프국 결집 분위기"...이러다 전면전 시작되나? 확전 징후에 '초긴장' (ft.유신익 KB WM 수석이코노미스트) / 교양이를 부탁해
+2026-03-22 22:11:12,835 - main - INFO - Processing: 안보면 후회할 클로드 꿀팁 영상.."한마디"만 추가하세요 (bhUquS_r3zA)
+2026-03-22 22:11:13,969 - main - WARNING - No transcript for: 안보면 후회할 클로드 꿀팁 영상.."한마디"만 추가하세요
+2026-03-22 22:11:13,969 - main - INFO - Processing: CLAUDE.md 하나로 AI 코딩 품질이 3배 달라집니다 (cZ8_Dkk_Ce0)
+2026-03-22 22:11:15,021 - main - WARNING - No transcript for: CLAUDE.md 하나로 AI 코딩 품질이 3배 달라집니다
+2026-03-22 22:11:15,021 - main - INFO - Processing: [월가아재] 시장은 완전히 속았습니다. 지정학 1타 강사가 말하는 이란 전쟁의 진짜 결말 (HB1x5r1dNVw)
+2026-03-22 22:11:16,182 - main - WARNING - No transcript for: [월가아재] 시장은 완전히 속았습니다. 지정학 1타 강사가 말하는 이란 전쟁의 진짜 결말
+2026-03-22 22:11:16,182 - main - INFO - Processing: 이 5가지 없으면 AI 도입해도 3개월 뒤 끝납니다 (-1OZWrsZq_M)
+2026-03-22 22:11:17,539 - main - WARNING - No transcript for: 이 5가지 없으면 AI 도입해도 3개월 뒤 끝납니다
+2026-03-22 22:11:17,539 - main - INFO - Processing: 【미국 증시 오늘의 요약】 엔비디아 GTC 호재에 유가 하락까지 겹쳤다!    -  2026/03/16 (gbe4k9Ngio0)
+2026-03-22 22:11:19,063 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 엔비디아 GTC 호재에 유가 하락까지 겹쳤다!    -  2026/03/16
+2026-03-22 22:11:19,063 - main - INFO - Processing: [홍장원의 불앤베어] 유가 하락에 증시는 반등했지만... (165KWNF9qUs)
+2026-03-22 22:11:20,534 - main - WARNING - No transcript for: [홍장원의 불앤베어] 유가 하락에 증시는 반등했지만...
+2026-03-22 22:11:20,534 - main - INFO - Processing: AI 코딩 에이전트 전용 터미널 cmux, 왜 개발자들이 열광할까요? | 신상 터미널입니다 (jGj9yCqN08s)
+2026-03-22 22:11:21,956 - main - WARNING - No transcript for: AI 코딩 에이전트 전용 터미널 cmux, 왜 개발자들이 열광할까요? | 신상 터미널입니다
+2026-03-22 22:11:21,957 - main - INFO - Processing: 트럼프의 강력 힌트, 벼랑 끝에 선 미 증시 살려낼까 (NseuX7PjrI8)
+2026-03-22 22:11:23,214 - main - WARNING - No transcript for: 트럼프의 강력 힌트, 벼랑 끝에 선 미 증시 살려낼까
+2026-03-22 22:11:23,215 - main - INFO - Processing: 저렴하지만 너무 강력한 MiniMax (GdHFt2ZPHyg)
+2026-03-22 22:11:24,536 - main - WARNING - No transcript for: 저렴하지만 너무 강력한 MiniMax
+2026-03-22 22:11:24,536 - main - INFO - Processing: [홍장원의 불앤베어] 중국 압박하는 트럼프 "미중 정상회담 연기할 수 있다" (E-M8cHlq_HQ)
+2026-03-22 22:11:25,948 - main - WARNING - No transcript for: [홍장원의 불앤베어] 중국 압박하는 트럼프 "미중 정상회담 연기할 수 있다"
+2026-03-22 22:11:25,948 - main - INFO - Processing: [지식뉴스] 삼전닉스 또 메모리 가격 급등...빅테크가 'AI 슈퍼컴퓨터'에 돈 쏟아붓는 진짜 이유 (ft.이효석 대표) / 교양이를 부탁해 (7Lnwc9UzI38)
+2026-03-22 22:11:27,433 - main - WARNING - No transcript for: [지식뉴스] 삼전닉스 또 메모리 가격 급등...빅테크가 'AI 슈퍼컴퓨터'에 돈 쏟아붓는 진짜 이유 (ft.이효석 대표) / 교양이를 부탁해
+2026-03-24 22:41:59,996 - main - INFO - Found 31 new videos to process
+2026-03-24 22:41:59,996 - main - INFO - Processing: [지식뉴스] "솔직하게 말할게요. 이번에 이란전쟁 못 끝내면..." 트럼프 경제 대전환 시나리오의 치명적 허점 (ft.유신익 KB은행 WM 수석이코노미스트) / 교양이를 부탁해 (X_QRkwuQWHQ)
+2026-03-24 22:42:17,590 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-24_1327_교양이를-부탁해_지식뉴스-솔직하게-말할게요-이번에-이란전쟁-못-끝내면-트럼프-경제-대전환-시나리오의-치명적.txt
+2026-03-24 22:42:17,592 - main - INFO - Processing: [지식뉴스] "다들 착각하고 있어요" 은퇴 이후에 빚 더 늘어난다...5060 구조조정, 한국 경제에 닥칠 후폭풍 (ft.이철희 서울대 경제학부 교수) / 교양이를 부탁해 (U5JJIQ11OTY)
+2026-03-24 22:42:30,034 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-24_1117_교양이를-부탁해_지식뉴스-다들-착각하고-있어요-은퇴-이후에-빚-더-늘어난다5060-구조조정-한국-경제에-닥.txt
+2026-03-24 22:42:30,037 - main - INFO - Processing: 환율 1500원 시대, 환전하기 두렵다? (ft. SCHD 리밸런싱) (6BUJp73YDN8)
+2026-03-24 22:42:43,001 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-24_1100_수페tv_환율-1500원-시대-환전하기-두렵다-ft-schd-리밸런싱.txt
+2026-03-24 22:42:43,005 - main - INFO - Processing: 알아서 돈 벌어오는 AI에이전트 시대 개막, 젠슨황 충격 전망의 수혜주들 (Mj9BKoYoTmo)
+2026-03-24 22:42:57,436 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-24_0929_소수몽키_알아서-돈-벌어오는-ai에이전트-시대-개막-젠슨황-충격-전망의-수혜주들.txt
+2026-03-24 22:42:57,438 - main - INFO - Processing: [단독]메타 부사장이 퇴사 전 한국에서 남기고 간 말?? feat.샘 올트먼 반박 [실전이다,인간.] ep①LLM의 유통기한 / 비디오머그 (q9BdN04bFOY)
+2026-03-24 22:43:10,085 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-24_0901_비디오머그---videomug_단독메타-부사장이-퇴사-전-한국에서-남기고-간-말-feat샘-올트먼-반박-실전이다인간-ep.txt
+2026-03-24 22:43:10,088 - main - INFO - Processing: 드디어 클로드를 오픈클로로 만들어버린 앤트로픽. 오늘 나온 따끈따끈한 업데이트! Claude Computer Use (17-8zjXXixs)
+2026-03-24 22:43:21,370 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-24_0757_코드팩토리_드디어-클로드를-오픈클로로-만들어버린-앤트로픽-오늘-나온-따끈따끈한-업데이트-claude.txt
+2026-03-24 22:43:21,372 - main - INFO - Processing: [홍장원의 불앤베어] 이란 "미국 협상은 완전히 헛소리" 진실은 무엇인가 (-hdA-SHqUqQ)
+2026-03-24 22:43:47,376 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-23_2249_매경-월가월부_홍장원의-불앤베어-이란-미국-협상은-완전히-헛소리-진실은-무엇인가.txt
+2026-03-24 22:43:47,380 - main - INFO - Processing: 【미국 증시 오늘의 요약】 트럼프 "이란과 대화" vs 이란 "사실무근"… 진실공방 속 미 증시 일제히 반등    -  2026/03/23 (GYWEf9D4VFs)
+2026-03-24 22:43:58,449 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-23_2200_오선의-미국-증시-라이브_미국-증시-오늘의-요약-트럼프-이란과-대화-vs-이란-사실무근-진실공방-속-미-증시-일제히.txt
+2026-03-24 22:43:58,452 - main - INFO - Processing: AI 비용 99% 폭락, 아직도 안 쓰면 진짜 늦었습니다 (TW8VlZNl7gc)
+2026-03-24 22:44:09,743 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-23_1400_메이커-에반-maker-evan_ai-비용-99-폭락-아직도-안-쓰면-진짜-늦었습니다.txt
+2026-03-24 22:44:09,747 - main - INFO - Processing: 추론의 시대가 왔다 | 실리콘밸리뷰 | 원호섭 특파원 (yKNhPP4uu1g)
+2026-03-24 22:44:20,338 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-23_1209_매경-월가월부_추론의-시대가-왔다-실리콘밸리뷰-원호섭-특파원.txt
+2026-03-24 22:44:20,341 - main - INFO - Processing: 환율 1500원 돌파는 전조 신호? 전쟁 충격, 실물 경제 위기까지 번질까 (vCr2XRcOo7Y)
+2026-03-24 22:44:33,121 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-23_1108_소수몽키_환율-1500원-돌파는-전조-신호-전쟁-충격-실물-경제-위기까지-번질까.txt
+2026-03-24 22:44:33,125 - main - INFO - Processing: [지식뉴스] "뒤로는 '최정예 지상군' 투입 준비"...트럼프, 이란 '공격 유예'의 진짜 이유 (ft.박현도 서강대 유로메나연구소 교수) / 교양이를 부탁해 (PpM0WyBsZEU)
+2026-03-24 22:44:46,071 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-23_1050_교양이를-부탁해_지식뉴스-뒤로는-최정예-지상군-투입-준비트럼프-이란-공격-유예의-진짜-이유-ft박현도-서강.txt
+2026-03-24 22:44:46,074 - main - INFO - Processing: 디자인 툴을 찾고 있다면? Paper is Hype Boy (9hPUc10wpkw)
+2026-03-24 22:44:55,878 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-23_0900_코드팩토리_디자인-툴을-찾고-있다면-paper-is-hype-boy.txt
+2026-03-24 22:44:55,882 - main - INFO - Processing: 전기 난방인데 요금이 '0원'? 이렇게 하면 가능합니다. / 비디오머그 (n46pRoI1Y0U)
+2026-03-24 22:44:57,410 - main - WARNING - No transcript for: 전기 난방인데 요금이 '0원'? 이렇게 하면 가능합니다. / 비디오머그
+2026-03-24 22:44:57,411 - main - INFO - Processing: 머스크 "칩을 TSMC보다 50배 더 만들겠다" (FQzF518eXV0)
+2026-03-24 22:44:59,162 - main - WARNING - No transcript for: 머스크 "칩을 TSMC보다 50배 더 만들겠다"
+2026-03-24 22:44:59,162 - main - INFO - Processing: [홍장원의 불앤베어] 트럼프 48시간 최후 통첩. 데드라인이 다가온다 (Zxmw_yLniB0)
+2026-03-24 22:45:01,106 - main - WARNING - No transcript for: [홍장원의 불앤베어] 트럼프 48시간 최후 통첩. 데드라인이 다가온다
+2026-03-24 22:45:01,106 - main - INFO - Processing: 트럼프, 결국 확전 택하나 "최후통첩"...이번 주 반도체 투톱 운명 달렸다 (ft.이선엽 AFW파트너스 대표) / 교양이를 부탁해 / 비디오머그 (IpN47sRcpMA)
+2026-03-24 22:45:02,809 - main - WARNING - No transcript for: 트럼프, 결국 확전 택하나 "최후통첩"...이번 주 반도체 투톱 운명 달렸다 (ft.이선엽 AFW파트너스 대표) / 교양이를 부탁해 / 비디오머그
+2026-03-24 22:45:02,809 - main - INFO - Processing: 트럼프의 48시간, 돌파구는? _ 차트온260322 (53KNrZgsZO0)
+2026-03-24 22:45:04,690 - main - WARNING - No transcript for: 트럼프의 48시간, 돌파구는? _ 차트온260322
+2026-03-24 22:45:04,690 - main - INFO - Processing: "노숙자 1명에 1.3억 썼다" 길거리 텐트가 줄지 않는 미국 | 매일뉴욕 스페셜 | 홍성용 특파원 (HqXtO_5IrYs)
+2026-03-24 22:45:06,457 - main - WARNING - No transcript for: "노숙자 1명에 1.3억 썼다" 길거리 텐트가 줄지 않는 미국 | 매일뉴욕 스페셜 | 홍성용 특파원
+2026-03-24 22:45:06,457 - main - INFO - Processing: [홍장원의 불앤베어] 이란 외무장관 "우리도 참고 있다. 반격에 최선을 다하지 않았다" (ypMUzNpOjt0)
+2026-03-24 22:45:08,000 - main - WARNING - No transcript for: [홍장원의 불앤베어] 이란 외무장관 "우리도 참고 있다. 반격에 최선을 다하지 않았다"
+2026-03-24 22:45:08,000 - main - INFO - Processing: 【미국 증시 오늘의 요약】 이스라엘 "조기 종전" 시사에 유가 진정… 증시는 '세 마녀의 날' 경계감     -  2026/03/19 (JhHA5HiaAZc)
+2026-03-24 22:45:09,540 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 이스라엘 "조기 종전" 시사에 유가 진정… 증시는 '세 마녀의 날' 경계감     -  2026/03/19
+2026-03-24 22:45:09,540 - main - INFO - Processing: [지식뉴스] ※미 경제 상황, 긴급점검※ "FOMC, 최악의 케이스가 나왔다"...트럼프가 조급해진 진짜 이유 (ft.김명실 iM증권 투자전략부 애널리스트) / 교양이를 부탁해 (nHNIMfA29jc)
+2026-03-24 22:45:11,152 - main - WARNING - No transcript for: [지식뉴스] ※미 경제 상황, 긴급점검※ "FOMC, 최악의 케이스가 나왔다"...트럼프가 조급해진 진짜 이유 (ft.김명실 iM증권 투자전략부 애널리스트) / 교양이를 부탁해
+2026-03-24 22:45:11,152 - main - INFO - Processing: Stitch 2.0 is so Hype Boy (wIUZYr8QtTU)
+2026-03-24 22:45:12,591 - main - WARNING - No transcript for: Stitch 2.0 is so Hype Boy
+2026-03-24 22:45:12,591 - main - INFO - Processing: "이미 내 보험금에 떠넘겼다"... 제2의 금융위기 시작됐다? / 똑소리E / 비디오머그 (pEglUWCsjhY)
+2026-03-24 22:45:14,448 - main - WARNING - No transcript for: "이미 내 보험금에 떠넘겼다"... 제2의 금융위기 시작됐다? / 똑소리E / 비디오머그
+2026-03-24 22:45:14,449 - main - INFO - Processing: GTC 10분 요약.."AI 예약주문 1500조" (X3Srdwkuor4)
+2026-03-24 22:45:16,455 - main - WARNING - No transcript for: GTC 10분 요약.."AI 예약주문 1500조"
+2026-03-24 22:45:16,455 - main - INFO - Processing: 실리콘밸리에서 핫한 클로드 스킬과 오픈클로를 쉽게 사용하는 법 (_TZhiX4qajk)
+2026-03-24 22:45:18,754 - main - WARNING - No transcript for: 실리콘밸리에서 핫한 클로드 스킬과 오픈클로를 쉽게 사용하는 법
+2026-03-24 22:45:18,755 - main - INFO - Processing: AI로 만든 웹사이트, 3초면 티납니다 (Eg8tacNOlwQ)
+2026-03-24 22:45:20,831 - main - WARNING - No transcript for: AI로 만든 웹사이트, 3초면 티납니다
+2026-03-24 22:45:20,831 - main - INFO - Processing: 【미국 증시 오늘의 요약】 유가 폭등에 금리 동결까지... 파월 "진전 없으면 금리 인하 없다"     -  2026/03/18 (sydqv3nKScw)
+2026-03-24 22:45:23,060 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 유가 폭등에 금리 동결까지... 파월 "진전 없으면 금리 인하 없다"     -  2026/03/18
+2026-03-24 22:45:23,060 - main - INFO - Processing: [홍장원의 불앤베어] 마이크론 사상 최초 5년 초장기 칩 공급계약 (-8u3naQGhwE)
+2026-03-24 22:45:28,763 - main - WARNING - No transcript for: [홍장원의 불앤베어] 마이크론 사상 최초 5년 초장기 칩 공급계약
+2026-03-24 22:45:28,764 - main - INFO - Processing: 3월 FOMC l 윤제성 아레타노바컨설팅 설립자 인터뷰 (ID7IZeTZT6w)
+2026-03-24 22:45:30,474 - main - WARNING - No transcript for: 3월 FOMC l 윤제성 아레타노바컨설팅 설립자 인터뷰
+2026-03-24 22:45:30,474 - main - INFO - Processing: 안보면 후회할 클로드 꿀팁 영상.."한마디"만 추가하세요 (bhUquS_r3zA)
+2026-03-24 22:45:32,482 - main - WARNING - No transcript for: 안보면 후회할 클로드 꿀팁 영상.."한마디"만 추가하세요

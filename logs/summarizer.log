@@ -399,3 +399,115 @@
 2026-03-09 21:41:28,050 - summarizer - INFO - Summary generated for: [어바웃 뉴욕] 저마진 유통의 한계, 월마트 테크 전략이 깨부쉈다 | 길금희 특파원
 2026-03-09 21:41:29,131 - summarizer - INFO - Generating summary for: 중동 전문가들 한목소리 “호르무즈 막히면 끝", 한국 덮칠 기름값 공포 (ft. 박현도 성일광 교수) / 지식의발견 / 비디오머그
 2026-03-09 21:41:44,143 - summarizer - INFO - Summary generated for: 중동 전문가들 한목소리 “호르무즈 막히면 끝", 한국 덮칠 기름값 공포 (ft. 박현도 성일광 교수) / 지식의발견 / 비디오머그
+2026-03-12 21:41:44,537 - summarizer - INFO - Summarizer initialized with model: gpt-4.1-mini
+2026-03-12 21:41:44,537 - summarizer - INFO - Generating summary for: 마누스 꼭 써보십쇼.. 여러분을 위해 선착순 1000명 무료 크레딧 받아왔습니다.
+2026-03-12 21:41:57,187 - summarizer - INFO - Summary generated for: 마누스 꼭 써보십쇼.. 여러분을 위해 선착순 1000명 무료 크레딧 받아왔습니다.
+2026-03-12 21:41:58,623 - summarizer - INFO - Generating summary for: 호르무즈 봉쇄 뚫은 단 3척…이란전에 중국이 침묵하는 진짜 이유 / 비디오머그
+2026-03-12 21:42:15,058 - summarizer - INFO - Summary generated for: 호르무즈 봉쇄 뚫은 단 3척…이란전에 중국이 침묵하는 진짜 이유 / 비디오머그
+2026-03-12 21:42:16,350 - summarizer - INFO - Generating summary for: 【미국 증시 오늘의 요약】 사상 최대 비축유 풀었는데 유가 87불 돌파? JP모건이 불지핀 '사모신용 위기설'까지...     -  2026/03/11
+2026-03-12 21:42:29,983 - summarizer - INFO - Summary generated for: 【미국 증시 오늘의 요약】 사상 최대 비축유 풀었는데 유가 87불 돌파? JP모건이 불지핀 '사모신용 위기설'까지...     -  2026/03/11
+2026-03-12 21:42:31,141 - summarizer - INFO - Generating summary for: [홍장원의 불앤베어] 이란 "기름값 200달러 갈 것" 유가 올랐지만 반도체 주가는 상승
+2026-03-12 21:42:46,000 - summarizer - INFO - Summary generated for: [홍장원의 불앤베어] 이란 "기름값 200달러 갈 것" 유가 올랐지만 반도체 주가는 상승
+2026-03-12 21:42:46,904 - summarizer - INFO - Generating summary for: 드디어 Replit Agent 4가 출시되었습니다! | 역대급 업데이트네요
+2026-03-12 21:42:58,105 - summarizer - INFO - Summary generated for: 드디어 Replit Agent 4가 출시되었습니다! | 역대급 업데이트네요
+2026-03-12 21:42:58,998 - summarizer - INFO - Generating summary for: 미 국방부 vs 앤트로픽... AI 안전을 놓고 벌인 전쟁 / 오그랲 / 비디오머그
+2026-03-12 21:43:22,867 - summarizer - INFO - Summary generated for: 미 국방부 vs 앤트로픽... AI 안전을 놓고 벌인 전쟁 / 오그랲 / 비디오머그
+2026-03-12 21:43:24,609 - summarizer - INFO - Generating summary for: [어바웃 뉴욕] "미국 독주 끝났다" 요즘 월가 투자 공식은?  | 길금희 특파원
+2026-03-12 21:43:36,861 - summarizer - INFO - Summary generated for: [어바웃 뉴욕] "미국 독주 끝났다" 요즘 월가 투자 공식은?  | 길금희 특파원
+2026-03-12 21:43:37,876 - summarizer - INFO - Generating summary for: 【미국 증시 오늘의 요약】 상승분 다 토해낸 미 증시, 엇갈린 호르무즈 보도에 '혼돈'     -  2026/03/10
+2026-03-12 21:43:49,413 - summarizer - INFO - Summary generated for: 【미국 증시 오늘의 요약】 상승분 다 토해낸 미 증시, 엇갈린 호르무즈 보도에 '혼돈'     -  2026/03/10
+2026-03-12 21:43:50,506 - summarizer - INFO - Generating summary for: [홍장원의 불앤베어] 트럼프는 이제 유가를 끌어내릴 방법만 모색하고 있다
+2026-03-12 21:44:02,577 - summarizer - INFO - Summary generated for: [홍장원의 불앤베어] 트럼프는 이제 유가를 끌어내릴 방법만 모색하고 있다
+2026-03-12 21:44:03,682 - summarizer - INFO - Generating summary for: 폭락한 우량주 매수하기 시작한 내부자들, 분위기 반전 신호일까
+2026-03-12 21:44:20,276 - summarizer - INFO - Summary generated for: 폭락한 우량주 매수하기 시작한 내부자들, 분위기 반전 신호일까
+2026-03-12 21:44:21,436 - summarizer - INFO - Generating summary for: 전쟁보다 중요한 신호? 국내 자사주 소각 수혜주를 찾았습니다.
+2026-03-12 21:44:33,894 - summarizer - INFO - Summary generated for: 전쟁보다 중요한 신호? 국내 자사주 소각 수혜주를 찾았습니다.
+2026-03-12 21:44:35,108 - summarizer - INFO - Generating summary for: [월가아재] 이미 많이 오른 원자재, 그런데 한 가지 더 생각해 봐야 합니다
+2026-03-12 21:44:46,428 - summarizer - INFO - Summary generated for: [월가아재] 이미 많이 오른 원자재, 그런데 한 가지 더 생각해 봐야 합니다
+2026-03-18 23:42:25,414 - summarizer - INFO - Summarizer initialized with model: gpt-4.1-mini
+2026-03-18 23:42:25,415 - summarizer - INFO - Generating summary for: [통합본] "개미들이 옳았다" 삼성전자, 전례 없는 사업 모델 보유했나...불붙은 반도체 투톱은 어디까지 시장 흔들까 / 교양이를 부탁해
+2026-03-18 23:42:42,625 - summarizer - INFO - Summary generated for: [통합본] "개미들이 옳았다" 삼성전자, 전례 없는 사업 모델 보유했나...불붙은 반도체 투톱은 어디까지 시장 흔들까 / 교양이를 부탁해
+2026-03-18 23:42:43,893 - summarizer - INFO - Generating summary for: 개발자 근황: 우리도 코딩 안함 / 오그랲 / 비디오머그
+2026-03-18 23:42:58,616 - summarizer - INFO - Summary generated for: 개발자 근황: 우리도 코딩 안함 / 오그랲 / 비디오머그
+2026-03-18 23:43:00,043 - summarizer - INFO - Generating summary for: [지식뉴스] "평생 일했는데도 온통 빚더미"...50대 대규모 구조조정 시작, 5060세대에게 은퇴가 두려운 진짜 이유 (ft.이철희 서울대 경제학부 교수) / 교양이를 부탁해
+2026-03-18 23:43:11,916 - summarizer - INFO - Summary generated for: [지식뉴스] "평생 일했는데도 온통 빚더미"...50대 대규모 구조조정 시작, 5060세대에게 은퇴가 두려운 진짜 이유 (ft.이철희 서울대 경제학부 교수) / 교양이를 부탁해
+2026-03-18 23:43:23,435 - summarizer - INFO - Generating summary for: Claude Skills V2 업데이트!
+2026-03-18 23:43:36,121 - summarizer - INFO - Summary generated for: Claude Skills V2 업데이트!
+2026-03-18 23:43:37,332 - summarizer - INFO - Generating summary for: AI 쓰는 기업 88%인데, 돈 버는 건 6%입니다
+2026-03-18 23:43:47,724 - summarizer - INFO - Summary generated for: AI 쓰는 기업 88%인데, 돈 버는 건 6%입니다
+2026-03-18 23:43:49,336 - summarizer - INFO - Generating summary for: [어바웃 뉴욕] "안경 기업 아니랄까봐" 돈 되는 사업 기가 막히게 알아본다 | 길금희 특파원
+2026-03-18 23:44:04,330 - summarizer - INFO - Summary generated for: [어바웃 뉴욕] "안경 기업 아니랄까봐" 돈 되는 사업 기가 막히게 알아본다 | 길금희 특파원
+2026-03-18 23:44:05,761 - summarizer - INFO - Generating summary for: [홍장원의 불앤베어] "이란 사태 오래가지 않을 것" 글로벌 펀드매니저의 선택
+2026-03-18 23:44:15,501 - summarizer - INFO - Summary generated for: [홍장원의 불앤베어] "이란 사태 오래가지 않을 것" 글로벌 펀드매니저의 선택
+2026-03-18 23:44:16,743 - summarizer - INFO - Generating summary for: 【미국 증시 오늘의 요약】 이란 전쟁 속 이틀 연속 상승…연준 금리 결정 앞두고 시장 촉각    -  2026/03/17
+2026-03-18 23:44:30,796 - summarizer - INFO - Summary generated for: 【미국 증시 오늘의 요약】 이란 전쟁 속 이틀 연속 상승…연준 금리 결정 앞두고 시장 촉각    -  2026/03/17
+2026-03-18 23:44:32,242 - summarizer - INFO - Generating summary for: 엔비디아 1조 달러 vs FOMC 금리 결정 (ft. 젠슨황 포트폴리오)
+2026-03-18 23:44:58,252 - summarizer - INFO - Summary generated for: 엔비디아 1조 달러 vs FOMC 금리 결정 (ft. 젠슨황 포트폴리오)
+2026-03-18 23:44:59,500 - summarizer - INFO - Generating summary for: AI투자 → 대량 해고 쓰나미 시작? 최악의 시나리오 현실화될까
+2026-03-18 23:45:18,612 - summarizer - INFO - Summary generated for: AI투자 → 대량 해고 쓰나미 시작? 최악의 시나리오 현실화될까
+2026-03-18 23:45:21,121 - summarizer - INFO - Generating summary for: 코팩의 화이트데이 선물. 뇌빼고 써도 되는 병렬 워크트리 Skill + Hook 무료 배포
+2026-03-18 23:45:32,080 - summarizer - INFO - Summary generated for: 코팩의 화이트데이 선물. 뇌빼고 써도 되는 병렬 워크트리 Skill + Hook 무료 배포
+2026-03-22 22:05:46,506 - summarizer - INFO - Summarizer initialized with model: gpt-4.1-mini
+2026-03-22 22:05:46,507 - summarizer - INFO - Generating summary for: [월가아재] 증시가 22% 폭락할 때, 62% 수익을 낸 방법 - 폴 튜더 존스 2부
+2026-03-22 22:06:03,968 - summarizer - INFO - Summary generated for: [월가아재] 증시가 22% 폭락할 때, 62% 수익을 낸 방법 - 폴 튜더 존스 2부
+2026-03-22 22:06:05,167 - summarizer - INFO - Generating summary for: 불안의 시대, 금이 ‘최후의 자산’이 되는 이유! 역사가 말하는 안전 자산 (ft.김재원 역사학자) |💡지식의발견 | 비디오머그
+2026-03-22 22:06:18,489 - summarizer - INFO - Summary generated for: 불안의 시대, 금이 ‘최후의 자산’이 되는 이유! 역사가 말하는 안전 자산 (ft.김재원 역사학자) |💡지식의발견 | 비디오머그
+2026-03-22 22:06:19,399 - summarizer - INFO - Generating summary for: AI가 변호사, 회계사 확실히 뛰어 넘었네요.. 역대급 신기능
+2026-03-22 22:06:34,288 - summarizer - INFO - Summary generated for: AI가 변호사, 회계사 확실히 뛰어 넘었네요.. 역대급 신기능
+2026-03-22 22:06:35,355 - summarizer - INFO - Generating summary for: [홍장원의 불앤베어] 미국, 이란 협상 당사자가 누군지를 찾고 있다
+2026-03-22 22:06:48,533 - summarizer - INFO - Summary generated for: [홍장원의 불앤베어] 미국, 이란 협상 당사자가 누군지를 찾고 있다
+2026-03-22 22:06:49,635 - summarizer - INFO - Generating summary for: [지식뉴스] "월요일이 안 왔으면 좋겠어요" 트럼프, 결국 확전 택하나 '불안 최고조'...지금 뉴스 이렇게 보셔야 합니다 (ft.이선엽 AFW파트너스 대표) / 교양이를 부탁해
+2026-03-22 22:07:15,747 - summarizer - INFO - Summary generated for: [지식뉴스] "월요일이 안 왔으면 좋겠어요" 트럼프, 결국 확전 택하나 '불안 최고조'...지금 뉴스 이렇게 보셔야 합니다 (ft.이선엽 AFW파트너스 대표) / 교양이를 부탁해
+2026-03-22 22:07:16,876 - summarizer - INFO - Generating summary for: TMUX 마스터클래스 | 여러분 아직도 tmux 안쓰시면 꼭 봐주시길 바랍니다 ㅠㅠㅠ
+2026-03-22 22:07:44,144 - summarizer - INFO - Summary generated for: TMUX 마스터클래스 | 여러분 아직도 tmux 안쓰시면 꼭 봐주시길 바랍니다 ㅠㅠㅠ
+2026-03-22 22:07:45,094 - summarizer - INFO - Generating summary for: 미국주식 비싸서 못샀는데 싸니까 더 못산다?
+2026-03-22 22:07:57,824 - summarizer - INFO - Summary generated for: 미국주식 비싸서 못샀는데 싸니까 더 못산다?
+2026-03-22 22:08:09,162 - summarizer - INFO - Generating summary for: 얼마전 업데이트된 가장 쉽게 SaaS 창업을 해보고싶다면 무조건 써봐야하는 AI
+2026-03-22 22:08:27,694 - summarizer - INFO - Summary generated for: 얼마전 업데이트된 가장 쉽게 SaaS 창업을 해보고싶다면 무조건 써봐야하는 AI
+2026-03-22 22:08:28,764 - summarizer - INFO - Generating summary for: "빈 병 밀수해 돈 번다" 미국 영수증이 만든 지하 경제 | 홍키자의 美쿡 | 홍성용 특파원
+2026-03-22 22:08:51,023 - summarizer - INFO - Summary generated for: "빈 병 밀수해 돈 번다" 미국 영수증이 만든 지하 경제 | 홍키자의 美쿡 | 홍성용 특파원
+2026-03-22 22:08:52,061 - summarizer - INFO - Generating summary for: [어바웃 뉴욕] "전력 전쟁 시작됐다" AI 시대, 진짜 돈은 여기서 나온다 | 길금희 특파원
+2026-03-22 22:09:05,320 - summarizer - INFO - Summary generated for: [어바웃 뉴욕] "전력 전쟁 시작됐다" AI 시대, 진짜 돈은 여기서 나온다 | 길금희 특파원
+2026-03-22 22:09:06,626 - summarizer - INFO - Generating summary for: 투자 잘하는 뇌는 따로 있다? 뇌과학으로 본 투자의 심리 (ft. 장동선 뇌과학자) |💡지식의발견 | 비디오머그
+2026-03-22 22:09:22,269 - summarizer - INFO - Summary generated for: 투자 잘하는 뇌는 따로 있다? 뇌과학으로 본 투자의 심리 (ft. 장동선 뇌과학자) |💡지식의발견 | 비디오머그
+2026-03-22 22:09:23,503 - summarizer - INFO - Generating summary for: [지식뉴스] “그렇게 먹고 일하다간 정말 큰일 납니다”…당신이 살찌는 진짜 이유는 '이것' (ft.우창윤 내분비내과 전문의) / 교양이를 부탁해
+2026-03-22 22:09:39,519 - summarizer - INFO - Summary generated for: [지식뉴스] “그렇게 먹고 일하다간 정말 큰일 납니다”…당신이 살찌는 진짜 이유는 '이것' (ft.우창윤 내분비내과 전문의) / 교양이를 부탁해
+2026-03-22 22:09:40,692 - summarizer - INFO - Generating summary for: [홍장원의 불앤베어] 트럼프 "이란 군사 작전 축소 고려중이다. 우리는 거의 목표에 도달했다"
+2026-03-22 22:09:50,719 - summarizer - INFO - Summary generated for: [홍장원의 불앤베어] 트럼프 "이란 군사 작전 축소 고려중이다. 우리는 거의 목표에 도달했다"
+2026-03-22 22:09:52,142 - summarizer - INFO - Generating summary for: 【미국 증시 오늘의 요약】 전쟁 공포로 하락한 시장… 그런데 마지막에 바뀌었다?    -  2026/03/20
+2026-03-22 22:10:02,649 - summarizer - INFO - Summary generated for: 【미국 증시 오늘의 요약】 전쟁 공포로 하락한 시장… 그런데 마지막에 바뀌었다?    -  2026/03/20
+2026-03-22 22:10:03,609 - summarizer - INFO - Generating summary for: [지식뉴스] "어마어마한 전쟁 비용 감당 안 돼" 결국 300조 추경 요청...초조한 트럼프, 이번 주말 유가 잡을 수 있을까 (f.이선엽 AFW파트너스 대표) / 교양이를 부탁해
+2026-03-22 22:10:16,364 - summarizer - INFO - Summary generated for: [지식뉴스] "어마어마한 전쟁 비용 감당 안 돼" 결국 300조 추경 요청...초조한 트럼프, 이번 주말 유가 잡을 수 있을까 (f.이선엽 AFW파트너스 대표) / 교양이를 부탁해
+2026-03-22 22:10:17,808 - summarizer - INFO - Generating summary for: [월가아재] 블랙먼데이를 예측한 전설의 트레이더. 48개월간 단 한 번 빼고 모두 수익을 낸 비결 - 폴 튜더 존스 1부
+2026-03-22 22:10:33,228 - summarizer - INFO - Summary generated for: [월가아재] 블랙먼데이를 예측한 전설의 트레이더. 48개월간 단 한 번 빼고 모두 수익을 낸 비결 - 폴 튜더 존스 1부
+2026-03-22 22:10:34,571 - summarizer - INFO - Generating summary for: 맥미니 구매하지 않고 완전 초보도 1클릭으로 OpenClaw 설치 하는법
+2026-03-22 22:10:44,086 - summarizer - INFO - Summary generated for: 맥미니 구매하지 않고 완전 초보도 1클릭으로 OpenClaw 설치 하는법
+2026-03-22 22:10:44,962 - summarizer - INFO - Generating summary for: 4시간전에 나온 따끈따끈한 클로드 채널 업데이트. 이제 어떤 서비스든 클로드 코드에 연동 가능!
+2026-03-22 22:10:55,427 - summarizer - INFO - Summary generated for: 4시간전에 나온 따끈따끈한 클로드 채널 업데이트. 이제 어떤 서비스든 클로드 코드에 연동 가능!
+2026-03-24 22:42:02,051 - summarizer - INFO - Summarizer initialized with model: gpt-4.1-mini
+2026-03-24 22:42:02,051 - summarizer - INFO - Generating summary for: [지식뉴스] "솔직하게 말할게요. 이번에 이란전쟁 못 끝내면..." 트럼프 경제 대전환 시나리오의 치명적 허점 (ft.유신익 KB은행 WM 수석이코노미스트) / 교양이를 부탁해
+2026-03-24 22:42:17,584 - summarizer - INFO - Summary generated for: [지식뉴스] "솔직하게 말할게요. 이번에 이란전쟁 못 끝내면..." 트럼프 경제 대전환 시나리오의 치명적 허점 (ft.유신익 KB은행 WM 수석이코노미스트) / 교양이를 부탁해
+2026-03-24 22:42:18,814 - summarizer - INFO - Generating summary for: [지식뉴스] "다들 착각하고 있어요" 은퇴 이후에 빚 더 늘어난다...5060 구조조정, 한국 경제에 닥칠 후폭풍 (ft.이철희 서울대 경제학부 교수) / 교양이를 부탁해
+2026-03-24 22:42:30,028 - summarizer - INFO - Summary generated for: [지식뉴스] "다들 착각하고 있어요" 은퇴 이후에 빚 더 늘어난다...5060 구조조정, 한국 경제에 닥칠 후폭풍 (ft.이철희 서울대 경제학부 교수) / 교양이를 부탁해
+2026-03-24 22:42:31,376 - summarizer - INFO - Generating summary for: 환율 1500원 시대, 환전하기 두렵다? (ft. SCHD 리밸런싱)
+2026-03-24 22:42:42,996 - summarizer - INFO - Summary generated for: 환율 1500원 시대, 환전하기 두렵다? (ft. SCHD 리밸런싱)
+2026-03-24 22:42:45,228 - summarizer - INFO - Generating summary for: 알아서 돈 벌어오는 AI에이전트 시대 개막, 젠슨황 충격 전망의 수혜주들
+2026-03-24 22:42:57,430 - summarizer - INFO - Summary generated for: 알아서 돈 벌어오는 AI에이전트 시대 개막, 젠슨황 충격 전망의 수혜주들
+2026-03-24 22:42:58,858 - summarizer - INFO - Generating summary for: [단독]메타 부사장이 퇴사 전 한국에서 남기고 간 말?? feat.샘 올트먼 반박 [실전이다,인간.] ep①LLM의 유통기한 / 비디오머그
+2026-03-24 22:43:10,064 - summarizer - INFO - Summary generated for: [단독]메타 부사장이 퇴사 전 한국에서 남기고 간 말?? feat.샘 올트먼 반박 [실전이다,인간.] ep①LLM의 유통기한 / 비디오머그
+2026-03-24 22:43:12,331 - summarizer - INFO - Generating summary for: 드디어 클로드를 오픈클로로 만들어버린 앤트로픽. 오늘 나온 따끈따끈한 업데이트! Claude Computer Use
+2026-03-24 22:43:21,365 - summarizer - INFO - Summary generated for: 드디어 클로드를 오픈클로로 만들어버린 앤트로픽. 오늘 나온 따끈따끈한 업데이트! Claude Computer Use
+2026-03-24 22:43:22,936 - summarizer - INFO - Generating summary for: [홍장원의 불앤베어] 이란 "미국 협상은 완전히 헛소리" 진실은 무엇인가
+2026-03-24 22:43:47,369 - summarizer - INFO - Summary generated for: [홍장원의 불앤베어] 이란 "미국 협상은 완전히 헛소리" 진실은 무엇인가
+2026-03-24 22:43:49,169 - summarizer - INFO - Generating summary for: 【미국 증시 오늘의 요약】 트럼프 "이란과 대화" vs 이란 "사실무근"… 진실공방 속 미 증시 일제히 반등    -  2026/03/23
+2026-03-24 22:43:58,441 - summarizer - INFO - Summary generated for: 【미국 증시 오늘의 요약】 트럼프 "이란과 대화" vs 이란 "사실무근"… 진실공방 속 미 증시 일제히 반등    -  2026/03/23
+2026-03-24 22:44:00,277 - summarizer - INFO - Generating summary for: AI 비용 99% 폭락, 아직도 안 쓰면 진짜 늦었습니다
+2026-03-24 22:44:09,738 - summarizer - INFO - Summary generated for: AI 비용 99% 폭락, 아직도 안 쓰면 진짜 늦었습니다
+2026-03-24 22:44:11,520 - summarizer - INFO - Generating summary for: 추론의 시대가 왔다 | 실리콘밸리뷰 | 원호섭 특파원
+2026-03-24 22:44:20,332 - summarizer - INFO - Summary generated for: 추론의 시대가 왔다 | 실리콘밸리뷰 | 원호섭 특파원
+2026-03-24 22:44:21,538 - summarizer - INFO - Generating summary for: 환율 1500원 돌파는 전조 신호? 전쟁 충격, 실물 경제 위기까지 번질까
+2026-03-24 22:44:33,114 - summarizer - INFO - Summary generated for: 환율 1500원 돌파는 전조 신호? 전쟁 충격, 실물 경제 위기까지 번질까
+2026-03-24 22:44:34,723 - summarizer - INFO - Generating summary for: [지식뉴스] "뒤로는 '최정예 지상군' 투입 준비"...트럼프, 이란 '공격 유예'의 진짜 이유 (ft.박현도 서강대 유로메나연구소 교수) / 교양이를 부탁해
+2026-03-24 22:44:46,064 - summarizer - INFO - Summary generated for: [지식뉴스] "뒤로는 '최정예 지상군' 투입 준비"...트럼프, 이란 '공격 유예'의 진짜 이유 (ft.박현도 서강대 유로메나연구소 교수) / 교양이를 부탁해
+2026-03-24 22:44:47,374 - summarizer - INFO - Generating summary for: 디자인 툴을 찾고 있다면? Paper is Hype Boy
+2026-03-24 22:44:55,873 - summarizer - INFO - Summary generated for: 디자인 툴을 찾고 있다면? Paper is Hype Boy

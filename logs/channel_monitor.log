@@ -611,3 +611,253 @@
 2026-03-09 21:38:33,503 - channel_monitor - ERROR - Timeout resolving handle @maker-evan
 2026-03-09 21:38:33,503 - channel_monitor - ERROR - Could not get channel ID for: @maker-evan
 2026-03-09 21:38:33,503 - channel_monitor - INFO - Found 22 new videos total
+2026-03-10 21:03:22,178 - channel_monitor - INFO - Resolving handle @kpunch to channel ID...
+2026-03-10 21:03:25,412 - channel_monitor - INFO - Resolved @kpunch to UCOB62fKRT7b73X7tRxMuN2g
+2026-03-10 21:03:25,924 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-10 21:03:25,924 - channel_monitor - INFO - Resolving handle @wsaj to channel ID...
+2026-03-10 21:03:31,608 - channel_monitor - INFO - Resolved @wsaj to UCpqD9_OJNtF6suPpi6mOQCQ
+2026-03-10 21:03:32,373 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-10 21:03:32,374 - channel_monitor - INFO - Resolving handle @futuresnow to channel ID...
+2026-03-10 21:03:42,640 - channel_monitor - INFO - Resolved @futuresnow to UC_JJ_NhRqPKcIOj5Ko3W_3w
+2026-03-10 21:03:43,386 - channel_monitor - INFO - Found 5 recent videos for Videos
+2026-03-10 21:03:43,386 - channel_monitor - INFO - Resolving handle @sosumonkey to channel ID...
+2026-03-10 21:03:55,840 - channel_monitor - INFO - Resolved @sosumonkey to UCC3yfxS5qC6PCwDzetUuEWg
+2026-03-10 21:03:56,671 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-10 21:03:56,671 - channel_monitor - INFO - Resolving handle @mer_official to channel ID...
+2026-03-10 21:03:59,732 - channel_monitor - INFO - Resolved @mer_official to UC_l2qrs1qRv_8Rs8utay-PQ
+2026-03-10 21:04:00,439 - channel_monitor - INFO - Found 0 recent videos for Videos
+2026-03-10 21:04:00,439 - channel_monitor - INFO - Resolving handle @TV-wr8ex to channel ID...
+2026-03-10 21:04:03,652 - channel_monitor - INFO - Resolved @TV-wr8ex to UCge4_EUhf1O-EupOgRAMgPA
+2026-03-10 21:04:04,269 - channel_monitor - INFO - Found 1 recent videos for Videos
+2026-03-10 21:04:04,269 - channel_monitor - INFO - Resolving handle @supe-tv to channel ID...
+2026-03-10 21:04:13,251 - channel_monitor - INFO - Resolved @supe-tv to UCfnqgWlC5IvJEAPTmyjaixA
+2026-03-10 21:04:13,869 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-10 21:04:13,870 - channel_monitor - INFO - Resolving handle @MK_Invest to channel ID...
+2026-03-10 21:04:26,423 - channel_monitor - INFO - Resolved @MK_Invest to UCIipmgxpUxDmPP-ma3Ahvbw
+2026-03-10 21:04:27,217 - channel_monitor - INFO - Found 13 recent videos for Videos
+2026-03-10 21:04:27,217 - channel_monitor - INFO - Resolving handle @videomug0 to channel ID...
+2026-03-10 21:04:37,836 - channel_monitor - INFO - Resolved @videomug0 to UCMEbRpvuwTbXxGiyDb1mT8w
+2026-03-10 21:04:39,462 - channel_monitor - INFO - Found 7 recent videos for Videos
+2026-03-10 21:04:39,463 - channel_monitor - INFO - Resolving handle @codefactory_official to channel ID...
+2026-03-10 21:04:50,718 - channel_monitor - INFO - Resolved @codefactory_official to UCxZ2AlaT0hOmxzZVbF_j_Sw
+2026-03-10 21:04:51,288 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-10 21:04:51,288 - channel_monitor - INFO - Resolving handle @개발동생 to channel ID...
+2026-03-10 21:04:54,732 - channel_monitor - INFO - Resolved @개발동생 to UC1_ZZYZsHh2_DzCXN4VGVcQ
+2026-03-10 21:04:55,243 - channel_monitor - INFO - Found 1 recent videos for Videos
+2026-03-10 21:04:55,244 - channel_monitor - INFO - Resolving handle @maker-evan to channel ID...
+2026-03-10 21:05:05,873 - channel_monitor - INFO - Resolved @maker-evan to UC0WxGJnTB_04ViIrxPvFRmg
+2026-03-10 21:05:06,426 - channel_monitor - INFO - Found 13 recent videos for Videos
+2026-03-10 21:05:06,426 - channel_monitor - INFO - Found 29 new videos total
+2026-03-12 21:40:13,450 - channel_monitor - INFO - Resolving handle @kpunch to channel ID...
+2026-03-12 21:40:17,133 - channel_monitor - INFO - Resolved @kpunch to UCOB62fKRT7b73X7tRxMuN2g
+2026-03-12 21:40:17,738 - channel_monitor - INFO - Found 1 recent videos for Videos
+2026-03-12 21:40:17,738 - channel_monitor - INFO - Resolving handle @wsaj to channel ID...
+2026-03-12 21:40:21,593 - channel_monitor - INFO - Resolved @wsaj to UCpqD9_OJNtF6suPpi6mOQCQ
+2026-03-12 21:40:22,303 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-12 21:40:22,303 - channel_monitor - INFO - Resolving handle @futuresnow to channel ID...
+2026-03-12 21:40:32,649 - channel_monitor - INFO - Resolved @futuresnow to UC_JJ_NhRqPKcIOj5Ko3W_3w
+2026-03-12 21:40:33,250 - channel_monitor - INFO - Found 5 recent videos for Videos
+2026-03-12 21:40:33,250 - channel_monitor - INFO - Resolving handle @sosumonkey to channel ID...
+2026-03-12 21:40:36,788 - channel_monitor - INFO - Resolved @sosumonkey to UCC3yfxS5qC6PCwDzetUuEWg
+2026-03-12 21:40:37,709 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-12 21:40:37,709 - channel_monitor - INFO - Resolving handle @mer_official to channel ID...
+2026-03-12 21:40:41,401 - channel_monitor - INFO - Resolved @mer_official to UC_l2qrs1qRv_8Rs8utay-PQ
+2026-03-12 21:40:42,152 - channel_monitor - INFO - Found 0 recent videos for Videos
+2026-03-12 21:40:42,152 - channel_monitor - INFO - Resolving handle @TV-wr8ex to channel ID...
+2026-03-12 21:40:45,511 - channel_monitor - INFO - Resolved @TV-wr8ex to UCge4_EUhf1O-EupOgRAMgPA
+2026-03-12 21:40:46,185 - channel_monitor - INFO - Found 1 recent videos for Videos
+2026-03-12 21:40:46,185 - channel_monitor - INFO - Resolving handle @supe-tv to channel ID...
+2026-03-12 21:40:49,905 - channel_monitor - INFO - Resolved @supe-tv to UCfnqgWlC5IvJEAPTmyjaixA
+2026-03-12 21:40:50,525 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-12 21:40:50,525 - channel_monitor - INFO - Resolving handle @MK_Invest to channel ID...
+2026-03-12 21:41:02,203 - channel_monitor - INFO - Resolved @MK_Invest to UCIipmgxpUxDmPP-ma3Ahvbw
+2026-03-12 21:41:03,154 - channel_monitor - INFO - Found 13 recent videos for Videos
+2026-03-12 21:41:03,154 - channel_monitor - INFO - Resolving handle @videomug0 to channel ID...
+2026-03-12 21:41:11,416 - channel_monitor - INFO - Resolved @videomug0 to UCMEbRpvuwTbXxGiyDb1mT8w
+2026-03-12 21:41:12,741 - channel_monitor - INFO - Found 7 recent videos for Videos
+2026-03-12 21:41:12,741 - channel_monitor - INFO - Resolving handle @codefactory_official to channel ID...
+2026-03-12 21:41:24,095 - channel_monitor - INFO - Resolved @codefactory_official to UCxZ2AlaT0hOmxzZVbF_j_Sw
+2026-03-12 21:41:24,830 - channel_monitor - INFO - Found 3 recent videos for Videos
+2026-03-12 21:41:24,830 - channel_monitor - INFO - Resolving handle @개발동생 to channel ID...
+2026-03-12 21:41:37,388 - channel_monitor - INFO - Resolved @개발동생 to UC1_ZZYZsHh2_DzCXN4VGVcQ
+2026-03-12 21:41:38,127 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-12 21:41:38,128 - channel_monitor - INFO - Resolving handle @maker-evan to channel ID...
+2026-03-12 21:41:41,773 - channel_monitor - INFO - Resolved @maker-evan to UC0WxGJnTB_04ViIrxPvFRmg
+2026-03-12 21:41:42,540 - channel_monitor - INFO - Found 7 recent videos for Videos
+2026-03-12 21:41:42,540 - channel_monitor - INFO - Found 33 new videos total
+2026-03-18 23:40:12,368 - channel_monitor - INFO - Resolving handle @kpunch to channel ID...
+2026-03-18 23:40:17,123 - channel_monitor - INFO - Resolved @kpunch to UCOB62fKRT7b73X7tRxMuN2g
+2026-03-18 23:40:17,725 - channel_monitor - INFO - Found 0 recent videos for Videos
+2026-03-18 23:40:17,725 - channel_monitor - INFO - Resolving handle @wsaj to channel ID...
+2026-03-18 23:40:30,847 - channel_monitor - INFO - Resolved @wsaj to UCpqD9_OJNtF6suPpi6mOQCQ
+2026-03-18 23:40:31,713 - channel_monitor - INFO - Found 1 recent videos for Videos
+2026-03-18 23:40:31,713 - channel_monitor - INFO - Resolving handle @futuresnow to channel ID...
+2026-03-18 23:40:43,016 - channel_monitor - INFO - Resolved @futuresnow to UC_JJ_NhRqPKcIOj5Ko3W_3w
+2026-03-18 23:40:43,748 - channel_monitor - INFO - Found 4 recent videos for Videos
+2026-03-18 23:40:43,748 - channel_monitor - INFO - Resolving handle @sosumonkey to channel ID...
+2026-03-18 23:40:55,240 - channel_monitor - INFO - Resolved @sosumonkey to UCC3yfxS5qC6PCwDzetUuEWg
+2026-03-18 23:40:56,101 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-18 23:40:56,101 - channel_monitor - INFO - Resolving handle @mer_official to channel ID...
+2026-03-18 23:40:59,713 - channel_monitor - INFO - Resolved @mer_official to UC_l2qrs1qRv_8Rs8utay-PQ
+2026-03-18 23:41:00,325 - channel_monitor - INFO - Found 0 recent videos for Videos
+2026-03-18 23:41:00,341 - channel_monitor - INFO - Resolving handle @TV-wr8ex to channel ID...
+2026-03-18 23:41:04,687 - channel_monitor - INFO - Resolved @TV-wr8ex to UCge4_EUhf1O-EupOgRAMgPA
+2026-03-18 23:41:05,423 - channel_monitor - INFO - Found 1 recent videos for Videos
+2026-03-18 23:41:05,423 - channel_monitor - INFO - Resolving handle @supe-tv to channel ID...
+2026-03-18 23:41:15,624 - channel_monitor - INFO - Resolved @supe-tv to UCfnqgWlC5IvJEAPTmyjaixA
+2026-03-18 23:41:16,302 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-18 23:41:16,302 - channel_monitor - INFO - Resolving handle @MK_Invest to channel ID...
+2026-03-18 23:41:28,280 - channel_monitor - INFO - Resolved @MK_Invest to UCIipmgxpUxDmPP-ma3Ahvbw
+2026-03-18 23:41:29,439 - channel_monitor - INFO - Found 11 recent videos for Videos
+2026-03-18 23:41:29,439 - channel_monitor - INFO - Resolving handle @videomug0 to channel ID...
+2026-03-18 23:41:41,294 - channel_monitor - INFO - Resolved @videomug0 to UCMEbRpvuwTbXxGiyDb1mT8w
+2026-03-18 23:41:42,927 - channel_monitor - INFO - Found 6 recent videos for Videos
+2026-03-18 23:41:42,927 - channel_monitor - INFO - Resolving handle @sbs_explained to channel ID...
+2026-03-18 23:41:53,534 - channel_monitor - INFO - Resolved @sbs_explained to UChY8VUjXv0aA7RF9hDQ0ISg
+2026-03-18 23:41:54,249 - channel_monitor - INFO - Found 7 recent videos for Videos
+2026-03-18 23:41:54,250 - channel_monitor - INFO - Resolving handle @codefactory_official to channel ID...
+2026-03-18 23:42:06,326 - channel_monitor - INFO - Resolved @codefactory_official to UCxZ2AlaT0hOmxzZVbF_j_Sw
+2026-03-18 23:42:06,988 - channel_monitor - INFO - Found 5 recent videos for Videos
+2026-03-18 23:42:06,989 - channel_monitor - INFO - Resolving handle @개발동생 to channel ID...
+2026-03-18 23:42:10,852 - channel_monitor - INFO - Resolved @개발동생 to UC1_ZZYZsHh2_DzCXN4VGVcQ
+2026-03-18 23:42:11,563 - channel_monitor - INFO - Found 1 recent videos for Videos
+2026-03-18 23:42:11,564 - channel_monitor - INFO - Resolving handle @maker-evan to channel ID...
+2026-03-18 23:42:23,154 - channel_monitor - INFO - Resolved @maker-evan to UC0WxGJnTB_04ViIrxPvFRmg
+2026-03-18 23:42:23,788 - channel_monitor - INFO - Found 3 recent videos for Videos
+2026-03-18 23:42:23,788 - channel_monitor - INFO - Found 41 new videos total
+2026-03-19 21:27:17,136 - channel_monitor - INFO - Resolving handle @kpunch to channel ID...
+2026-03-19 21:27:20,667 - channel_monitor - INFO - Resolved @kpunch to UCOB62fKRT7b73X7tRxMuN2g
+2026-03-19 21:27:21,282 - channel_monitor - INFO - Found 0 recent videos for Videos
+2026-03-19 21:27:21,282 - channel_monitor - INFO - Resolving handle @wsaj to channel ID...
+2026-03-19 21:27:24,987 - channel_monitor - INFO - Resolved @wsaj to UCpqD9_OJNtF6suPpi6mOQCQ
+2026-03-19 21:27:25,133 - channel_monitor - INFO - Found 1 recent videos for Videos
+2026-03-19 21:27:25,133 - channel_monitor - INFO - Resolving handle @futuresnow to channel ID...
+2026-03-19 21:27:36,186 - channel_monitor - INFO - Resolved @futuresnow to UC_JJ_NhRqPKcIOj5Ko3W_3w
+2026-03-19 21:27:36,337 - channel_monitor - INFO - Found 5 recent videos for Videos
+2026-03-19 21:27:36,337 - channel_monitor - INFO - Resolving handle @sosumonkey to channel ID...
+2026-03-19 21:27:39,761 - channel_monitor - INFO - Resolved @sosumonkey to UCC3yfxS5qC6PCwDzetUuEWg
+2026-03-19 21:27:40,425 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-19 21:27:40,426 - channel_monitor - INFO - Resolving handle @mer_official to channel ID...
+2026-03-19 21:27:44,103 - channel_monitor - INFO - Resolved @mer_official to UC_l2qrs1qRv_8Rs8utay-PQ
+2026-03-19 21:27:44,630 - channel_monitor - INFO - Found 0 recent videos for Videos
+2026-03-19 21:27:44,630 - channel_monitor - INFO - Resolving handle @TV-wr8ex to channel ID...
+2026-03-19 21:27:48,088 - channel_monitor - INFO - Resolved @TV-wr8ex to UCge4_EUhf1O-EupOgRAMgPA
+2026-03-19 21:27:48,822 - channel_monitor - INFO - Found 1 recent videos for Videos
+2026-03-19 21:27:48,822 - channel_monitor - INFO - Resolving handle @supe-tv to channel ID...
+2026-03-19 21:27:51,984 - channel_monitor - INFO - Resolved @supe-tv to UCfnqgWlC5IvJEAPTmyjaixA
+2026-03-19 21:27:52,686 - channel_monitor - INFO - Found 2 recent videos for Videos
+2026-03-19 21:27:52,686 - channel_monitor - INFO - Resolving handle @MK_Invest to channel ID...
+2026-03-19 21:28:05,309 - channel_monitor - INFO - Resolved @MK_Invest to UCIipmgxpUxDmPP-ma3Ahvbw
+2026-03-19 21:28:06,290 - channel_monitor - INFO - Found 13 recent videos for Videos
+2026-03-19 21:28:06,291 - channel_monitor - INFO - Resolving handle @videomug0 to channel ID...
+2026-03-19 21:28:16,130 - channel_monitor - INFO - Resolved @videomug0 to UCMEbRpvuwTbXxGiyDb1mT8w
+2026-03-19 21:28:18,068 - channel_monitor - INFO - Found 6 recent videos for Videos
+2026-03-19 21:28:18,069 - channel_monitor - INFO - Resolving handle @sbs_explained to channel ID...
+2026-03-19 21:29:18,091 - channel_monitor - ERROR - Timeout resolving handle @sbs_explained
+2026-03-19 21:29:18,092 - channel_monitor - ERROR - Could not get channel ID for: @sbs_explained
+2026-03-19 21:29:18,092 - channel_monitor - INFO - Resolving handle @codefactory_official to channel ID...
+2026-03-19 21:29:28,770 - channel_monitor - INFO - Resolved @codefactory_official to UCxZ2AlaT0hOmxzZVbF_j_Sw
+2026-03-19 21:29:29,373 - channel_monitor - INFO - Found 5 recent videos for Videos
+2026-03-19 21:29:29,373 - channel_monitor - INFO - Resolving handle @개발동생 to channel ID...
+2026-03-19 21:29:32,698 - channel_monitor - INFO - Resolved @개발동생 to UC1_ZZYZsHh2_DzCXN4VGVcQ
+2026-03-19 21:29:33,307 - channel_monitor - INFO - Found 1 recent videos for Videos
+2026-03-19 21:29:33,307 - channel_monitor - INFO - Resolving handle @maker-evan to channel ID...
+2026-03-19 21:29:46,159 - channel_monitor - INFO - Resolved @maker-evan to UC0WxGJnTB_04ViIrxPvFRmg
+2026-03-19 21:29:46,968 - channel_monitor - INFO - Found 4 recent videos for Videos
+2026-03-19 21:29:46,968 - channel_monitor - INFO - Resolving handle @waltechman to channel ID...
+2026-03-19 21:29:59,856 - channel_monitor - INFO - Resolved @waltechman to UCWV2Uy79TOpB1bk8hnq1nGw
+2026-03-19 21:30:00,514 - channel_monitor - INFO - Found 5 recent videos for Videos
+2026-03-19 21:30:00,515 - channel_monitor - INFO - Found 36 new videos total
+2026-03-20 08:58:06,556 - channel_monitor - INFO - Resolved @wsaj -> UCpqD9_OJNtF6suPpi6mOQCQ (월가아재의 과학적 투자)
+2026-03-20 08:58:08,061 - channel_monitor - INFO - Resolved @wsaj -> UCpqD9_OJNtF6suPpi6mOQCQ (월가아재의 과학적 투자)
+2026-03-20 09:29:04,173 - channel_monitor - INFO - Resolved @kpunch -> UCOB62fKRT7b73X7tRxMuN2g (박종훈의 지식한방)
+2026-03-20 09:29:05,057 - channel_monitor - INFO - Found 0 recent videos for 박종훈의 지식한방
+2026-03-20 09:29:05,651 - channel_monitor - INFO - Resolved @wsaj -> UCpqD9_OJNtF6suPpi6mOQCQ (월가아재의 과학적 투자)
+2026-03-20 09:29:06,576 - channel_monitor - INFO - Found 1 recent videos for 월가아재의 과학적 투자
+2026-03-20 09:29:07,170 - channel_monitor - INFO - Resolved @futuresnow -> UC_JJ_NhRqPKcIOj5Ko3W_3w (오선의 미국 증시 라이브)
+2026-03-20 09:29:08,229 - channel_monitor - INFO - Found 5 recent videos for 오선의 미국 증시 라이브
+2026-03-20 09:29:08,828 - channel_monitor - INFO - Resolved @sosumonkey -> UCC3yfxS5qC6PCwDzetUuEWg (소수몽키)
+2026-03-20 09:29:09,740 - channel_monitor - INFO - Found 2 recent videos for 소수몽키
+2026-03-20 09:29:10,324 - channel_monitor - INFO - Resolved @mer_official -> UC_l2qrs1qRv_8Rs8utay-PQ (메르의 세상읽기)
+2026-03-20 09:29:11,213 - channel_monitor - INFO - Found 0 recent videos for 메르의 세상읽기
+2026-03-20 09:29:11,808 - channel_monitor - INFO - Resolved @TV-wr8ex -> UCge4_EUhf1O-EupOgRAMgPA (글로벌모니터TV)
+2026-03-20 09:29:12,701 - channel_monitor - INFO - Found 1 recent videos for 글로벌모니터TV
+2026-03-20 09:29:13,306 - channel_monitor - INFO - Resolved @supe-tv -> UCfnqgWlC5IvJEAPTmyjaixA (수페TV)
+2026-03-20 09:29:14,234 - channel_monitor - INFO - Found 2 recent videos for 수페TV
+2026-03-20 09:29:14,832 - channel_monitor - INFO - Resolved @MK_Invest -> UCIipmgxpUxDmPP-ma3Ahvbw (매경 월가월부)
+2026-03-20 09:29:15,922 - channel_monitor - INFO - Found 13 recent videos for 매경 월가월부
+2026-03-20 09:29:16,528 - channel_monitor - INFO - Resolved @videomug0 -> UCMEbRpvuwTbXxGiyDb1mT8w (비디오머그 - VIDEOMUG)
+2026-03-20 09:29:18,630 - channel_monitor - INFO - Found 6 recent videos for 비디오머그 - VIDEOMUG
+2026-03-20 09:29:19,221 - channel_monitor - INFO - Resolved @sbs_explained -> UChY8VUjXv0aA7RF9hDQ0ISg (교양이를 부탁해)
+2026-03-20 09:29:20,113 - channel_monitor - INFO - Found 7 recent videos for 교양이를 부탁해
+2026-03-20 09:29:20,711 - channel_monitor - INFO - Resolved @codefactory_official -> UCxZ2AlaT0hOmxzZVbF_j_Sw (코드팩토리)
+2026-03-20 09:29:21,540 - channel_monitor - INFO - Found 5 recent videos for 코드팩토리
+2026-03-20 09:29:22,138 - channel_monitor - INFO - Resolved @개발동생 -> UC1_ZZYZsHh2_DzCXN4VGVcQ (개발동생)
+2026-03-20 09:29:23,052 - channel_monitor - INFO - Found 1 recent videos for 개발동생
+2026-03-20 09:29:23,637 - channel_monitor - INFO - Resolved @maker-evan -> UC0WxGJnTB_04ViIrxPvFRmg (메이커 에반 | Maker Evan)
+2026-03-20 09:29:24,540 - channel_monitor - INFO - Found 4 recent videos for 메이커 에반 | Maker Evan
+2026-03-20 09:29:25,129 - channel_monitor - INFO - Resolved @waltechman -> UCWV2Uy79TOpB1bk8hnq1nGw (월텍남 - 월스트리트 테크남)
+2026-03-20 09:29:26,013 - channel_monitor - INFO - Found 5 recent videos for 월텍남 - 월스트리트 테크남
+2026-03-20 09:29:26,013 - channel_monitor - INFO - Found 42 new videos total
+2026-03-22 22:05:21,558 - channel_monitor - INFO - Resolved @kpunch -> UCOB62fKRT7b73X7tRxMuN2g (박종훈의 지식한방)
+2026-03-22 22:05:22,454 - channel_monitor - INFO - Found 0 recent videos for 박종훈의 지식한방
+2026-03-22 22:05:23,046 - channel_monitor - INFO - Resolved @wsaj -> UCpqD9_OJNtF6suPpi6mOQCQ (월가아재의 과학적 투자)
+2026-03-22 22:05:23,993 - channel_monitor - INFO - Found 3 recent videos for 월가아재의 과학적 투자
+2026-03-22 22:05:24,585 - channel_monitor - INFO - Resolved @futuresnow -> UC_JJ_NhRqPKcIOj5Ko3W_3w (오선의 미국 증시 라이브)
+2026-03-22 22:05:25,413 - channel_monitor - INFO - Found 5 recent videos for 오선의 미국 증시 라이브
+2026-03-22 22:05:26,003 - channel_monitor - INFO - Resolved @sosumonkey -> UCC3yfxS5qC6PCwDzetUuEWg (소수몽키)
+2026-03-22 22:05:26,996 - channel_monitor - INFO - Found 2 recent videos for 소수몽키
+2026-03-22 22:05:27,580 - channel_monitor - INFO - Resolved @mer_official -> UC_l2qrs1qRv_8Rs8utay-PQ (메르의 세상읽기)
+2026-03-22 22:05:28,415 - channel_monitor - INFO - Found 0 recent videos for 메르의 세상읽기
+2026-03-22 22:05:29,023 - channel_monitor - INFO - Resolved @TV-wr8ex -> UCge4_EUhf1O-EupOgRAMgPA (글로벌모니터TV)
+2026-03-22 22:05:30,054 - channel_monitor - INFO - Found 0 recent videos for 글로벌모니터TV
+2026-03-22 22:05:30,646 - channel_monitor - INFO - Resolved @supe-tv -> UCfnqgWlC5IvJEAPTmyjaixA (수페TV)
+2026-03-22 22:05:31,551 - channel_monitor - INFO - Found 2 recent videos for 수페TV
+2026-03-22 22:05:32,161 - channel_monitor - INFO - Resolved @MK_Invest -> UCIipmgxpUxDmPP-ma3Ahvbw (매경 월가월부)
+2026-03-22 22:05:33,247 - channel_monitor - INFO - Found 12 recent videos for 매경 월가월부
+2026-03-22 22:05:33,833 - channel_monitor - INFO - Resolved @videomug0 -> UCMEbRpvuwTbXxGiyDb1mT8w (비디오머그 - VIDEOMUG)
+2026-03-22 22:05:35,657 - channel_monitor - INFO - Found 4 recent videos for 비디오머그 - VIDEOMUG
+2026-03-22 22:05:36,248 - channel_monitor - INFO - Resolved @sbs_explained -> UChY8VUjXv0aA7RF9hDQ0ISg (교양이를 부탁해)
+2026-03-22 22:05:37,212 - channel_monitor - INFO - Found 7 recent videos for 교양이를 부탁해
+2026-03-22 22:05:37,793 - channel_monitor - INFO - Resolved @codefactory_official -> UCxZ2AlaT0hOmxzZVbF_j_Sw (코드팩토리)
+2026-03-22 22:05:38,610 - channel_monitor - INFO - Found 7 recent videos for 코드팩토리
+2026-03-22 22:05:39,201 - channel_monitor - INFO - Resolved @개발동생 -> UC1_ZZYZsHh2_DzCXN4VGVcQ (개발동생)
+2026-03-22 22:05:40,090 - channel_monitor - INFO - Found 2 recent videos for 개발동생
+2026-03-22 22:05:40,669 - channel_monitor - INFO - Resolved @maker-evan -> UC0WxGJnTB_04ViIrxPvFRmg (메이커 에반 | Maker Evan)
+2026-03-22 22:05:41,548 - channel_monitor - INFO - Found 3 recent videos for 메이커 에반 | Maker Evan
+2026-03-22 22:05:42,142 - channel_monitor - INFO - Resolved @waltechman -> UCWV2Uy79TOpB1bk8hnq1nGw (월텍남 - 월스트리트 테크남)
+2026-03-22 22:05:43,051 - channel_monitor - INFO - Found 4 recent videos for 월텍남 - 월스트리트 테크남
+2026-03-22 22:05:43,643 - channel_monitor - INFO - Resolved @gymcoding -> UCZ30aWiMw5C8mGcESlAGQbA (짐코딩)
+2026-03-22 22:05:44,547 - channel_monitor - INFO - Found 1 recent videos for 짐코딩
+2026-03-22 22:05:44,548 - channel_monitor - INFO - Found 42 new videos total
+2026-03-24 22:41:35,906 - channel_monitor - INFO - Resolved @kpunch -> UCOB62fKRT7b73X7tRxMuN2g (박종훈의 지식한방)
+2026-03-24 22:41:36,801 - channel_monitor - INFO - Found 0 recent videos for 박종훈의 지식한방
+2026-03-24 22:41:37,439 - channel_monitor - INFO - Resolved @wsaj -> UCpqD9_OJNtF6suPpi6mOQCQ (월가아재의 과학적 투자)
+2026-03-24 22:41:38,390 - channel_monitor - INFO - Found 2 recent videos for 월가아재의 과학적 투자
+2026-03-24 22:41:39,015 - channel_monitor - INFO - Resolved @futuresnow -> UC_JJ_NhRqPKcIOj5Ko3W_3w (오선의 미국 증시 라이브)
+2026-03-24 22:41:39,891 - channel_monitor - INFO - Found 5 recent videos for 오선의 미국 증시 라이브
+2026-03-24 22:41:40,496 - channel_monitor - INFO - Resolved @sosumonkey -> UCC3yfxS5qC6PCwDzetUuEWg (소수몽키)
+2026-03-24 22:41:41,528 - channel_monitor - INFO - Found 2 recent videos for 소수몽키
+2026-03-24 22:41:42,192 - channel_monitor - INFO - Resolved @mer_official -> UC_l2qrs1qRv_8Rs8utay-PQ (메르의 세상읽기)
+2026-03-24 22:41:43,035 - channel_monitor - INFO - Found 0 recent videos for 메르의 세상읽기
+2026-03-24 22:41:43,629 - channel_monitor - INFO - Resolved @TV-wr8ex -> UCge4_EUhf1O-EupOgRAMgPA (글로벌모니터TV)
+2026-03-24 22:41:44,562 - channel_monitor - INFO - Found 1 recent videos for 글로벌모니터TV
+2026-03-24 22:41:45,168 - channel_monitor - INFO - Resolved @supe-tv -> UCfnqgWlC5IvJEAPTmyjaixA (수페TV)
+2026-03-24 22:41:46,070 - channel_monitor - INFO - Found 2 recent videos for 수페TV
+2026-03-24 22:41:46,680 - channel_monitor - INFO - Resolved @MK_Invest -> UCIipmgxpUxDmPP-ma3Ahvbw (매경 월가월부)
+2026-03-24 22:41:47,905 - channel_monitor - INFO - Found 13 recent videos for 매경 월가월부
+2026-03-24 22:41:48,497 - channel_monitor - INFO - Resolved @videomug0 -> UCMEbRpvuwTbXxGiyDb1mT8w (비디오머그 - VIDEOMUG)
+2026-03-24 22:41:50,794 - channel_monitor - INFO - Found 7 recent videos for 비디오머그 - VIDEOMUG
+2026-03-24 22:41:51,388 - channel_monitor - INFO - Resolved @sbs_explained -> UChY8VUjXv0aA7RF9hDQ0ISg (교양이를 부탁해)
+2026-03-24 22:41:52,328 - channel_monitor - INFO - Found 8 recent videos for 교양이를 부탁해
+2026-03-24 22:41:52,932 - channel_monitor - INFO - Resolved @codefactory_official -> UCxZ2AlaT0hOmxzZVbF_j_Sw (코드팩토리)
+2026-03-24 22:41:53,775 - channel_monitor - INFO - Found 7 recent videos for 코드팩토리
+2026-03-24 22:41:54,645 - channel_monitor - INFO - Resolved @개발동생 -> UC1_ZZYZsHh2_DzCXN4VGVcQ (개발동생)
+2026-03-24 22:41:55,521 - channel_monitor - INFO - Found 1 recent videos for 개발동생
+2026-03-24 22:41:56,137 - channel_monitor - INFO - Resolved @maker-evan -> UC0WxGJnTB_04ViIrxPvFRmg (메이커 에반 | Maker Evan)
+2026-03-24 22:41:56,966 - channel_monitor - INFO - Found 3 recent videos for 메이커 에반 | Maker Evan
+2026-03-24 22:41:57,570 - channel_monitor - INFO - Resolved @waltechman -> UCWV2Uy79TOpB1bk8hnq1nGw (월텍남 - 월스트리트 테크남)
+2026-03-24 22:41:58,474 - channel_monitor - INFO - Found 5 recent videos for 월텍남 - 월스트리트 테크남
+2026-03-24 22:41:59,066 - channel_monitor - INFO - Resolved @gymcoding -> UCZ30aWiMw5C8mGcESlAGQbA (짐코딩)
+2026-03-24 22:41:59,996 - channel_monitor - INFO - Found 0 recent videos for 짐코딩
+2026-03-24 22:41:59,996 - channel_monitor - INFO - Found 31 new videos total
