@@ -3152,3 +3152,277 @@ Ways to work around this are explained in the "Working around IP bans" section o
 
 
 If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 00:22:51,334 - transcript_extractor - WARNING - Configured cookie file not found, proceeding without cookies
+2026-03-28 00:23:15,952 - transcript_extractor - INFO - Extracting transcript for video: _VRNFmvXYhc
+2026-03-28 00:23:17,311 - transcript_extractor - WARNING - Transcripts are disabled for video: _VRNFmvXYhc
+2026-03-28 00:23:17,313 - transcript_extractor - INFO - Extracting transcript for video: a4t-PH72T_w
+2026-03-28 00:23:18,706 - transcript_extractor - INFO - Found ko transcript for a4t-PH72T_w
+2026-03-28 00:23:18,802 - transcript_extractor - INFO - Extracted transcript for a4t-PH72T_w: 10791 characters
+2026-03-28 08:19:24,127 - transcript_extractor - WARNING - Configured cookie file not found, proceeding without cookies
+2026-03-28 08:19:47,785 - transcript_extractor - INFO - Extracting transcript for video: PTXoak74DIk
+2026-03-28 08:19:48,829 - transcript_extractor - INFO - Found ko transcript for PTXoak74DIk
+2026-03-28 08:19:48,905 - transcript_extractor - INFO - Extracted transcript for PTXoak74DIk: 4467 characters
+2026-03-28 08:20:03,890 - transcript_extractor - INFO - Extracting transcript for video: _VRNFmvXYhc
+2026-03-28 08:20:04,605 - transcript_extractor - INFO - Found ko transcript for _VRNFmvXYhc
+2026-03-28 08:20:04,686 - transcript_extractor - INFO - Extracted transcript for _VRNFmvXYhc: 10504 characters
+2026-03-28 08:20:23,411 - transcript_extractor - INFO - Extracting transcript for video: a4t-PH72T_w
+2026-03-28 08:20:24,105 - transcript_extractor - INFO - Found ko transcript for a4t-PH72T_w
+2026-03-28 08:20:24,186 - transcript_extractor - INFO - Extracted transcript for a4t-PH72T_w: 10791 characters
+2026-03-28 08:20:41,173 - transcript_extractor - INFO - Extracting transcript for video: MSruBtFmD6I
+2026-03-28 08:20:41,845 - transcript_extractor - INFO - Found ko transcript for MSruBtFmD6I
+2026-03-28 08:20:41,936 - transcript_extractor - INFO - Extracted transcript for MSruBtFmD6I: 19901 characters
+2026-03-28 08:21:01,643 - transcript_extractor - INFO - Extracting transcript for video: sdwIBHlB_Z0
+2026-03-28 08:21:02,274 - transcript_extractor - INFO - Found ko transcript for sdwIBHlB_Z0
+2026-03-28 08:21:02,350 - transcript_extractor - INFO - Extracted transcript for sdwIBHlB_Z0: 3040 characters
+2026-03-28 08:21:15,119 - transcript_extractor - INFO - Extracting transcript for video: y5WgICHtmVA
+2026-03-28 08:21:15,812 - transcript_extractor - INFO - Found ko transcript for y5WgICHtmVA
+2026-03-28 08:21:15,889 - transcript_extractor - INFO - Extracted transcript for y5WgICHtmVA: 4247 characters
+2026-03-28 08:21:30,027 - transcript_extractor - INFO - Extracting transcript for video: 7ozueqcLWt0
+2026-03-28 08:21:30,728 - transcript_extractor - INFO - Found ko transcript for 7ozueqcLWt0
+2026-03-28 08:21:30,809 - transcript_extractor - INFO - Extracted transcript for 7ozueqcLWt0: 7459 characters
+2026-03-28 08:21:44,922 - transcript_extractor - INFO - Extracting transcript for video: fpXYIsXp_sg
+2026-03-28 08:21:45,706 - transcript_extractor - INFO - Found ko transcript for fpXYIsXp_sg
+2026-03-28 08:21:45,783 - transcript_extractor - INFO - Extracted transcript for fpXYIsXp_sg: 1435 characters
+2026-03-28 08:21:58,170 - transcript_extractor - INFO - Extracting transcript for video: uirNqqvuP_M
+2026-03-28 08:21:58,923 - transcript_extractor - INFO - Found ko transcript for uirNqqvuP_M
+2026-03-28 08:21:59,004 - transcript_extractor - INFO - Extracted transcript for uirNqqvuP_M: 6367 characters
+2026-03-28 08:22:16,964 - transcript_extractor - INFO - Extracting transcript for video: 6B9ljYC2R5k
+2026-03-28 08:22:17,591 - transcript_extractor - INFO - Found ko transcript for 6B9ljYC2R5k
+2026-03-28 08:22:17,671 - transcript_extractor - INFO - Extracted transcript for 6B9ljYC2R5k: 8997 characters
+2026-03-28 08:22:34,959 - transcript_extractor - INFO - Extracting transcript for video: 38vUiA0EaFs
+2026-03-28 08:22:35,897 - transcript_extractor - INFO - Found ko transcript for 38vUiA0EaFs
+2026-03-28 08:22:35,977 - transcript_extractor - INFO - Extracted transcript for 38vUiA0EaFs: 8036 characters
+2026-03-28 08:22:51,081 - transcript_extractor - INFO - Extracting transcript for video: N2Z0BsIpcIc
+2026-03-28 08:22:51,762 - transcript_extractor - INFO - Found ko transcript for N2Z0BsIpcIc
+2026-03-28 08:22:52,155 - transcript_extractor - WARNING - Could not retrieve transcript for video N2Z0BsIpcIc (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=N2Z0BsIpcIc! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:22:52,156 - transcript_extractor - INFO - Extracting transcript for video: FBv8hK_DtJ8
+2026-03-28 08:22:52,766 - transcript_extractor - INFO - Found ko transcript for FBv8hK_DtJ8
+2026-03-28 08:22:53,149 - transcript_extractor - WARNING - Could not retrieve transcript for video FBv8hK_DtJ8 (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=FBv8hK_DtJ8! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:22:53,150 - transcript_extractor - INFO - Extracting transcript for video: d76Kc_QnADE
+2026-03-28 08:22:53,807 - transcript_extractor - INFO - Found ko transcript for d76Kc_QnADE
+2026-03-28 08:22:54,320 - transcript_extractor - WARNING - Could not retrieve transcript for video d76Kc_QnADE (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=d76Kc_QnADE! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:22:54,320 - transcript_extractor - INFO - Extracting transcript for video: roFsYa1cgBE
+2026-03-28 08:22:55,048 - transcript_extractor - INFO - Found ko transcript for roFsYa1cgBE
+2026-03-28 08:22:55,445 - transcript_extractor - WARNING - Could not retrieve transcript for video roFsYa1cgBE (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=roFsYa1cgBE! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:22:55,445 - transcript_extractor - INFO - Extracting transcript for video: YqHcMwC53wk
+2026-03-28 08:22:56,080 - transcript_extractor - INFO - Found ko transcript for YqHcMwC53wk
+2026-03-28 08:22:56,581 - transcript_extractor - WARNING - Could not retrieve transcript for video YqHcMwC53wk (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=YqHcMwC53wk! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:22:56,582 - transcript_extractor - INFO - Extracting transcript for video: xtcTnznru_E
+2026-03-28 08:22:57,227 - transcript_extractor - INFO - Found ko transcript for xtcTnznru_E
+2026-03-28 08:22:57,701 - transcript_extractor - WARNING - Could not retrieve transcript for video xtcTnznru_E (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=xtcTnznru_E! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:22:57,701 - transcript_extractor - INFO - Extracting transcript for video: OlwHEAmmsJA
+2026-03-28 08:22:58,499 - transcript_extractor - INFO - Found ko transcript for OlwHEAmmsJA
+2026-03-28 08:22:58,801 - transcript_extractor - WARNING - Could not retrieve transcript for video OlwHEAmmsJA (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=OlwHEAmmsJA! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:22:58,801 - transcript_extractor - INFO - Extracting transcript for video: OS8jnXqL5DE
+2026-03-28 08:22:59,485 - transcript_extractor - INFO - Found ko transcript for OS8jnXqL5DE
+2026-03-28 08:22:59,981 - transcript_extractor - WARNING - Could not retrieve transcript for video OS8jnXqL5DE (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=OS8jnXqL5DE! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:22:59,982 - transcript_extractor - INFO - Extracting transcript for video: aiv2Grvc6d4
+2026-03-28 08:23:00,609 - transcript_extractor - INFO - Found ko transcript for aiv2Grvc6d4
+2026-03-28 08:23:00,992 - transcript_extractor - WARNING - Could not retrieve transcript for video aiv2Grvc6d4 (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=aiv2Grvc6d4! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:23:00,993 - transcript_extractor - INFO - Extracting transcript for video: gXbwkjjdc_Q
+2026-03-28 08:23:01,768 - transcript_extractor - INFO - Found ko transcript for gXbwkjjdc_Q
+2026-03-28 08:23:02,034 - transcript_extractor - WARNING - Could not retrieve transcript for video gXbwkjjdc_Q (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=gXbwkjjdc_Q! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:23:02,034 - transcript_extractor - INFO - Extracting transcript for video: nwlduGJFoG0
+2026-03-28 08:23:02,672 - transcript_extractor - INFO - Found ko transcript for nwlduGJFoG0
+2026-03-28 08:23:02,957 - transcript_extractor - WARNING - Could not retrieve transcript for video nwlduGJFoG0 (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=nwlduGJFoG0! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:23:02,957 - transcript_extractor - INFO - Extracting transcript for video: 2c2chFwrKY4
+2026-03-28 08:23:03,642 - transcript_extractor - INFO - Found ko transcript for 2c2chFwrKY4
+2026-03-28 08:23:04,158 - transcript_extractor - WARNING - Could not retrieve transcript for video 2c2chFwrKY4 (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=2c2chFwrKY4! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:23:04,158 - transcript_extractor - INFO - Extracting transcript for video: H44LKql0XwI
+2026-03-28 08:23:04,791 - transcript_extractor - INFO - Found ko transcript for H44LKql0XwI
+2026-03-28 08:23:05,234 - transcript_extractor - WARNING - Could not retrieve transcript for video H44LKql0XwI (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=H44LKql0XwI! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:23:05,235 - transcript_extractor - INFO - Extracting transcript for video: n46pRoI1Y0U
+2026-03-28 08:23:06,009 - transcript_extractor - INFO - Found ko transcript for n46pRoI1Y0U
+2026-03-28 08:23:06,339 - transcript_extractor - WARNING - Could not retrieve transcript for video n46pRoI1Y0U (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=n46pRoI1Y0U! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:23:06,339 - transcript_extractor - INFO - Extracting transcript for video: FQzF518eXV0
+2026-03-28 08:23:07,031 - transcript_extractor - INFO - Found ko transcript for FQzF518eXV0
+2026-03-28 08:23:07,324 - transcript_extractor - WARNING - Could not retrieve transcript for video FQzF518eXV0 (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=FQzF518eXV0! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:23:07,324 - transcript_extractor - INFO - Extracting transcript for video: Zxmw_yLniB0
+2026-03-28 08:23:08,032 - transcript_extractor - INFO - Found ko transcript for Zxmw_yLniB0
+2026-03-28 08:23:08,348 - transcript_extractor - WARNING - Could not retrieve transcript for video Zxmw_yLniB0 (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=Zxmw_yLniB0! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:23:08,348 - transcript_extractor - INFO - Extracting transcript for video: IpN47sRcpMA
+2026-03-28 08:23:09,016 - transcript_extractor - INFO - Found ko transcript for IpN47sRcpMA
+2026-03-28 08:23:09,364 - transcript_extractor - WARNING - Could not retrieve transcript for video IpN47sRcpMA (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=IpN47sRcpMA! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!
+2026-03-28 08:23:09,364 - transcript_extractor - INFO - Extracting transcript for video: 53KNrZgsZO0
+2026-03-28 08:23:10,061 - transcript_extractor - INFO - Found ko transcript for 53KNrZgsZO0
+2026-03-28 08:23:10,322 - transcript_extractor - WARNING - Could not retrieve transcript for video 53KNrZgsZO0 (IpBlocked): 
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=53KNrZgsZO0! This is most likely caused by:
+
+YouTube is blocking requests from your IP. This usually is due to one of the following reasons:
+- You have done too many requests and your IP has been blocked by YouTube
+- You are doing requests from an IP belonging to a cloud provider (like AWS, Google Cloud Platform, Azure, etc.). Unfortunately, most IPs from cloud providers are blocked by YouTube.
+
+Ways to work around this are explained in the "Working around IP bans" section of the README (https://github.com/jdepoix/youtube-transcript-api?tab=readme-ov-file#working-around-ip-bans-requestblocked-or-ipblocked-exception).
+
+
+If you are sure that the described cause is not responsible for this error and that a transcript should be retrievable, please create an issue at https://github.com/jdepoix/youtube-transcript-api/issues. Please add which version of youtube_transcript_api you are using and provide the information needed to replicate the error. Also make sure that there are no open issues which already describe your problem!

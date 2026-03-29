@@ -1060,3 +1060,82 @@ ValueError: OPENAI_API_KEY not configured. Please set it in config/.env file.
 2026-03-24 22:45:30,474 - main - WARNING - No transcript for: 3월 FOMC l 윤제성 아레타노바컨설팅 설립자 인터뷰
 2026-03-24 22:45:30,474 - main - INFO - Processing: 안보면 후회할 클로드 꿀팁 영상.."한마디"만 추가하세요 (bhUquS_r3zA)
 2026-03-24 22:45:32,482 - main - WARNING - No transcript for: 안보면 후회할 클로드 꿀팁 영상.."한마디"만 추가하세요
+2026-03-28 00:23:15,951 - main - INFO - Found 28 new videos to process
+2026-03-28 00:23:15,951 - main - INFO - Processing: [지식뉴스] "다카이치, 71% 역대 최고지지율"...대미투자로 SMR•군수산업 패권 노리는 일본, 트럼프에 얻은 것들 (ft.이창민 한국외대 교수) / 교양이를 부탁해 (_VRNFmvXYhc)
+2026-03-28 00:23:17,312 - main - WARNING - No transcript for: [지식뉴스] "다카이치, 71% 역대 최고지지율"...대미투자로 SMR•군수산업 패권 노리는 일본, 트럼프에 얻은 것들 (ft.이창민 한국외대 교수) / 교양이를 부탁해
+2026-03-28 00:23:17,312 - main - INFO - Processing: [월가아재] 45년 파산 제로, 전설의 트레이더가 절대로 물타기 안 하는 이유 - 폴 튜더 존스 3부 (a4t-PH72T_w)
+2026-03-28 00:23:18,805 - main - ERROR - Failed to initialize summarizer: OPENAI_API_KEY not configured. Please set it in config/.env file.
+2026-03-28 00:23:18,806 - main - ERROR - Run failed with error: OPENAI_API_KEY not configured. Please set it in config/.env file.
+Traceback (most recent call last):
+  File "C:\Users\trill\Youtube_summary\src\main.py", line 187, in run
+    result = self.process_video(video)
+  File "C:\Users\trill\Youtube_summary\src\main.py", line 82, in process_video
+    self._ensure_summarizer()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\trill\Youtube_summary\src\main.py", line 48, in _ensure_summarizer
+    self.summarizer = Summarizer()
+                      ~~~~~~~~~~^^
+  File "C:\Users\trill\Youtube_summary\src\summarizer.py", line 71, in __init__
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: OPENAI_API_KEY not configured. Please set it in config/.env file.
+2026-03-28 08:19:47,784 - main - INFO - Found 29 new videos to process
+2026-03-28 08:19:47,785 - main - INFO - Processing: [홍장원의 불앤베어] 이란은 호르무즈로 큰돈을 벌고 싶어한다. (PTXoak74DIk)
+2026-03-28 08:20:03,887 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-27_2215_매경-월가월부_홍장원의-불앤베어-이란은-호르무즈로-큰돈을-벌고-싶어한다.txt
+2026-03-28 08:20:03,890 - main - INFO - Processing: [지식뉴스] 다카이치 "71% 역대 최고지지율"...일본, 트럼프 활용해 SMR·군수산업 장악 판 짰다 (ft.이창민 한국외대 교수) / 교양이를 부탁해 (_VRNFmvXYhc)
+2026-03-28 08:20:23,409 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-27_1433_교양이를-부탁해_지식뉴스-다카이치-71-역대-최고지지율일본-트럼프-활용해-smr군수산업-장악-판-짰다-ft.txt
+2026-03-28 08:20:23,411 - main - INFO - Processing: [월가아재] 45년 파산 제로, 전설의 트레이더가 절대로 물타기 안 하는 이유 - 폴 튜더 존스 3부 (a4t-PH72T_w)
+2026-03-28 08:20:41,170 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-27_1018_월가아재의-과학적-투자_월가아재-45년-파산-제로-전설의-트레이더가-절대로-물타기-안-하는-이유---폴-튜더-존스.txt
+2026-03-28 08:20:41,173 - main - INFO - Processing: 지상전이냐, 휴전이냐? 10일 남은 중동의 운명 (박종훈의 지식한방) (MSruBtFmD6I)
+2026-03-28 08:21:01,641 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-27_1015_박종훈의-지식한방_지상전이냐-휴전이냐-10일-남은-중동의-운명-박종훈의-지식한방.txt
+2026-03-28 08:21:01,643 - main - INFO - Processing: 보고서 도표 30분 걸리던 게… 3초면 끝납니다 (sdwIBHlB_Z0)
+2026-03-28 08:21:15,117 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-27_0900_메이커-에반-maker-evan_보고서-도표-30분-걸리던-게-3초면-끝납니다.txt
+2026-03-28 08:21:15,119 - main - INFO - Processing: 응급실 한 번에 400만원? 미국에서 아프면 파산하는 이유 | 매일뉴욕 스페셜 | 홍성용 특파원 (y5WgICHtmVA)
+2026-03-28 08:21:30,025 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-27_0300_매경-월가월부_응급실-한-번에-400만원-미국에서-아프면-파산하는-이유-매일뉴욕-스페셜-홍성용-특파원.txt
+2026-03-28 08:21:30,027 - main - INFO - Processing: 혼자서 60만 줄… YC 대표의 AI 비밀 도구 (7ozueqcLWt0)
+2026-03-28 08:21:44,920 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\programming\2026-03-27_0027_메이커-에반-maker-evan_혼자서-60만-줄-yc-대표의-ai-비밀-도구.txt
+2026-03-28 08:21:44,922 - main - INFO - Processing: 【미국 증시 오늘의 요약】 트럼프-이란 휴전 불발 우려에 증시 와르르… 유가 급등·국채금리 껑충    -  2026/03/26 (fpXYIsXp_sg)
+2026-03-28 08:21:58,168 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-26_2310_오선의-미국-증시-라이브_미국-증시-오늘의-요약-트럼프-이란-휴전-불발-우려에-증시-와르르-유가-급등국채금리-껑충.txt
+2026-03-28 08:21:58,170 - main - INFO - Processing: [홍장원의 불앤베어] 연은, 금리인상 가능성 슬슬 흘리나? 증시하락 빌미? 트럼프 "이란, 협상은 꽤 하네" (uirNqqvuP_M)
+2026-03-28 08:22:16,961 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-26_2240_매경-월가월부_홍장원의-불앤베어-연은-금리인상-가능성-슬슬-흘리나-증시하락-빌미-트럼프-이란-협상은-꽤.txt
+2026-03-28 08:22:16,963 - main - INFO - Processing: [지식뉴스] "전쟁 빨리 끝내!" 미 경제 지금 어떻길래...트럼프가 갑자기 조급해진 진짜 이유 (ft.유신익 KB은행 WM 수석이코노미스트) / 교양이를 부탁해 (6B9ljYC2R5k)
+2026-03-28 08:22:34,956 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-26_1202_교양이를-부탁해_지식뉴스-전쟁-빨리-끝내-미-경제-지금-어떻길래트럼프가-갑자기-조급해진-진짜-이유-ft유신.txt
+2026-03-28 08:22:34,959 - main - INFO - Processing: 이란이 정상국가 되면 중동의 주인 바뀐다! 인남식 교수가 짚어낸 이스라엘의 공포 | 💡지식의발견 | 비디오머그 (38vUiA0EaFs)
+2026-03-28 08:22:51,079 - main - INFO - Summary saved: D:\OneDrive\Information\summaries\2026-03-26_1200_비디오머그---videomug_이란이-정상국가-되면-중동의-주인-바뀐다-인남식-교수가-짚어낸-이스라엘의-공포-지식의발견.txt
+2026-03-28 08:22:51,081 - main - INFO - Processing: 가장 빠르게 앱을 제작하고 배포 하는법 OnSpaeceAI (N2Z0BsIpcIc)
+2026-03-28 08:22:52,155 - main - WARNING - No transcript for: 가장 빠르게 앱을 제작하고 배포 하는법 OnSpaeceAI
+2026-03-28 08:22:52,156 - main - INFO - Processing: 클로드 코드 대규모 프로젝트 컨텍스트 엔지니어링 - .claude/rules 규칙 쪼개기 (FBv8hK_DtJ8)
+2026-03-28 08:22:53,150 - main - WARNING - No transcript for: 클로드 코드 대규모 프로젝트 컨텍스트 엔지니어링 - .claude/rules 규칙 쪼개기
+2026-03-28 08:22:53,150 - main - INFO - Processing: 금도, 반도체도, 환율도 무너진다… 트럼프의 이란전쟁, '강달러 함정' 빠졌다 / 똑소리E / 비디오머그 (d76Kc_QnADE)
+2026-03-28 08:22:54,320 - main - WARNING - No transcript for: 금도, 반도체도, 환율도 무너진다… 트럼프의 이란전쟁, '강달러 함정' 빠졌다 / 똑소리E / 비디오머그
+2026-03-28 08:22:54,320 - main - INFO - Processing: [홍장원의 불앤베어] 이란 "협상 주도권 우리에게 있다" vs 미국 "그러다가는 지옥을 맛본다" (roFsYa1cgBE)
+2026-03-28 08:22:55,445 - main - WARNING - No transcript for: [홍장원의 불앤베어] 이란 "협상 주도권 우리에게 있다" vs 미국 "그러다가는 지옥을 맛본다"
+2026-03-28 08:22:55,445 - main - INFO - Processing: 【미국 증시 오늘의 요약】 휴전 협상 진실공방 속 유가 하락·주가 상승    -  2026/03/25 (YqHcMwC53wk)
+2026-03-28 08:22:56,582 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 휴전 협상 진실공방 속 유가 하락·주가 상승    -  2026/03/25
+2026-03-28 08:22:56,582 - main - INFO - Processing: [통합본] "불안 최고조" 외인 22조 순매도 vs 개미 26조 순매수...역대급 줄다리기, 지금 사야 할까 더 기다려야 할까? 코스피 수급전쟁의 속사정 / 교양이를 부탁해 (xtcTnznru_E)
+2026-03-28 08:22:57,701 - main - WARNING - No transcript for: [통합본] "불안 최고조" 외인 22조 순매도 vs 개미 26조 순매수...역대급 줄다리기, 지금 사야 할까 더 기다려야 할까? 코스피 수급전쟁의 속사정 / 교양이를 부탁해
+2026-03-28 08:22:57,701 - main - INFO - Processing: K-반도체 비상 걸린다? '터보 퀀트'에 이란 전쟁 나비효과까지 / 오그랲 / 비디오머그 (OlwHEAmmsJA)
+2026-03-28 08:22:58,801 - main - WARNING - No transcript for: K-반도체 비상 걸린다? '터보 퀀트'에 이란 전쟁 나비효과까지 / 오그랲 / 비디오머그
+2026-03-28 08:22:58,801 - main - INFO - Processing: [월가아재] 4월이 고비인 이유, 월가가 주시하는 3가지 포인트 (OS8jnXqL5DE)
+2026-03-28 08:22:59,982 - main - WARNING - No transcript for: [월가아재] 4월이 고비인 이유, 월가가 주시하는 3가지 포인트
+2026-03-28 08:22:59,982 - main - INFO - Processing: 머스크 우주 반도체 올인 선언의 최대 수혜주들 (aiv2Grvc6d4)
+2026-03-28 08:23:00,992 - main - WARNING - No transcript for: 머스크 우주 반도체 올인 선언의 최대 수혜주들
+2026-03-28 08:23:00,993 - main - INFO - Processing: '결사항전'만이 이란의 유일한 선택! "청명에 죽으나 한식에 죽으나" (ft.인남식 교수) | 💡지식의발견 | 비디오머그 (gXbwkjjdc_Q)
+2026-03-28 08:23:02,034 - main - WARNING - No transcript for: '결사항전'만이 이란의 유일한 선택! "청명에 죽으나 한식에 죽으나" (ft.인남식 교수) | 💡지식의발견 | 비디오머그
+2026-03-28 08:23:02,034 - main - INFO - Processing: [어바웃 뉴욕] 작은 블록이 만든 새 소비 흐름, 레고의 변천사 | 길금희 특파원 (nwlduGJFoG0)
+2026-03-28 08:23:02,957 - main - WARNING - No transcript for: [어바웃 뉴욕] 작은 블록이 만든 새 소비 흐름, 레고의 변천사 | 길금희 특파원
+2026-03-28 08:23:02,957 - main - INFO - Processing: 【미국 증시 오늘의 요약】 이란 휴전 협상 급물살? 트럼프 "이란이 선물 제안"    -  2026/03/24 (2c2chFwrKY4)
+2026-03-28 08:23:04,158 - main - WARNING - No transcript for: 【미국 증시 오늘의 요약】 이란 휴전 협상 급물살? 트럼프 "이란이 선물 제안"    -  2026/03/24
+2026-03-28 08:23:04,158 - main - INFO - Processing: [홍장원의 불앤베어] 이란 모즈타바도 협상개시에 동의했다는 소식이 들린다 (H44LKql0XwI)
+2026-03-28 08:23:05,235 - main - WARNING - No transcript for: [홍장원의 불앤베어] 이란 모즈타바도 협상개시에 동의했다는 소식이 들린다
+2026-03-28 08:23:05,235 - main - INFO - Processing: 전기 난방인데 요금이 '0원'? 이렇게 하면 가능합니다. / 비디오머그 (n46pRoI1Y0U)
+2026-03-28 08:23:06,339 - main - WARNING - No transcript for: 전기 난방인데 요금이 '0원'? 이렇게 하면 가능합니다. / 비디오머그
+2026-03-28 08:23:06,339 - main - INFO - Processing: 머스크 "답답해서 내가 직접 하겠다" 충격 발언 (FQzF518eXV0)
+2026-03-28 08:23:07,324 - main - WARNING - No transcript for: 머스크 "답답해서 내가 직접 하겠다" 충격 발언
+2026-03-28 08:23:07,324 - main - INFO - Processing: [홍장원의 불앤베어] 트럼프 48시간 최후 통첩. 데드라인이 다가온다 (Zxmw_yLniB0)
+2026-03-28 08:23:08,348 - main - WARNING - No transcript for: [홍장원의 불앤베어] 트럼프 48시간 최후 통첩. 데드라인이 다가온다
+2026-03-28 08:23:08,348 - main - INFO - Processing: 트럼프, 결국 확전 택하나 "최후통첩"...이번 주 반도체 투톱 운명 달렸다 (ft.이선엽 AFW파트너스 대표) / 교양이를 부탁해 / 비디오머그 (IpN47sRcpMA)
+2026-03-28 08:23:09,364 - main - WARNING - No transcript for: 트럼프, 결국 확전 택하나 "최후통첩"...이번 주 반도체 투톱 운명 달렸다 (ft.이선엽 AFW파트너스 대표) / 교양이를 부탁해 / 비디오머그
+2026-03-28 08:23:09,364 - main - INFO - Processing: 트럼프의 48시간, 돌파구는? _ 차트온260322 (53KNrZgsZO0)
+2026-03-28 08:23:10,322 - main - WARNING - No transcript for: 트럼프의 48시간, 돌파구는? _ 차트온260322

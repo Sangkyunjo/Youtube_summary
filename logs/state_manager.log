@@ -308,3 +308,18 @@
 2026-03-24 22:44:46,073 - state_manager - INFO - Marked video as processed: PpM0WyBsZEU - [지식뉴스] "뒤로는 '최정예 지상군' 투입 준비"...트럼프, 이란 '공격 유예'의 진짜 이유 (ft.박현도 서강대 유로메나연구소 교수) / 교양이를 부탁해
 2026-03-24 22:44:55,882 - state_manager - INFO - Marked video as processed: 9hPUc10wpkw - 디자인 툴을 찾고 있다면? Paper is Hype Boy
 2026-03-24 22:45:38,613 - state_manager - INFO - Run completed: 13 videos processed, 0 errors
+2026-03-28 00:22:51,346 - state_manager - INFO - Run started
+2026-03-28 00:23:18,809 - state_manager - ERROR - Run failed: OPENAI_API_KEY not configured. Please set it in config/.env file.
+2026-03-28 08:19:24,134 - state_manager - INFO - Run started
+2026-03-28 08:20:03,889 - state_manager - INFO - Marked video as processed: PTXoak74DIk - [홍장원의 불앤베어] 이란은 호르무즈로 큰돈을 벌고 싶어한다.
+2026-03-28 08:20:23,411 - state_manager - INFO - Marked video as processed: _VRNFmvXYhc - [지식뉴스] 다카이치 "71% 역대 최고지지율"...일본, 트럼프 활용해 SMR·군수산업 장악 판 짰다 (ft.이창민 한국외대 교수) / 교양이를 부탁해
+2026-03-28 08:20:41,173 - state_manager - INFO - Marked video as processed: a4t-PH72T_w - [월가아재] 45년 파산 제로, 전설의 트레이더가 절대로 물타기 안 하는 이유 - 폴 튜더 존스 3부
+2026-03-28 08:21:01,643 - state_manager - INFO - Marked video as processed: MSruBtFmD6I - 지상전이냐, 휴전이냐? 10일 남은 중동의 운명 (박종훈의 지식한방)
+2026-03-28 08:21:15,119 - state_manager - INFO - Marked video as processed: sdwIBHlB_Z0 - 보고서 도표 30분 걸리던 게… 3초면 끝납니다
+2026-03-28 08:21:30,027 - state_manager - INFO - Marked video as processed: y5WgICHtmVA - 응급실 한 번에 400만원? 미국에서 아프면 파산하는 이유 | 매일뉴욕 스페셜 | 홍성용 특파원
+2026-03-28 08:21:44,922 - state_manager - INFO - Marked video as processed: 7ozueqcLWt0 - 혼자서 60만 줄… YC 대표의 AI 비밀 도구
+2026-03-28 08:21:58,170 - state_manager - INFO - Marked video as processed: fpXYIsXp_sg - 【미국 증시 오늘의 요약】 트럼프-이란 휴전 불발 우려에 증시 와르르… 유가 급등·국채금리 껑충    -  2026/03/26
+2026-03-28 08:22:16,963 - state_manager - INFO - Marked video as processed: uirNqqvuP_M - [홍장원의 불앤베어] 연은, 금리인상 가능성 슬슬 흘리나? 증시하락 빌미? 트럼프 "이란, 협상은 꽤 하네"
+2026-03-28 08:22:34,959 - state_manager - INFO - Marked video as processed: 6B9ljYC2R5k - [지식뉴스] "전쟁 빨리 끝내!" 미 경제 지금 어떻길래...트럼프가 갑자기 조급해진 진짜 이유 (ft.유신익 KB은행 WM 수석이코노미스트) / 교양이를 부탁해
+2026-03-28 08:22:51,081 - state_manager - INFO - Marked video as processed: 38vUiA0EaFs - 이란이 정상국가 되면 중동의 주인 바뀐다! 인남식 교수가 짚어낸 이스라엘의 공포 | 💡지식의발견 | 비디오머그
+2026-03-28 08:23:15,040 - state_manager - INFO - Run completed: 11 videos processed, 0 errors

@@ -1,8 +1,8 @@
 {
-  "last_run_time": "2026-03-24T22:45:38.612791",
+  "last_run_time": "2026-03-28T08:23:15.039420",
   "last_run_status": "success",
-  "current_run_start": "2026-03-24T22:41:34.899851",
-  "last_run_videos_processed": 13,
+  "current_run_start": "2026-03-28T08:19:24.133985",
+  "last_run_videos_processed": 11,
   "last_run_errors": 0,
   "last_run_error": "OPENAI_API_KEY not configured. Please set it in config/.env file."
 }
