@@ -87,13 +87,20 @@ Guidelines:
         self.provider = provider
 
         defaults = self.PROVIDER_DEFAULTS[provider]
-        provider_config = self.config.get(provider, {})
+        # `or {}` so an empty `minimax:` block in YAML (parsed as None) doesn't crash.
+        provider_config = self.config.get(provider) or {}
         self.model = provider_config.get("model", defaults["model"])
         self.max_tokens = provider_config.get("max_tokens", defaults["max_tokens"])
         base_url = provider_config.get("base_url", defaults["base_url"])
         api_key_env = defaults["api_key_env"]
 
-        api_key = get_env(api_key_env)
+        # Reject http:// to avoid leaking the API key over plaintext if config is tampered with.
+        if base_url and not base_url.startswith("https://"):
+            raise ValueError(
+                f"{provider}.base_url must use https:// (got: {base_url!r})"
+            )
+
+        api_key = (get_env(api_key_env) or "").strip()
         if not api_key or api_key.startswith("your_"):
             raise ValueError(
                 f"{api_key_env} not configured. "
@@ -105,7 +112,7 @@ Guidelines:
             client_kwargs["base_url"] = base_url
         self.client = openai.OpenAI(**client_kwargs)
         logger.info(
-            f"Summarizer initialized — provider: {self.provider}, "
+            f"Summarizer initialized - provider: {self.provider}, "
             f"model: {self.model}"
         )
 
@@ -128,7 +135,7 @@ Guidelines:
         """
         logger.info(f"Generating summary for: {title}")
 
-        # Truncate transcript if too long (Claude has context limits)
+        # Truncate transcript if too long (LLM context limits)
         max_transcript_length = 100000  # ~100k characters
         if len(transcript) > max_transcript_length:
             logger.warning(f"Transcript truncated from {len(transcript)} to {max_transcript_length} chars")
@@ -173,10 +180,10 @@ Guidelines:
 
     def _parse_response(self, response: str) -> dict:
         """
-        Parse the Claude response into sections.
+        Parse the LLM response into sections.
 
         Args:
-            response: Raw response text from Claude
+            response: Raw response text from the LLM
 
         Returns:
             Dictionary with parsed sections
