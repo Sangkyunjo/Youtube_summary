@@ -1,5 +1,6 @@
 """
-Summarization module using OpenAI API.
+Summarization module using an OpenAI-compatible LLM API.
+Supports MiniMax (default) and OpenAI providers via config.
 Generates structured summaries with overview, key points, quotes, and takeaways.
 """
 
@@ -13,7 +14,7 @@ logger = setup_logging("summarizer")
 
 
 class Summarizer:
-    """Generates video summaries using OpenAI API."""
+    """Generates video summaries via an OpenAI-compatible LLM API."""
 
     SYSTEM_PROMPT = """You are an expert content summarizer. Your task is to analyze video transcripts and create comprehensive, well-structured summaries.
 
@@ -60,21 +61,53 @@ Guidelines:
 - [요점 2]
 ..."""
 
+    PROVIDER_DEFAULTS = {
+        "minimax": {
+            "model": "MiniMax-M2.7",
+            "max_tokens": 4096,
+            "base_url": "https://api.minimax.io/v1",
+            "api_key_env": "MINIMAX_API_KEY",
+        },
+        "openai": {
+            "model": "gpt-4.1-mini",
+            "max_tokens": 4096,
+            "base_url": None,
+            "api_key_env": "OPENAI_API_KEY",
+        },
+    }
+
     def __init__(self):
         self.config = load_config()
-        openai_config = self.config.get("openai", {})
-        self.model = openai_config.get("model", "gpt-4.1-mini")
-        self.max_tokens = openai_config.get("max_tokens", 4096)
-
-        api_key = get_env("OPENAI_API_KEY")
-        if not api_key or api_key == "your_openai_api_key_here":
+        provider = self.config.get("llm", {}).get("provider", "minimax").lower()
+        if provider not in self.PROVIDER_DEFAULTS:
             raise ValueError(
-                "OPENAI_API_KEY not configured. "
+                f"Unsupported llm.provider '{provider}'. "
+                f"Supported: {list(self.PROVIDER_DEFAULTS)}"
+            )
+        self.provider = provider
+
+        defaults = self.PROVIDER_DEFAULTS[provider]
+        provider_config = self.config.get(provider, {})
+        self.model = provider_config.get("model", defaults["model"])
+        self.max_tokens = provider_config.get("max_tokens", defaults["max_tokens"])
+        base_url = provider_config.get("base_url", defaults["base_url"])
+        api_key_env = defaults["api_key_env"]
+
+        api_key = get_env(api_key_env)
+        if not api_key or api_key.startswith("your_"):
+            raise ValueError(
+                f"{api_key_env} not configured. "
                 "Please set it in config/.env file."
             )
 
-        self.client = openai.OpenAI(api_key=api_key)
-        logger.info(f"Summarizer initialized with model: {self.model}")
+        client_kwargs = {"api_key": api_key}
+        if base_url:
+            client_kwargs["base_url"] = base_url
+        self.client = openai.OpenAI(**client_kwargs)
+        logger.info(
+            f"Summarizer initialized — provider: {self.provider}, "
+            f"model: {self.model}"
+        )
 
     def summarize(
         self,
