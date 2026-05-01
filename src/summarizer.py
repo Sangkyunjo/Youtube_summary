@@ -157,6 +157,15 @@ Guidelines:
                 ]
             )
 
+            # MiniMax can return HTTP 200 with an error envelope and no choices;
+            # guard against indexing an empty list before unwrapping.
+            if not response.choices:
+                logger.error(
+                    f"LLM returned no choices for '{title}' "
+                    f"(model={self.model}, provider={self.provider})"
+                )
+                return None
+
             response_text = response.choices[0].message.content
             logger.info(f"Summary generated for: {title}")
 
