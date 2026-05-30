@@ -218,14 +218,18 @@ def run(limit: int | None = None, force: bool = False) -> dict:
         processed_count += 1
         logger.info("queue: wrote contract for %s (%s)", vid, title[:40])
 
-    # Archive fully-consumed queue files so they are not re-read each run.
-    archive = queue_dir / "_archive"
-    archive.mkdir(parents=True, exist_ok=True)
-    for qfile in queue_dir.glob("pending_*.jsonl"):
-        try:
-            qfile.rename(archive / qfile.name)
-        except OSError as e:
-            logger.warning("queue: could not archive %s: %s", qfile.name, e)
+    # Archive consumed queue files so they are not re-read each run — but ONLY
+    # on a full run. A limit-bounded run leaves unprocessed rows behind, so we
+    # keep the queue files for the next pass (already-done videos are skipped
+    # cheaply via StateManager / inbox existence).
+    if limit is None:
+        archive = queue_dir / "_archive"
+        archive.mkdir(parents=True, exist_ok=True)
+        for qfile in queue_dir.glob("pending_*.jsonl"):
+            try:
+                qfile.rename(archive / qfile.name)
+            except OSError as e:
+                logger.warning("queue: could not archive %s: %s", qfile.name, e)
 
     logger.info(
         "queue done: written=%d skipped=%d no_transcript=%d errors=%d",
