@@ -385,7 +385,37 @@ def main():
         help="Reprocess already-processed videos (historical mode only)"
     )
 
+    # Queue mode: consume NarrativeRadar's discovery work-queue and emit
+    # contract JSON into the shared inbox (no channel monitoring / no email).
+    parser.add_argument(
+        "--queue",
+        action="store_true",
+        help="Consume the NarrativeRadar work-queue → contract JSON inbox"
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Max videos to process in queue mode (default: all)"
+    )
+
     args = parser.parse_args()
+
+    # Handle queue mode (NarrativeRadar bridge)
+    if args.queue:
+        from queue_consumer import run as run_queue
+
+        print("\nYouTube Queue Consumer (NarrativeRadar bridge)")
+        print("=" * 50)
+        res = run_queue(limit=args.limit, force=args.reprocess)
+        print(f"Queued:        {res['queued']}")
+        print(f"Written:       {res['written']}")
+        print(f"Skipped:       {res['skipped']}")
+        print(f"No transcript: {res['no_transcript']}")
+        print(f"Errors:        {res['errors']}")
+        if res["errors"]:
+            sys.exit(1)
+        return
 
     # Handle historical mode
     if args.historical:
