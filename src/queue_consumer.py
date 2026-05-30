@@ -23,6 +23,7 @@ location works across both repos without config drift.
 import json
 import os
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -40,8 +41,15 @@ logger = setup_logging("queue_consumer")
 _DEFAULT_QUEUE = r"D:\OneDrive\Information\Explorer_Stock\youtube_queue"
 _DEFAULT_INBOX = r"D:\OneDrive\Information\Explorer_Stock\youtube_inbox"
 
-# Drop videos older than this (real published_at, resolved via yt-dlp). 0 = off.
+# Drop videos older than this (real published_at, from the official Data API
+# discovery row). 0 = off.
 _MAX_AGE_DAYS = int(os.getenv("NARRATIVES_YOUTUBE_MAX_AGE_DAYS", "30"))
+
+# Politeness delay between transcript fetches. The transcript path still uses
+# youtube-transcript-api (the only way to read third-party captions; the official
+# Data API can't), which IP-rate-limits on bursts — discovery moved to the
+# official API, but bulk transcript pulls must still be throttled. Tune via env.
+_REQUEST_DELAY = float(os.getenv("NARRATIVES_YOUTUBE_REQUEST_DELAY", "1.5"))
 
 
 def _too_old(published_at_iso: str) -> bool:
@@ -85,51 +93,6 @@ def _read_queue(queue_dir: Path) -> list[dict]:
             if vid:
                 by_id[vid] = row
     return list(by_id.values())
-
-
-def _fetch_video_meta(video_id: str) -> dict:
-    """Resolve real published_at / channel / title via yt-dlp (single video).
-
-    Flat search rows often lack the upload date, which the contract requires.
-    Returns {} on failure; caller falls back to whatever the queue row had.
-    """
-    try:
-        from yt_dlp import YoutubeDL
-    except ImportError:
-        logger.warning("yt-dlp not installed; cannot enrich video metadata")
-        return {}
-
-    opts = {"quiet": True, "no_warnings": True, "skip_download": True, "ignoreerrors": True}
-    try:
-        with YoutubeDL(opts) as ydl:
-            info = ydl.extract_info(f"https://youtu.be/{video_id}", download=False)
-    except Exception as e:  # noqa: BLE001
-        logger.warning("yt-dlp meta failed for %s: %s", video_id, e)
-        return {}
-    if not info:
-        return {}
-
-    published_at = None
-    ts = info.get("timestamp")
-    if ts:
-        published_at = datetime.fromtimestamp(int(ts), tz=timezone.utc).isoformat()
-    elif info.get("upload_date") and len(str(info["upload_date"])) == 8:
-        try:
-            published_at = (
-                datetime.strptime(str(info["upload_date"]), "%Y%m%d")
-                .replace(tzinfo=timezone.utc)
-                .isoformat()
-            )
-        except ValueError:
-            published_at = None
-
-    return {
-        "published_at": published_at,
-        "channel_id": info.get("channel_id") or info.get("uploader_id"),
-        "channel_title": info.get("channel") or info.get("uploader"),
-        "title": info.get("title"),
-        "url": info.get("webpage_url"),
-    }
 
 
 def _combined_summary(sections: dict) -> str:
@@ -184,12 +147,13 @@ def run(limit: int | None = None, force: bool = False) -> dict:
         if limit is not None and processed_count >= limit:
             break
 
-        meta = _fetch_video_meta(vid)
-        published_at = meta.get("published_at") or row.get("published_at")
-        channel_title = meta.get("channel_title") or row.get("channel_title") or "youtube"
-        channel_id = meta.get("channel_id") or row.get("channel_id")
-        title = meta.get("title") or row.get("title") or vid
-        url = meta.get("url") or row.get("url") or f"https://youtu.be/{vid}"
+        # Metadata comes straight from the official Data API discovery row
+        # (published_at / channel / title) — no per-video scraping needed.
+        published_at = row.get("published_at")
+        channel_title = row.get("channel_title") or "youtube"
+        channel_id = row.get("channel_id")
+        title = row.get("title") or vid
+        url = row.get("url") or f"https://youtu.be/{vid}"
 
         if not published_at:
             # Required by the contract; without it the ingest side would DLQ.
@@ -198,16 +162,16 @@ def run(limit: int | None = None, force: bool = False) -> dict:
             published_at = datetime.now(timezone.utc).isoformat()
             logger.warning("queue: no published_at for %s; using now() (phase risk)", vid)
         elif _too_old(published_at):
-            # Discovery's max_age guard is ineffective for keyword search (flat
-            # metadata lacks the upload date), so ancient videos leak through.
-            # Enforce the age cap HERE, where the real published_at is known,
-            # before paying for transcript + summary. Mark processed so the same
-            # old video isn't re-summarized every run.
+            # Defensive age cap (discovery already filters via publishedAfter, but
+            # a stale queue file could still carry old rows). Mark processed so the
+            # same old video isn't re-summarized every run.
             logger.info("queue: %s too old (%s) — skipping", vid, published_at[:10])
             state.mark_video_processed(vid, title, channel_title, summary_file="", published_date=published_at[:10])
             result["too_old"] += 1
             continue
 
+        if _REQUEST_DELAY > 0:
+            time.sleep(_REQUEST_DELAY)  # throttle transcript requests to avoid IP rate-limit
         transcript, status = extractor.extract_with_status(vid)
         if status == "blocked":
             # YouTube rate-limited us. Every subsequent fetch will fail too, and
