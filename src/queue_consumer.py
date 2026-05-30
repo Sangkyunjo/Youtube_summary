@@ -6,8 +6,8 @@ contract JSON it can ingest into `narratives.raw_messages`.
 
 Flow:
   [DataConductor] youtube discover  → queue_dir/pending_<date>.jsonl
-  [this module]   read queue → transcript (TranscriptExtractor)
-                              → summary (Summarizer)
+  [this module]   read queue → transcript (Whisper STT by default; see
+                                _make_transcriber) → summary (Summarizer)
                               → inbox_dir/<video_id>.json   (contract schema)
   [DataConductor] collect youtube   → raw_messages
 
@@ -31,7 +31,6 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from utils import setup_logging
 from state_manager import StateManager
-from transcript_extractor import TranscriptExtractor
 from summarizer import Summarizer
 
 logger = setup_logging("queue_consumer")
@@ -50,6 +49,25 @@ _MAX_AGE_DAYS = int(os.getenv("NARRATIVES_YOUTUBE_MAX_AGE_DAYS", "30"))
 # Data API can't), which IP-rate-limits on bursts — discovery moved to the
 # official API, but bulk transcript pulls must still be throttled. Tune via env.
 _REQUEST_DELAY = float(os.getenv("NARRATIVES_YOUTUBE_REQUEST_DELAY", "1.5"))
+
+# Transcript backend: "whisper" (audio download → OpenAI Whisper, avoids the
+# caption-endpoint IP block) or "captions" (youtube-transcript-api). Default
+# whisper. Both expose extract_with_status(video_id) -> (text, status).
+_TRANSCRIBER = os.getenv("NARRATIVES_YOUTUBE_TRANSCRIBER", "whisper").lower()
+
+
+def _make_transcriber():
+    if _TRANSCRIBER == "captions":
+        from transcript_extractor import TranscriptExtractor
+        t = TranscriptExtractor()
+        # Older extractor has no engine/model attrs; default them for the contract.
+        if not hasattr(t, "engine"):
+            t.engine = "youtube-transcript-api"
+        if not hasattr(t, "model"):
+            t.model = None
+        return t
+    from whisper_transcript import WhisperTranscriber
+    return WhisperTranscriber()
 
 
 def _too_old(published_at_iso: str) -> bool:
@@ -125,7 +143,8 @@ def run(limit: int | None = None, force: bool = False) -> dict:
     queue_dir = _queue_dir()
     inbox_dir = _inbox_dir()
     state = StateManager()
-    extractor = TranscriptExtractor()
+    extractor = _make_transcriber()
+    logger.info("queue: transcript backend = %s (engine=%s)", _TRANSCRIBER, getattr(extractor, "engine", "?"))
     summarizer: Summarizer | None = None
 
     rows = _read_queue(queue_dir)
@@ -210,7 +229,8 @@ def run(limit: int | None = None, force: bool = False) -> dict:
             "published_at": published_at,
             "summary": summary_text,
             "discovery": row.get("discovery") or {"mode": "unknown", "query": None},
-            "stt": {"engine": "youtube-transcript-api", "model": None, "lang": "ko"},
+            "stt": {"engine": getattr(extractor, "engine", "youtube-transcript-api"),
+                    "model": getattr(extractor, "model", None), "lang": "ko"},
             "summary_meta": {
                 "source_char_len": len(transcript),
                 "summary_char_len": len(summary_text),
