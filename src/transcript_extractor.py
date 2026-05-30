@@ -16,7 +16,9 @@ from youtube_transcript_api._errors import (
     TranscriptsDisabled,
     NoTranscriptFound,
     VideoUnavailable,
-    CouldNotRetrieveTranscript
+    CouldNotRetrieveTranscript,
+    IpBlocked,
+    RequestBlocked,
 )
 
 from utils import load_config, setup_logging
@@ -74,17 +76,28 @@ class TranscriptExtractor:
         return None
 
     def extract(self, video_id: str) -> Optional[str]:
-        """
-        Extract transcript from a YouTube video.
+        """Extract transcript text, or None if unavailable (any reason)."""
+        return self.extract_with_status(video_id)[0]
 
-        Args:
-            video_id: YouTube video ID
+    def extract_with_status(self, video_id: str) -> tuple[Optional[str], str]:
+        """Extract transcript and classify the outcome.
 
-        Returns:
-            Transcript text or None if unavailable
+        Returns ``(text, status)`` where status is one of:
+          - ``"ok"``          : transcript text returned
+          - ``"no_captions"`` : video genuinely has no usable transcript
+                                (disabled / none found / unavailable) — permanent
+          - ``"blocked"``     : YouTube rate-limited / IP-blocked us — TRANSIENT,
+                                the caller should back off, NOT mark the video done
+          - ``"error"``       : other transient failure — caller may retry later
+
+        Distinguishing ``blocked`` from ``no_captions`` matters: a caller that
+        marks "no transcript" as permanently processed would otherwise silently
+        drop every video hit during an IP block.
         """
         logger.info(f"Extracting transcript for video: {video_id}")
 
+        # Block detection must come before the generic CouldNotRetrieveTranscript
+        # handler, since IpBlocked/RequestBlocked subclass it.
         try:
             # Get list of available transcripts
             transcript_list = self.api.list(video_id)
@@ -113,7 +126,7 @@ class TranscriptExtractor:
 
             if transcript is None:
                 logger.warning(f"No transcript available for {video_id}")
-                return None
+                return None, "no_captions"
 
             # Fetch the transcript data
             transcript_data = transcript.fetch()
@@ -125,20 +138,23 @@ class TranscriptExtractor:
             full_text = self._clean_transcript(full_text)
 
             logger.info(f"Extracted transcript for {video_id}: {len(full_text)} characters")
-            return full_text
+            return full_text, "ok"
 
+        except (IpBlocked, RequestBlocked) as e:
+            logger.warning(f"YouTube blocked transcript request for {video_id} ({type(e).__name__})")
+            return None, "blocked"
         except TranscriptsDisabled:
             logger.warning(f"Transcripts are disabled for video: {video_id}")
-            return None
-        except VideoUnavailable:
-            logger.warning(f"Video unavailable: {video_id}")
-            return None
+            return None, "no_captions"
+        except (NoTranscriptFound, VideoUnavailable):
+            logger.warning(f"Video unavailable / no transcript: {video_id}")
+            return None, "no_captions"
         except CouldNotRetrieveTranscript as e:
             logger.warning(f"Could not retrieve transcript for video {video_id} ({type(e).__name__}): {e}")
-            return None
+            return None, "error"
         except Exception as e:
             logger.error(f"Error extracting transcript for {video_id} ({type(e).__name__}): {e}")
-            return None
+            return None, "error"
 
     def _clean_transcript(self, text: str) -> str:
         """
