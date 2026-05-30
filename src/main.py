@@ -411,8 +411,14 @@ def main():
         print(f"Queued:        {res['queued']}")
         print(f"Written:       {res['written']}")
         print(f"Skipped:       {res['skipped']}")
-        print(f"No transcript: {res['no_transcript']}")
+        print(f"No captions:   {res['no_transcript']}")
+        print(f"Too old:       {res.get('too_old', 0)}")
         print(f"Errors:        {res['errors']}")
+        if res.get("blocked"):
+            print("\n⚠ Aborted early: YouTube IP-blocked transcript requests.")
+            print("  Remaining videos are still queued. Retry later, or configure a")
+            print("  cookie_file / proxy under transcript: in config/config.yaml.")
+            sys.exit(2)
         if res["errors"]:
             sys.exit(1)
         return

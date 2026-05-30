@@ -23,7 +23,7 @@ location works across both repos without config drift.
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -39,6 +39,21 @@ logger = setup_logging("queue_consumer")
 # env on either side to relocate; both repos read these identical vars.
 _DEFAULT_QUEUE = r"D:\OneDrive\Information\Explorer_Stock\youtube_queue"
 _DEFAULT_INBOX = r"D:\OneDrive\Information\Explorer_Stock\youtube_inbox"
+
+# Drop videos older than this (real published_at, resolved via yt-dlp). 0 = off.
+_MAX_AGE_DAYS = int(os.getenv("NARRATIVES_YOUTUBE_MAX_AGE_DAYS", "30"))
+
+
+def _too_old(published_at_iso: str) -> bool:
+    if _MAX_AGE_DAYS <= 0:
+        return False
+    try:
+        pub = datetime.fromisoformat(published_at_iso)
+    except ValueError:
+        return False
+    if pub.tzinfo is None:
+        pub = pub.replace(tzinfo=timezone.utc)
+    return pub < datetime.now(timezone.utc) - timedelta(days=_MAX_AGE_DAYS)
 
 
 def _queue_dir() -> Path:
@@ -151,10 +166,12 @@ def run(limit: int | None = None, force: bool = False) -> dict:
     summarizer: Summarizer | None = None
 
     rows = _read_queue(queue_dir)
-    result = {"queued": len(rows), "written": 0, "skipped": 0, "no_transcript": 0, "errors": 0}
+    result = {"queued": len(rows), "written": 0, "skipped": 0,
+              "no_transcript": 0, "too_old": 0, "errors": 0, "blocked": False}
     logger.info("queue: %d unique videos pending", len(rows))
 
     processed_count = 0
+    blocked = False
     for row in rows:
         vid = row["video_id"]
 
@@ -180,12 +197,35 @@ def run(limit: int | None = None, force: bool = False) -> dict:
             # mis-bucket the Emergence phase, so it should be rare.
             published_at = datetime.now(timezone.utc).isoformat()
             logger.warning("queue: no published_at for %s; using now() (phase risk)", vid)
+        elif _too_old(published_at):
+            # Discovery's max_age guard is ineffective for keyword search (flat
+            # metadata lacks the upload date), so ancient videos leak through.
+            # Enforce the age cap HERE, where the real published_at is known,
+            # before paying for transcript + summary. Mark processed so the same
+            # old video isn't re-summarized every run.
+            logger.info("queue: %s too old (%s) — skipping", vid, published_at[:10])
+            state.mark_video_processed(vid, title, channel_title, summary_file="", published_date=published_at[:10])
+            result["too_old"] += 1
+            continue
 
-        transcript = extractor.extract(vid)
-        if not transcript:
-            logger.info("queue: no transcript for %s — marking processed (skip)", vid)
+        transcript, status = extractor.extract_with_status(vid)
+        if status == "blocked":
+            # YouTube rate-limited us. Every subsequent fetch will fail too, and
+            # marking them "processed" would silently drop them. Stop now and
+            # leave the rest of the queue intact for a later retry.
+            logger.warning("queue: YouTube IP-blocked at %s — aborting run, %d left", vid, len(rows) - processed_count)
+            blocked = True
+            break
+        if status == "no_captions":
+            # Genuinely no transcript — permanent, mark done so we don't retry.
+            logger.info("queue: no captions for %s — marking processed (skip)", vid)
             state.mark_video_processed(vid, title, channel_title, summary_file="", published_date=published_at[:10])
             result["no_transcript"] += 1
+            continue
+        if status == "error" or not transcript:
+            # Transient non-block failure — do NOT mark processed; retry next run.
+            logger.warning("queue: transient transcript error for %s — will retry", vid)
+            result["errors"] += 1
             continue
 
         if summarizer is None:
@@ -218,11 +258,13 @@ def run(limit: int | None = None, force: bool = False) -> dict:
         processed_count += 1
         logger.info("queue: wrote contract for %s (%s)", vid, title[:40])
 
+    result["blocked"] = blocked
+
     # Archive consumed queue files so they are not re-read each run — but ONLY
-    # on a full run. A limit-bounded run leaves unprocessed rows behind, so we
-    # keep the queue files for the next pass (already-done videos are skipped
-    # cheaply via StateManager / inbox existence).
-    if limit is None:
+    # on a full, un-blocked run. A limit-bounded or IP-blocked run leaves
+    # unprocessed rows behind, so we keep the queue files for the next pass
+    # (already-done videos are skipped cheaply via StateManager / inbox).
+    if limit is None and not blocked:
         archive = queue_dir / "_archive"
         archive.mkdir(parents=True, exist_ok=True)
         for qfile in queue_dir.glob("pending_*.jsonl"):
@@ -232,7 +274,7 @@ def run(limit: int | None = None, force: bool = False) -> dict:
                 logger.warning("queue: could not archive %s: %s", qfile.name, e)
 
     logger.info(
-        "queue done: written=%d skipped=%d no_transcript=%d errors=%d",
-        result["written"], result["skipped"], result["no_transcript"], result["errors"],
+        "queue done: written=%d skipped=%d no_captions=%d errors=%d blocked=%s",
+        result["written"], result["skipped"], result["no_transcript"], result["errors"], blocked,
     )
     return result
