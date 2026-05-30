@@ -59,10 +59,13 @@ class WhisperTranscriber:
         # Force the real OpenAI endpoint (the Summarizer may point at Qwen/MiniMax).
         self.client = openai.OpenAI(api_key=api_key)
 
-        # Reuse the same cookie file the caption extractor uses, if configured —
-        # helps audio downloads that need a logged-in session.
+        # Cookie file for the authenticated download YouTube now requires.
+        # Precedence: NARRATIVES_YOUTUBE_COOKIE_FILE env > transcript.cookie_file
+        # in config.yaml (default config/youtube_cookies.txt). The env override
+        # lets the cookie live outside the (synced) repo without editing config.
         tcfg = config.get("transcript", {}) or {}
-        self.cookie_file = self._resolve_cookie(tcfg.get("cookie_file"))
+        cookie_path = os.getenv("NARRATIVES_YOUTUBE_COOKIE_FILE") or tcfg.get("cookie_file")
+        self.cookie_file = self._resolve_cookie(cookie_path)
         logger.info("WhisperTranscriber ready (model=%s)", self.model)
 
     @staticmethod
