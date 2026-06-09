@@ -87,9 +87,12 @@ class WhisperTranscriber:
             "quiet": True,
             "no_warnings": True,
             "noplaylist": True,
-            # The default `web` client now needs PO tokens and 403s on media URLs.
-            # Mobile/TV clients usually serve downloadable formats unauthenticated.
-            "extractor_args": {"youtube": {"player_client": ["web", "ios", "tv"]}},
+            # The default `web` client now needs PO tokens and 403s on media URLs,
+            # and `web`/`ios`/`tv` now hand back DRM-protected streams for many
+            # videos → "Requested format is not available". The `android` client
+            # still serves downloadable, non-DRM formats unauthenticated, so try it
+            # first and keep the others as fallbacks.
+            "extractor_args": {"youtube": {"player_client": ["android", "web", "ios", "tv"]}},
             "retries": 3,
         }
         if _COOKIES_FROM_BROWSER:
