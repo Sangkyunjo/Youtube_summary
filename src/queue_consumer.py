@@ -245,10 +245,12 @@ def run(limit: int | None = None, force: bool = False) -> dict:
     result["blocked"] = blocked
 
     # Archive consumed queue files so they are not re-read each run — but ONLY
-    # on a full, un-blocked run. A limit-bounded or IP-blocked run leaves
-    # unprocessed rows behind, so we keep the queue files for the next pass
-    # (already-done videos are skipped cheaply via StateManager / inbox).
-    if limit is None and not blocked:
+    # on a full, un-blocked run that left no retryable work behind. A
+    # limit-bounded run, an IP-blocked run, OR a run with transient transcript
+    # errors leaves unprocessed rows behind, so we keep the queue files for the
+    # next pass (already-done videos are skipped cheaply via StateManager /
+    # inbox; only the errored ones get retried).
+    if limit is None and not blocked and result["errors"] == 0:
         archive = queue_dir / "_archive"
         archive.mkdir(parents=True, exist_ok=True)
         for qfile in queue_dir.glob("pending_*.jsonl"):

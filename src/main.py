@@ -419,7 +419,12 @@ def main():
             print("  Remaining videos are still queued. Retry later, or configure a")
             print("  cookie_file / proxy under transcript: in config/config.yaml.")
             sys.exit(2)
-        if res["errors"]:
+        # Per-video transient errors are expected (and retried next run, since the
+        # queue file is now retained when errors>0). Only fail the whole job when
+        # NOTHING was written despite errors — i.e. the entire batch failed —
+        # so a partial-success run (e.g. 37 written / 5 errored) is not marked
+        # FAILED in Airflow.
+        if res["errors"] and res["written"] == 0:
             sys.exit(1)
         return
 
