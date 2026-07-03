@@ -2,10 +2,10 @@
 
 ## Project Overview
 
-YouTube channel monitor that extracts transcripts and summarizes videos using the OpenAI API, then emails a daily digest.
+YouTube channel monitor that extracts transcripts and summarizes videos using an OpenAI-compatible LLM API, then emails a daily digest.
 
-**LLM:** OpenAI GPT (currently `gpt-4.1-mini`) — configured in `config/config.yaml`
-**API key env vars (in `config/.env`):** `OPENAI_API_KEY`, `YOUTUBE_API_KEY`
+**LLM:** Qwen (Alibaba) — currently `qwen-plus` via the DashScope OpenAI-compatible endpoint. Provider is selectable in `config/config.yaml` under `llm.provider` (`qwen` default, `minimax`, or `openai`).
+**API key env vars (in `config/.env`):** provider key (`QWEN_API_KEY` / `MINIMAX_API_KEY` / `OPENAI_API_KEY`) + `YOUTUBE_API_KEY`
 
 ---
 
@@ -48,14 +48,18 @@ All components are initialized in `YouTubeSummarySystem.__init__()` in `main.py`
 
 ## LLM Integration (summarizer.py)
 
-- Uses `openai.OpenAI` client
-- Model configured via `config/config.yaml` under `openai.model`
-- API key read from env var `OPENAI_API_KEY`
+- Uses the `openai.OpenAI` client against a provider-specific `base_url` (all three providers expose OpenAI-compatible endpoints)
+- Provider selected via `config/config.yaml` → `llm.provider` (`qwen` default, `minimax`, `openai`)
+- Per-provider `model` / `max_tokens` / `base_url` live under a block named for the provider (`qwen:`, `minimax:`, `openai:`); `PROVIDER_DEFAULTS` in `summarizer.py` supplies fallbacks and the API-key env var
+- API key read from the provider's env var: `QWEN_API_KEY` / `MINIMAX_API_KEY` / `OPENAI_API_KEY`
 - Transcripts > 100,000 chars are truncated before sending
 - Response is parsed into 4 sections: overview, key_points, quotes, takeaways
-- To change the model: edit `config/config.yaml` → `openai.model`
+- To change the model: edit the active provider's `model` in `config/config.yaml` (e.g. `qwen.model`). To switch providers: change `llm.provider`
 
-Available models: `gpt-4.1-mini`, `gpt-4.1`, `gpt-4o-mini`, `gpt-4o`
+Available models by provider:
+- **qwen** (current): `qwen-max`, `qwen-plus` (current), `qwen-turbo`, `qwen-flash`
+- **minimax**: `MiniMax-M2.7`, `MiniMax-M2`, `MiniMax-M1`, `MiniMax-Text-01`
+- **openai**: `gpt-4.1-mini`, `gpt-4.1`, `gpt-4o-mini`, `gpt-4o`
 
 ---
 
@@ -78,7 +82,8 @@ python main.py --historical --channel @handle --start-date YYYY-MM-DD --end-date
 
 ## Config Locations
 
-- Model selection: `config/config.yaml` → `openai.model`
+- Provider selection: `config/config.yaml` → `llm.provider`
+- Model selection: `config/config.yaml` → `<provider>.model` (e.g. `qwen.model`)
 - Channels: `config/channels.yaml` → `channels:` list
 - Summary output path: `config/config.yaml` → `paths.summaries_dir`
 - Schedule time: `config/config.yaml` → `schedule.run_time`
