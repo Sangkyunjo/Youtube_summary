@@ -219,3 +219,96 @@
 ### [2026-03-24 23:23:48] Committed
 - **Action:** Git Commit
 - **Message:** (git commit)
+
+### [2026-06-22 22:30:23] Edited: `src/summarizer.py`
+- **Action:** Edited
+- **File:** `src/summarizer.py`
+
+### [2026-06-22 22:30:47] Edited: `config/config.yaml`
+- **Action:** Edited
+- **File:** `config/config.yaml`
+
+### [2026-06-22 22:32:32] Created: `scripts/sample_qwen_run.py`
+- **Action:** Created
+- **File:** `scripts/sample_qwen_run.py`
+
+### [2026-06-22 22:33:24] Edited: `scripts/sample_qwen_run.py`
+- **Action:** Edited
+- **File:** `scripts/sample_qwen_run.py`
+
+### [2026-06-22 22:33:59] Edited: `scripts/sample_qwen_run.py`
+- **Action:** Edited
+- **File:** `scripts/sample_qwen_run.py`
+
+### [2026-06-23 08:12:25] Created: `C:/Users/trill/AppData/Local/Temp/claude/C--Users-trill-Youtube-summary/00cbd57b-0f2c-41d1-b4e9-56f259dc1f34/scratchpad/real_qwen_run.py`
+- **Action:** Created
+- **File:** `C:/Users/trill/AppData/Local/Temp/claude/C--Users-trill-Youtube-summary/00cbd57b-0f2c-41d1-b4e9-56f259dc1f34/scratchpad/real_qwen_run.py`
+
+### [2026-06-23 08:52:59] Created: `C:/Users/trill/AppData/Local/Temp/claude/C--Users-trill-Youtube-summary/00cbd57b-0f2c-41d1-b4e9-56f259dc1f34/scratchpad/save_result.py`
+- **Action:** Created
+- **File:** `C:/Users/trill/AppData/Local/Temp/claude/C--Users-trill-Youtube-summary/00cbd57b-0f2c-41d1-b4e9-56f259dc1f34/scratchpad/save_result.py`
+
+### [2026-06-23 09:00:04] Edited: `src/main.py`
+- **Action:** Edited
+- **File:** `src/main.py`
+
+### [2026-06-23 09:00:27] Edited: `src/main.py`
+- **Action:** Edited
+- **File:** `src/main.py`
+
+### [2026-06-23 09:00:44] Edited: `src/main.py`
+- **Action:** Edited
+- **File:** `src/main.py`
+
+### [2026-06-23 09:01:21] Edited: `config/config.yaml`
+- **Action:** Edited
+- **File:** `config/config.yaml`
+
+### [2026-06-27 19:56:28] Edited: `src/whisper_transcript.py`
+- **Action:** Edited
+- **File:** `src/whisper_transcript.py`
+
+### [2026-06-27 19:56:52] Edited: `src/whisper_transcript.py`
+- **Action:** Edited
+- **File:** `src/whisper_transcript.py`
+
+### [2026-06-27 19:57:24] Edited: `src/whisper_transcript.py`
+- **Action:** Edited
+- **File:** `src/whisper_transcript.py`
+
+### [2026-06-27 19:59:25] Edited: `src/whisper_transcript.py`
+- **Action:** Edited
+- **File:** `src/whisper_transcript.py`
+
+### [2026-06-27 19:59:41] Edited: `src/whisper_transcript.py`
+- **Action:** Edited
+- **File:** `src/whisper_transcript.py`
+
+### [2026-06-27 19:59:56] Edited: `src/whisper_transcript.py`
+- **Action:** Edited
+- **File:** `src/whisper_transcript.py`
+
+### [2026-06-27 20:37:46] Committed
+- **Action:** Git Commit
+- **Message:** (git commit)
+
+### [2026-07-03 23:26:19] Edited: `CLAUDE.md`
+- **Action:** Edited
+- **File:** `CLAUDE.md`
+
+### [2026-07-03 23:26:49] Edited: `CLAUDE.md`
+- **Action:** Edited
+- **File:** `CLAUDE.md`
+
+### [2026-07-03 23:27:10] Edited: `CLAUDE.md`
+- **Action:** Edited
+- **File:** `CLAUDE.md`
+
+### [2026-07-03 23:39:13] Committed
+- **Action:** Git Commit
+- **Message:** (git commit)
+
+### [2026-07-04] docs: document multi-provider LLM setup with qwen-plus
+- **Action:** Documentation update (`CLAUDE.md`)
+- **Commit:** `04bfc23`
+- **Details:** Corrected CLAUDE.md to reflect the actual summarizer — provider-selectable LLMs (`qwen` default, `minimax`, `openai`) via OpenAI-compatible endpoints, currently `qwen-plus`. Updated the project overview, LLM Integration, and Config Locations sections to match `config/config.yaml` (`llm.provider`) and `summarizer.py` (`PROVIDER_DEFAULTS`). Previously described as OpenAI `gpt-4.1-mini`.
