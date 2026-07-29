@@ -1,3 +1,30 @@
+"""RETIRED 2026-07-29 — do not re-enable without reading this.
+
+Parked here (and excluded via ../.airflowignore) rather than deleted, because
+the collectors it calls are still live code in WarAlarm.
+
+Why it never worked: it imports WarAlarm's backend into the *Airflow*
+interpreter, and that backend is SQLAlchemy 2.0 code
+(`from sqlalchemy.orm import DeclarativeBase`). Airflow 2.8 hard-pins
+SQLAlchemy <2.0, and `DeclarativeBase` simply does not exist there — unlike
+the FinanceHub collectors, whose 2.0 idioms could be bridged with
+`future=True` + a pandas pin, this one cannot be bridged at all without
+rewriting WarAlarm's ORM base.
+
+Result: every run failed from the start. 1,111 failures per task across six
+tasks, hourly, with zero successes ever recorded — the DAG had no working run
+in its entire history.
+
+It was also redundant. WarAlarm collection already runs through DataConductor
+job WAR-01, which POSTs /api/v1/collect/trigger and lets the celery worker do
+the work inside WarAlarm's own image, where SQLAlchemy 2.0 is installed. That
+path works; this one duplicated it and could not.
+
+To revive: run the collectors in an image that carries SQLAlchemy 2.0 (the
+same reasoning behind docker-compose.collector.yml for FinanceHub), never by
+importing them into the Airflow interpreter.
+"""
+
 """
 SENTINEL Collection DAG — Runs data collectors on schedule and computes threat scores.
 Integrates with the WarAlarm/SENTINEL backend.
