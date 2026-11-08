@@ -4,6 +4,8 @@ Orchestrates all components: monitoring, extraction, summarization, and notifica
 """
 
 import sys
+import json
+import time
 import argparse
 from datetime import datetime
 from pathlib import Path
@@ -25,6 +27,8 @@ from transcript_extractor import TranscriptExtractor
 from summarizer import Summarizer
 from email_notifier import EmailNotifier
 from scheduler import Scheduler
+from realtime_fallback import PlaybackQueue, enabled as realtime_enabled
+from transcript_acquisition import from_extractor, from_job, summary_metadata, write_metadata
 
 logger = setup_logging("main")
 
@@ -40,6 +44,8 @@ class YouTubeSummarySystem:
         self.summarizer = None  # Initialized on demand
         self.email_notifier = EmailNotifier()
         self.scheduler = Scheduler(self.state_manager)
+        self.playback = PlaybackQueue() if realtime_enabled() else None
+        self._captions_blocked = False
 
     def _ensure_summarizer(self):
         """Initialize summarizer on demand."""
@@ -72,13 +78,35 @@ class YouTubeSummarySystem:
         logger.info(f"Processing: {video.title} ({video.video_id})")
 
         # Extract transcript
-        transcript = self.transcript_extractor.extract(video.video_id)
+        job = self.playback.get(video.video_id) if self.playback else None
+        if job and job['status'] == 'ready':
+            transcript, status = job['transcript'], 'ok'
+        elif job and job['status'] == 'recording':
+            transcript, status = None, 'deferred'
+        elif self._captions_blocked and self.playback:
+            transcript, status = None, 'blocked'
+        else:
+            transcript, status = self.transcript_extractor.extract_with_status(video.video_id)
+        if status == 'blocked':
+            self._captions_blocked = True
+        if self.playback and status in {'blocked', 'no_captions', 'deferred'}:
+            self.playback.enqueue({
+                'video_id': video.video_id, 'title': video.title,
+                'channel_title': video.channel_name, 'channel_id': video.channel_id,
+                'channel_handle': video.channel_handle,
+                'published_at': video.published_date.isoformat(), 'url': video.url,
+            }, f'captions_{status}', 'daily')
+            result['error'] = 'Awaiting realtime playback'
+            result['next_action'] = self.playback.get(video.video_id)['next_action']
+            return result
         if not transcript:
-            result["error"] = "No transcript available"
-            logger.warning(f"No transcript for: {video.title}")
+            result['error'] = ('No transcript available' if status in {'no_captions', 'unavailable'}
+                               else f'Transcript {status}')
+            logger.warning('Transcript unavailable for %s: %s', video.video_id, status)
             return result
 
         # Generate summary
+        source = from_job(job) if job and job['status'] == 'ready' else from_extractor(self.transcript_extractor)
         self._ensure_summarizer()
         sections = self.summarizer.summarize(
             transcript=transcript,
@@ -99,6 +127,8 @@ class YouTubeSummarySystem:
             url=video.url,
             sections=sections
         )
+        metadata = summary_metadata(video.video_id, transcript, sections, source)
+        summary_text += '\n검수 상태: 확인 대기 (발언자·고유명사·수치 대조 필요)\n'
 
         # Save summary file
         filename = generate_summary_filename(
@@ -111,11 +141,19 @@ class YouTubeSummarySystem:
         try:
             with open(summary_path, "w", encoding="utf-8") as f:
                 f.write(summary_text)
+            metadata_path = write_metadata(summary_path, metadata)
 
             result["success"] = True
             result["summary_file"] = filename
             result["summary_path"] = str(summary_path)
+            result['metadata_path'] = str(metadata_path)
+            result['acquisition'] = source['source']
+            result['review'] = metadata['review']
             logger.info(f"Summary saved: {summary_path}")
+            if job and job['status'] == 'ready':
+                self.playback.delivered(video.video_id, 'daily', summary_path)
+            elif job:
+                self.playback.recover_with_captions(video.video_id, transcript, 'daily', summary_path, source)
 
             # Mark as processed
             self.state_manager.mark_video_processed(
@@ -148,6 +186,7 @@ class YouTubeSummarySystem:
             "videos_found": 0,
             "videos_processed": 0,
             "videos_skipped": 0,
+            "videos_deferred": 0,
             "errors": 0,
             "processed_videos": [],
             "email_sent": False
@@ -196,6 +235,8 @@ class YouTubeSummarySystem:
                         "summary_path": result.get("summary_path"),
                         "published_date": video.published_date.strftime("%Y-%m-%d")
                     })
+                elif result["error"] == "Awaiting realtime playback":
+                    run_result["videos_deferred"] += 1
                 elif result["error"] == "No transcript available":
                     run_result["videos_skipped"] += 1
                 else:
@@ -211,7 +252,8 @@ class YouTubeSummarySystem:
             # Record completion
             self.state_manager.record_run_complete(
                 videos_processed=run_result["videos_processed"],
-                errors=run_result["errors"]
+                errors=run_result["errors"],
+                deferred=run_result["videos_deferred"]
             )
 
             # Cleanup old state entries periodically
@@ -228,6 +270,46 @@ class YouTubeSummarySystem:
 
         run_result["end_time"] = datetime.now().isoformat()
         return run_result
+
+    @staticmethod
+    def video_from_job(job) -> VideoInfo:
+        row = job['payload']
+        return VideoInfo(
+            video_id=row['video_id'], title=row['title'],
+            channel_name=row['channel_title'], channel_id=row.get('channel_id') or '',
+            published_date=datetime.fromisoformat(row['published_at'].replace('Z', '+00:00')),
+            url=row['url'], channel_handle=row.get('channel_handle'))
+
+    def resume_realtime(self):
+        from queue_consumer import _REQUEST_DELAY, drop_expired_jobs
+
+        results = []
+        if self.playback:
+            drop_expired_jobs(self.playback)
+            for job in self.playback.ready('daily') + self.playback.waiting('daily'):
+                if job['status'] != 'ready':
+                    if self._captions_blocked:
+                        break
+                    time.sleep(_REQUEST_DELAY)
+                results.append(self.process_video(self.video_from_job(job)))
+        return results
+
+    def deliver_ready(self, video_ids: set) -> dict:
+        """Summarize played-back videos into the NarrativeRadar inbox and summaries/."""
+        from queue_consumer import run as run_queue
+
+        # A manually imported UI transcript may originally have only a narrative
+        # destination. An explicit delivery request also asks for the daily file.
+        for vid in video_ids:
+            job = self.playback.get(vid) if self.playback else None
+            if job and job['status'] == 'ready':
+                self.playback.enqueue(job['payload'], job['reason'], 'daily')
+        queue_result = run_queue(only=video_ids)
+        daily = [self.process_video(self.video_from_job(job))
+                 for job in self.playback.ready('daily') if job['video_id'] in video_ids]
+        return {"narrative_written": queue_result["written"],
+                "daily_written": sum(r["success"] for r in daily),
+                "errors": queue_result["errors"] + sum(not r["success"] for r in daily)}
 
     def run_historical(
         self,
@@ -261,6 +343,7 @@ class YouTubeSummarySystem:
             "videos_found": 0,
             "videos_processed": 0,
             "videos_skipped": 0,
+            "videos_deferred": 0,
             "errors": 0,
             "processed_videos": [],
             "email_sent": False
@@ -307,6 +390,8 @@ class YouTubeSummarySystem:
                     "summary_path": result.get("summary_path"),
                     "published_date": video.published_date.strftime("%Y-%m-%d")
                 })
+            elif result["error"] == "Awaiting realtime playback":
+                run_result["videos_deferred"] += 1
             elif result["error"] == "No transcript available":
                 run_result["videos_skipped"] += 1
             else:
@@ -399,7 +484,31 @@ def main():
         help="Max videos to process in queue mode (default: all)"
     )
 
+    parser.add_argument('--resume-realtime', action='store_true',
+                        help='Summarize verified Mac transcripts without new discovery or email')
+    parser.add_argument('--candidates', type=int, metavar='N',
+                        help='Print the newest N unprocessed in-window queue videos as JSON')
+    parser.add_argument('--deliver-ready', metavar='IDS',
+                        help='Summarize played-back videos (comma-separated IDs) into both outputs')
     args = parser.parse_args()
+    if args.candidates:
+        from queue_consumer import candidates
+        print(json.dumps(candidates(args.candidates), ensure_ascii=False))
+        return
+    if args.deliver_ready:
+        result = YouTubeSummarySystem().deliver_ready(set(filter(None, args.deliver_ready.split(','))))
+        print(json.dumps(result, ensure_ascii=False))
+        if result["errors"]:
+            sys.exit(1)
+        return
+    if args.resume_realtime:
+        results = YouTubeSummarySystem().resume_realtime()
+        print(f"Realtime summaries: {sum(r['success'] for r in results)}/{len(results)}")
+        for result in results:
+            print(result)
+        if any(not r['success'] for r in results):
+            sys.exit(1)
+        return
 
     # Handle queue mode (NarrativeRadar bridge)
     if args.queue:
@@ -410,15 +519,25 @@ def main():
         res = run_queue(limit=args.limit, force=args.reprocess)
         print(f"Queued:        {res['queued']}")
         print(f"Written:       {res['written']}")
+        print(f"Caption used:  {res.get('caption_used', 0)}")
+        print(f"UI caption used: {res.get('ui_used', 0)}")
+        print(f"Whisper used:  {res.get('whisper_used', 0)}")
+        print(f"Realtime used: {res.get('realtime_used', 0)}")
+        print(f"Awaiting transcript recovery: {res.get('deferred', 0)}")
         print(f"Skipped:       {res['skipped']}")
         print(f"No captions:   {res['no_transcript']}")
+        print(f"Unavailable:   {res.get('unavailable', 0)}")
         print(f"Too old:       {res.get('too_old', 0)}")
         print(f"Errors:        {res['errors']}")
         if res.get("blocked"):
             print("\n[!] Aborted early: YouTube IP-blocked transcript requests.")
-            print("  Remaining videos are still queued. Retry later, or configure a")
-            print("  cookie_file / proxy under transcript: in config/config.yaml.")
+            print("  Remaining videos are queued for official UI captions or supervised playback.")
+            print("  Inspect next_action with realtime_worker.py list; captions may also be retried later.")
             sys.exit(2)
+        # Queue mode is the only scheduled run while the daily DAG is paused, so it
+        # also clears daily-destination jobs. A bounded --limit run stays bounded.
+        if args.limit is None:
+            print(f"Daily resumed: {len(YouTubeSummarySystem().resume_realtime())}")
         # Per-video transient errors are expected (and retried next run, since the
         # queue file is now retained when errors>0). Only fail the whole job when
         # NOTHING was written despite errors — i.e. the entire batch failed —
@@ -530,6 +649,7 @@ def main():
     print(f"Videos found: {result['videos_found']}")
     print(f"Videos processed: {result['videos_processed']}")
     print(f"Videos skipped (no transcript): {result['videos_skipped']}")
+    print(f"Awaiting transcript recovery: {result['videos_deferred']}")
     print(f"Errors: {result['errors']}")
     print(f"Email sent: {result['email_sent']}")
 

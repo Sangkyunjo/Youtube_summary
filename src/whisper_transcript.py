@@ -1,15 +1,20 @@
 """Whisper-based transcript backend for the NarrativeRadar queue.
 
-Downloads a compact audio-only stream and transcribes it with the OpenAI
+Downloads a compact media stream and transcribes its audio with the OpenAI
 Whisper API. Unlike youtube-transcript-api (which reads YouTube's caption
 endpoint and gets IP-rate-limited on bursts), this never touches the caption
 endpoint — so it sidesteps that block. It does still fetch audio from YouTube
 (a different, more tolerant subsystem), throttled by the caller.
 
 Design:
-  - Download a single low-bitrate audio format directly (no post-processing /
-    no merge). ~48 kbps m4a ≈ 0.36 MB/min, so a ~70-minute video stays under
-    Whisper's 25 MB upload limit and is sent as-is.
+  - Prefer a single low-bitrate audio format directly (no merge). When the
+    working YouTube client exposes only a combined low-resolution format,
+    download that resource and let the existing ffmpeg path strip the video and
+    split the audio before upload.
+  - Platform-served ads are separate from this media resource. The complete
+    file is downloaded before transcription, so playback buffering cannot turn
+    into recorded silence. Creator-embedded sponsorship remains part of the
+    source content by design.
   - Files over the limit are re-encoded to 16 kHz mono and split into
     time-based chunks with ffmpeg (when ffmpeg is on PATH); each chunk is
     transcribed and the texts are concatenated. If ffmpeg is unavailable the
@@ -46,7 +51,8 @@ _CHUNK_BITRATE = os.getenv("NARRATIVES_WHISPER_CHUNK_BITRATE", "32k")
 # Hard cap on the re-encode/segment step so a corrupt file can't hang the run.
 _FFMPEG_TIMEOUT = int(os.getenv("NARRATIVES_FFMPEG_TIMEOUT", "600"))
 # Prefer the smallest audio-only stream (lowest bitrate) to stay under the limit
-# without transcoding. Falls back to bestaudio/best if no tiny format exists.
+# without transcoding. Falls back to a combined stream when the selected client
+# exposes no standalone audio format.
 _AUDIO_FORMAT = os.getenv("NARRATIVES_WHISPER_AUDIO_FORMAT", "worstaudio/bestaudio/best")
 
 # YouTube now requires authentication for downloads. Easiest: let yt-dlp read
@@ -90,7 +96,7 @@ class WhisperTranscriber:
         return cookie_file if os.path.exists(cookie_file) else None
 
     def _download_audio(self, video_id: str, dest_dir: str) -> tuple[Optional[Path], str]:
-        """Download a compact audio file. Returns (path, status)."""
+        """Download a compact media file containing audio. Returns (path, status)."""
         from yt_dlp import YoutubeDL
 
         opts = {
@@ -99,13 +105,17 @@ class WhisperTranscriber:
             "quiet": True,
             "no_warnings": True,
             "noplaylist": True,
-            # The default `web` client now needs PO tokens and 403s on media URLs,
-            # and `web`/`ios`/`tv` now hand back DRM-protected streams for many
-            # videos → "Requested format is not available". The `android` client
-            # still serves downloadable, non-DRM formats unauthenticated, so try it
-            # first and keep the others as fallbacks.
-            "extractor_args": {"youtube": {"player_client": ["android", "web", "ios", "tv"]}},
+            # Keep one proven client per extraction. Combining client format
+            # lists can make yt-dlp select an audio format whose CDN URL returns
+            # 403 at transfer time. The Android client completed a real transfer
+            # in the production container; if it exposes only format 18, ffmpeg
+            # strips the video before chunked STT.
+            "extractor_args": {"youtube": {"player_client": ["android"]}},
             "retries": 3,
+            "fragment_retries": 3,
+            "file_access_retries": 3,
+            "socket_timeout": 30,
+            "continuedl": True,
         }
         if _COOKIES_FROM_BROWSER:
             opts["cookiesfrombrowser"] = (_COOKIES_FROM_BROWSER,)

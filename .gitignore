@@ -5,3 +5,9 @@
 /summaries/
 .claude
 CLAUDE.md
+/data/realtime.sqlite3*
+/data/playback_bot.sqlite3*
+/data/chrome-profile/
+/.venv-host/
+/data/recovery-test-*/
+/data/backups/

@@ -1,7 +1,7 @@
 """
 Transcript extraction module for YouTube videos.
 Uses youtube-transcript-api with Korean first, English fallback.
-Supports cookies (to bypass IP bans) and proxy configuration.
+Supports optional cookies and proxy configuration.
 """
 
 import http.cookiejar
@@ -11,17 +11,17 @@ from typing import Optional
 
 import requests
 from youtube_transcript_api import YouTubeTranscriptApi
-from youtube_transcript_api.proxies import GenericProxyConfig
 from youtube_transcript_api._errors import (
-    TranscriptsDisabled,
-    NoTranscriptFound,
-    VideoUnavailable,
     CouldNotRetrieveTranscript,
     IpBlocked,
+    NoTranscriptFound,
     RequestBlocked,
+    TranscriptsDisabled,
+    VideoUnavailable,
 )
+from youtube_transcript_api.proxies import GenericProxyConfig
 
-from utils import load_config, setup_logging
+from utils import get_env, load_config, setup_logging
 
 logger = setup_logging("transcript_extractor")
 
@@ -30,10 +30,18 @@ class TranscriptExtractor:
     """Extracts transcripts from YouTube videos."""
 
     def __init__(self):
+        self.engine = "youtube-transcript-api"
+        self.model = None
+        self.last_track_info = None
+        self.last_segments = None
         self.config = load_config()
         transcript_config = self.config.get("transcript", {})
         self.preferred_languages = transcript_config.get("languages", ["ko", "en"])
         self.fallback_to_any = transcript_config.get("fallback_to_any", True)
+        self.min_transcript_chars = int(os.getenv(
+            "NARRATIVES_YOUTUBE_MIN_TRANSCRIPT_CHARS",
+            transcript_config.get("min_chars", 200),
+        ))
 
         # Build API client with optional cookie/proxy support
         proxy_config = self._build_proxy_config(transcript_config)
@@ -44,12 +52,18 @@ class TranscriptExtractor:
         )
 
     def _build_proxy_config(self, transcript_config: dict) -> Optional[GenericProxyConfig]:
-        """Build proxy config from config.yaml settings."""
-        proxy = transcript_config.get("proxy", {})
-        http_url = proxy.get("http_url")
-        https_url = proxy.get("https_url")
+        """Build proxy config, preferring the secret-bearing environment value."""
+        proxy = transcript_config.get("proxy") or {}
+        env_url = (get_env("YOUTUBE_TRANSCRIPT_PROXY_URL") or "").strip()
+        http_url = env_url or (proxy.get("http_url") or "").strip() or None
+        https_url = env_url or (proxy.get("https_url") or "").strip() or None
+        for url in (http_url, https_url):
+            if url and not url.startswith(("http://", "https://")):
+                raise ValueError(
+                    "YouTube transcript proxy URL must start with http:// or https://"
+                )
         if http_url or https_url:
-            logger.info("Using proxy for transcript requests")
+            logger.info("Using configured proxy for transcript requests")
             return GenericProxyConfig(http_url=http_url, https_url=https_url)
         return None
 
@@ -85,7 +99,8 @@ class TranscriptExtractor:
         Returns ``(text, status)`` where status is one of:
           - ``"ok"``          : transcript text returned
           - ``"no_captions"`` : video genuinely has no usable transcript
-                                (disabled / none found / unavailable) — permanent
+                                (disabled / none found / all tracks too short)
+          - ``"unavailable"`` : video is private, removed, or otherwise unplayable
           - ``"blocked"``     : YouTube rate-limited / IP-blocked us — TRANSIENT,
                                 the caller should back off, NOT mark the video done
           - ``"error"``       : other transient failure — caller may retry later
@@ -95,50 +110,82 @@ class TranscriptExtractor:
         drop every video hit during an IP block.
         """
         logger.info(f"Extracting transcript for video: {video_id}")
+        self.last_track_info = None
+        self.last_segments = None
 
         # Block detection must come before the generic CouldNotRetrieveTranscript
         # handler, since IpBlocked/RequestBlocked subclass it.
         try:
-            # Get list of available transcripts
-            transcript_list = self.api.list(video_id)
-
-            transcript = None
-
-            # Try to find a transcript in preferred languages
+            tracks = list(self.api.list(video_id))
+            ordered = []
             for lang in self.preferred_languages:
-                try:
-                    transcript = transcript_list.find_transcript([lang])
-                    logger.info(f"Found {lang} transcript for {video_id}")
-                    break
-                except NoTranscriptFound:
-                    continue
+                ordered.extend(t for t in tracks if t.language_code == lang)
+            if self.fallback_to_any:
+                ordered.extend(t for t in tracks if t not in ordered)
 
-            # If no preferred language found, try to get any available transcript
-            if transcript is None and self.fallback_to_any:
-                try:
-                    # Get the first available transcript
-                    for t in transcript_list:
-                        transcript = t
-                        logger.info(f"Using fallback transcript ({t.language_code}) for {video_id}")
-                        break
-                except Exception:
-                    pass
-
-            if transcript is None:
+            if not ordered:
                 logger.warning(f"No transcript available for {video_id}")
                 return None, "no_captions"
 
-            # Fetch the transcript data
-            transcript_data = transcript.fetch()
+            fetch_errors = 0
+            for transcript in ordered:
+                try:
+                    transcript_data = list(transcript.fetch())
+                except (IpBlocked, RequestBlocked):
+                    raise
+                except CouldNotRetrieveTranscript as e:
+                    fetch_errors += 1
+                    logger.warning(
+                        "Caption track fetch failed for %s (%s/%s, %s): %s",
+                        video_id,
+                        transcript.language_code,
+                        "generated" if transcript.is_generated else "manual",
+                        type(e).__name__,
+                        e,
+                    )
+                    continue
 
-            # Combine all text segments
-            full_text = " ".join([entry.text for entry in transcript_data])
+                full_text = self._clean_transcript(
+                    " ".join(entry.text for entry in transcript_data)
+                )
+                if len(full_text) < self.min_transcript_chars:
+                    logger.warning(
+                        "Ignoring too-short caption track for %s (%s/%s): %d chars",
+                        video_id,
+                        transcript.language_code,
+                        "generated" if transcript.is_generated else "manual",
+                        len(full_text),
+                    )
+                    continue
 
-            # Clean up the text
-            full_text = self._clean_transcript(full_text)
+                self.last_track_info = {
+                    "language": transcript.language_code,
+                    "generated": bool(transcript.is_generated),
+                }
+                # Keep the original caption text and timing separately from the
+                # cleaned summary input. Missing timing must never be invented.
+                entries = list(transcript_data)
+                if all(hasattr(e, "start") and hasattr(e, "duration") for e in entries):
+                    self.last_segments = [
+                        {"text": e.text, "start": float(e.start), "duration": float(e.duration)}
+                        for e in entries
+                    ]
+                logger.info(
+                    "Extracted transcript for %s: %d characters (%s/%s)",
+                    video_id,
+                    len(full_text),
+                    transcript.language_code,
+                    "generated" if transcript.is_generated else "manual",
+                )
+                return full_text, "ok"
 
-            logger.info(f"Extracted transcript for {video_id}: {len(full_text)} characters")
-            return full_text, "ok"
+            # Any failed track means we cannot prove that the video has no usable
+            # captions. Treat the outcome as transient so captions-first never
+            # turns a partial YouTube failure into a paid Whisper call.
+            if fetch_errors:
+                return None, "error"
+            logger.warning(f"No usable transcript available for {video_id}")
+            return None, "no_captions"
 
         except (IpBlocked, RequestBlocked) as e:
             logger.warning(f"YouTube blocked transcript request for {video_id} ({type(e).__name__})")
@@ -146,8 +193,11 @@ class TranscriptExtractor:
         except TranscriptsDisabled:
             logger.warning(f"Transcripts are disabled for video: {video_id}")
             return None, "no_captions"
-        except (NoTranscriptFound, VideoUnavailable):
-            logger.warning(f"Video unavailable / no transcript: {video_id}")
+        except VideoUnavailable:
+            logger.warning(f"Video unavailable: {video_id}")
+            return None, "unavailable"
+        except NoTranscriptFound:
+            logger.warning(f"No transcript found: {video_id}")
             return None, "no_captions"
         except CouldNotRetrieveTranscript as e:
             logger.warning(f"Could not retrieve transcript for video {video_id} ({type(e).__name__}): {e}")

@@ -1,11 +1,18 @@
 # YouTube Summary System Configuration
 
 # LLM provider selection
-# Options: "minimax" (default), "openai"
+# Options: "qwen" (default), "minimax", "openai"
 llm:
-  provider: "minimax"
+  provider: "qwen"
 
-# MiniMax API settings (OpenAI-compatible endpoint)
+# Qwen API settings (Alibaba DashScope OpenAI-compatible endpoint)
+# API key is injected as QWEN_API_KEY by the Airflow runtime.
+qwen:
+  model: "qwen-plus"
+  max_tokens: 4096
+  base_url: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+
+# MiniMax API settings (optional manual alternative)
 # API key stored in config/.env as MINIMAX_API_KEY
 # Available models: MiniMax-M2.7, MiniMax-M2, MiniMax-M1, MiniMax-Text-01
 minimax:
@@ -35,11 +42,14 @@ transcript:
     - en
   # Fall back to any available transcript if preferred not found
   fallback_to_any: true
-  # Cookie file for YouTube authentication (bypasses IP bans)
-  # Export from browser using a cookie export extension (Netscape/Mozilla format)
-  # Path relative to project root, or absolute path
-  cookie_file: "config/youtube_cookies.txt"
-  # Proxy settings (optional, alternative to cookies)
+  # Reject placeholder/manual tracks such as a single "." and try the next
+  # available track before falling back to paid STT.
+  min_chars: 200
+  # Cookie authentication is currently unavailable upstream. Leave disabled
+  # rather than treating a missing/stale cookie file as an IP-block remedy.
+  cookie_file:
+  # Proxy settings are optional local defaults. Production credentials must use
+  # YOUTUBE_TRANSCRIPT_PROXY_URL from .env instead of being committed here.
   # proxy:
   #   http_url: "http://user:pass@proxy:port"
   #   https_url: "http://user:pass@proxy:port"
@@ -62,7 +72,7 @@ schedule:
 
 # File paths (relative to project root)
 paths:
-  summaries_dir: "D:/OneDrive/Information/summaries"
+  summaries_dir: "summaries"
   logs_dir: "logs"
   data_dir: "data"
   state_file: "data/state.json"
@@ -109,3 +119,14 @@ summary_template: |
   ================================================================================
   Generated: {generated_at}
   ================================================================================
+
+# Supervised Mac playback + local Whisper. No paid STT in this mode.
+realtime_fallback:
+  enabled: true
+
+# Caption API -> official visible transcript -> supervised regular-browser playback.
+# Automated Chrome playback remains opt-in after the observed player failures.
+transcript_fallback:
+  ui_enabled: true
+  ui_timeout_seconds: 20
+  automated_playback: false

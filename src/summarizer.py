@@ -1,6 +1,6 @@
 """
 Summarization module using an OpenAI-compatible LLM API.
-Supports MiniMax (default) and OpenAI providers via config.
+Supports Qwen (default), MiniMax, and OpenAI providers via config.
 Generates structured summaries with overview, key points, quotes, and takeaways.
 """
 
@@ -19,17 +19,26 @@ class Summarizer:
     SYSTEM_PROMPT = """You are an expert content summarizer. Your task is to analyze video transcripts and create comprehensive, well-structured summaries.
 
 For each transcript, provide:
-1. 개요: A 2-3 paragraph summary of the main topic and content
-2. 핵심 포인트: 5-8 bullet points covering the most important information
-3. 주요 인용구: 2-4 direct quotes that are particularly insightful or memorable
-4. 핵심 요점: 3-5 actionable insights or main conclusions
+1. 개요: A concise summary of the source's main topic and content
+2. 핵심 포인트: Up to 5-8 points, fewer when the source is short
+3. 주요 인용구: 0-3 verbatim quotes only when reliable; omit uncertain quotes
+4. 핵심 요점: Source-grounded main conclusions, without adding your own advice
 
 Guidelines:
 - Always write the summary in Korean, regardless of the transcript language
 - Be accurate and faithful to the original content
 - Use clear, professional Korean language
 - Maintain the tone and style of the original content
-- Focus on substantive information, not filler content"""
+- Focus on substantive information, not filler content
+- Keep forecasts, conditions and uncertainty as such; do not turn them into facts
+- A person mentioned earlier is not evidence of who speaks in a later clip.
+  Keep speaker transitions separate; leave an unverified speaker unnamed.
+- Treat captions and ASR as fallible. Do not invent a real name to repair unclear text.
+  Mark uncertain names or numbers as 확인 필요, or omit them from the summary.
+- Direct quotes must occur verbatim in the transcript; use prose for paraphrases.
+- Do not add policy conclusions, recommendations or investment advice absent from the source.
+- In Korean, state facts, conditions and causes directly using affirmative sentences.
+  Avoid rebuttal-style negative contrasts and recurring '-지만 ... 것은 아니다' forms."""
 
     USER_PROMPT_TEMPLATE = """다음 영상 스크립트를 분석하여 구조화된 요약을 한국어로 작성해 주세요.
 
@@ -62,6 +71,12 @@ Guidelines:
 ..."""
 
     PROVIDER_DEFAULTS = {
+        "qwen": {
+            "model": "qwen-plus",
+            "max_tokens": 4096,
+            "base_url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+            "api_key_env": "QWEN_API_KEY",
+        },
         "minimax": {
             "model": "MiniMax-M2.7",
             "max_tokens": 4096,
@@ -78,7 +93,7 @@ Guidelines:
 
     def __init__(self):
         self.config = load_config()
-        provider = self.config.get("llm", {}).get("provider", "minimax").lower()
+        provider = self.config.get("llm", {}).get("provider", "qwen").lower()
         if provider not in self.PROVIDER_DEFAULTS:
             raise ValueError(
                 f"Unsupported llm.provider '{provider}'. "
@@ -87,7 +102,7 @@ Guidelines:
         self.provider = provider
 
         defaults = self.PROVIDER_DEFAULTS[provider]
-        # `or {}` so an empty `minimax:` block in YAML (parsed as None) doesn't crash.
+        # `or {}` so an empty provider block in YAML (parsed as None) doesn't crash.
         provider_config = self.config.get(provider) or {}
         self.model = provider_config.get("model", defaults["model"])
         self.max_tokens = provider_config.get("max_tokens", defaults["max_tokens"])

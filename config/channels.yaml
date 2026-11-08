@@ -28,7 +28,7 @@ channels:
 
 categories:
   programming:
-    output_dir: "D:/OneDrive/Information/summaries/programming"
+    output_dir: "summaries/programming"
     channels:
       - "@codefactory_official"
       - "@개발동생"

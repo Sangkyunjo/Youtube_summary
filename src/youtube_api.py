@@ -20,6 +20,15 @@ def _sanitize_error(error: HttpError) -> str:
     return re.sub(r'key=[A-Za-z0-9_\-]+', 'key=REDACTED', str(error))
 
 
+def _iso_seconds(value: str) -> int:
+    """ISO 8601 duration such as PT1H2M3S → seconds (0 when absent)."""
+    match = re.fullmatch(r'P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?', value or '')
+    if not match:
+        return 0
+    days, hours, minutes, seconds = (int(part or 0) for part in match.groups())
+    return ((days * 24 + hours) * 60 + minutes) * 60 + seconds
+
+
 class YouTubeAPI:
     """Thin wrapper around the YouTube Data API v3."""
 
@@ -30,7 +39,8 @@ class YouTubeAPI:
                 "YOUTUBE_API_KEY not set. "
                 "Get one at https://console.cloud.google.com/ and add it to config/.env"
             )
-        self._service = build("youtube", "v3", developerKey=api_key)
+        # Bundled discovery documents in older runtimes omit forHandle.
+        self._service = build("youtube", "v3", developerKey=api_key, static_discovery=False)
         self._config = load_config()
         self._request_delay = self._config.get("youtube", {}).get("request_delay", 0.5)
 
@@ -148,6 +158,38 @@ class YouTubeAPI:
                 break
 
         return videos
+
+    # ------------------------------------------------------------------
+    # Video details (1 quota unit per 50 IDs)
+    # ------------------------------------------------------------------
+
+    def get_video_durations(self, video_ids: list[str]) -> dict[str, dict]:
+        """
+        Look up length and live state for videos.
+
+        Returns:
+            {video_id: {"duration_seconds", "live"}}; deleted or private IDs are absent
+        """
+        found = {}
+        for start in range(0, len(video_ids), 50):
+            try:
+                self._throttle()
+                resp = (
+                    self._service.videos()
+                    .list(part="contentDetails,snippet", id=",".join(video_ids[start:start + 50]))
+                    .execute()
+                )
+            except HttpError as e:
+                logger.error(f"API error listing video details: {_sanitize_error(e)}")
+                break
+
+            for item in resp.get("items", []):
+                found[item["id"]] = {
+                    "duration_seconds": _iso_seconds(item["contentDetails"].get("duration", "")),
+                    "live": item["snippet"].get("liveBroadcastContent", "none") != "none",
+                }
+
+        return found
 
     # ------------------------------------------------------------------
     # Search (100 quota units per call — use sparingly)

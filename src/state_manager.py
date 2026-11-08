@@ -4,6 +4,7 @@ Uses JSON files for persistence.
 """
 
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -41,9 +42,13 @@ class StateManager:
 
     def _save_state(self):
         """Save the state to file."""
+        # A long queue run can be killed at its timeout; a torn state file would
+        # load as empty and make every video look unprocessed.
+        tmp_file = self.state_file.with_suffix(".json.tmp")
         try:
-            with open(self.state_file, "w", encoding="utf-8") as f:
+            with open(tmp_file, "w", encoding="utf-8") as f:
                 json.dump(self.state, f, indent=2, ensure_ascii=False)
+            os.replace(tmp_file, self.state_file)
         except IOError as e:
             logger.error(f"Error saving state file: {e}")
 
@@ -78,10 +83,12 @@ class StateManager:
         published_date: str = None
     ):
         """Mark a video as processed and store its metadata."""
-        if "processed_videos" not in self.state:
-            self.state["processed_videos"] = {}
-        if "video_metadata" not in self.state:
-            self.state["video_metadata"] = {}
+        # A queue run in the container and a playback delivery can both be writing;
+        # merge with the file so neither process drops the other's marks.
+        latest = self._load_state()
+        for key in ("processed_videos", "video_metadata"):
+            latest.setdefault(key, {}).update(self.state.get(key, {}))
+        self.state = latest
 
         timestamp = datetime.now().isoformat()
 
@@ -140,10 +147,13 @@ class StateManager:
         self._save_last_run()
         logger.info("Run started")
 
-    def record_run_complete(self, videos_processed: int = 0, errors: int = 0):
+    def record_run_complete(self, videos_processed: int = 0, errors: int = 0, deferred: int = 0):
         """Record the completion of a run."""
         self.last_run["last_run_time"] = datetime.now().isoformat()
-        self.last_run["last_run_status"] = "success" if errors == 0 else "completed_with_errors"
+        self.last_run["last_run_status"] = ("completed_with_errors" if errors else
+                                            "awaiting_playback" if deferred else "success")
+        self.last_run.pop("last_run_error", None)
+        self.last_run["last_run_videos_deferred"] = deferred
         self.last_run["last_run_videos_processed"] = videos_processed
         self.last_run["last_run_errors"] = errors
         self._save_last_run()
