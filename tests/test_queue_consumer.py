@@ -210,6 +210,30 @@ class QueueLimitTest(unittest.TestCase):
             self._inbox_ids(), sorted(self.rows[i]["video_id"] for i in (3, 4))
         )
 
+    def test_recovered_transcript_is_delivered_first_without_using_the_limit(self):
+        now = datetime.now(timezone.utc)
+        for i, row in enumerate(self.rows):
+            row["published_at"] = (now - timedelta(hours=10 - i)).isoformat()
+        self._write_queue()
+        oldest = self.rows[0]["video_id"]
+        self._wait_for_playback(self.rows[:1])
+        self.playback.claim(oldest)
+        self.playback.finish(oldest, "재생으로 확보한 대본 " * 30, "local-model")
+        self.state.processed.add(oldest)  # the daily summary already went out
+        fetched = []
+
+        def captions(vid):
+            fetched.append(vid)
+            return ("충분한 자막", "ok")
+
+        result, _sleep = self._run(captions, limit=2)
+
+        self.assertEqual(result["written"], 3)
+        self.assertEqual(result["realtime_used"], 1)
+        self.assertNotIn(oldest, fetched)
+        self.assertEqual(fetched, [self.rows[4]["video_id"], self.rows[3]["video_id"]])
+        self.assertFalse(self.playback.needs_delivery(oldest, "narrative"))
+
     def test_waiting_jobs_without_captions_do_not_use_up_the_limit(self):
         self._wait_for_playback(self.rows[:2])
         waiting = {row["video_id"] for row in self.rows[:2]}

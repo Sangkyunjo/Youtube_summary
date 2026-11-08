@@ -263,6 +263,12 @@ def run(limit: int | None = None, force: bool = False, only: set[str] | None = N
         seen = {row['video_id'] for row in rows}
         rows += [job['payload'] for job in playback.ready('narrative') if job['video_id'] not in seen]
     rows = _newest_first(rows)
+    if playback:
+        # A recovered transcript needs no YouTube request, so deliver it before
+        # --limit is spent on caption fetches; otherwise newer uploads keep
+        # pushing it back. The sort is stable, so the rest stay newest-first.
+        recovered = {job['video_id'] for job in playback.ready('narrative')}
+        rows.sort(key=lambda row: row['video_id'] not in recovered)
     if only is not None:
         rows = [row for row in rows if row["video_id"] in only]
     result = {"queued": len(rows), "written": 0, "skipped": 0,
@@ -446,7 +452,9 @@ def run(limit: int | None = None, force: bool = False, only: set[str] | None = N
             result["whisper_used"] += 1
         else:
             result["caption_used"] += 1
-        processed_count += 1
+        if not (job and job['status'] == 'ready'):
+            # --limit rations YouTube requests; a recovered transcript made none.
+            processed_count += 1
         logger.info("queue: wrote contract for %s (%s)", vid, title[:40])
 
     result["blocked"] = blocked
