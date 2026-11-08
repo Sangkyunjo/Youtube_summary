@@ -55,8 +55,11 @@ default_args = {
 def _setup_path():
     """Add project src directory to Python path and load environment."""
     src_path = str(SRC_DIR)
-    if src_path not in sys.path:
-        sys.path.insert(0, src_path)
+    # PYTHONPATH can list src behind another project's `utils` (e.g., financehub),
+    # so move it to the front even when it is already on the path.
+    if src_path in sys.path:
+        sys.path.remove(src_path)
+    sys.path.insert(0, src_path)
 
     # Clear cached 'utils' module if it's from a different project (e.g., financehub)
     # to avoid import collisions in shared Airflow environments
@@ -397,7 +400,7 @@ with DAG(
     dag_id="youtube_summary_system",
     default_args=default_args,
     description="YouTube Channel Monitoring and Summarization System",
-    schedule_interval="0 23 * * *",  # Daily at 11:00 PM
+    schedule_interval='0 6 * * *',  # 2026-10-21 daytime collection policy
     start_date=datetime(2026, 1, 1),
     catchup=False,
     max_active_runs=1,  # Only one run at a time
@@ -472,3 +475,11 @@ with DAG(
         >> end
     )
     # fmt: on
+
+# daytime runtime gate — all scheduled collection roots wait for 09:00 KST.
+import sys as _daytime_sys
+_daytime_sys.path.insert(0, '/opt/airflow/dags/dataconductor')
+from daytime_support import apply_daytime as _apply_daytime
+for _daytime_dag in list(globals().values()):
+    if isinstance(_daytime_dag, DAG):
+        _apply_daytime(_daytime_dag)
