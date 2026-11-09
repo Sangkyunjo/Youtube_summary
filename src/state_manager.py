@@ -3,15 +3,24 @@ State management for tracking processed videos and run history.
 Uses JSON files for persistence.
 """
 
+import hashlib
 import json
-import os
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from utils import get_project_root, load_config, setup_logging
+from processing_lock import check_claim, exclusive_claim
+from utils import atomic_write_text, get_project_root, load_config, setup_logging
 
 logger = setup_logging("state_manager")
+
+
+def _legacy_destination(summary_file):
+    if summary_file.endswith('.txt'):
+        return 'daily'
+    if not summary_file or summary_file.endswith('.json'):
+        return 'narrative'
+    return None
 
 
 class StateManager:
@@ -32,25 +41,33 @@ class StateManager:
 
     def _load_state(self) -> dict:
         """Load the processed videos state from file."""
-        if self.state_file.exists():
-            try:
-                with open(self.state_file, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except (json.JSONDecodeError, IOError) as e:
-                logger.warning(f"Error loading state file, starting fresh: {e}")
-        return {"processed_videos": {}, "video_metadata": {}}
-
-    def _save_state(self):
-        """Save the state to file."""
-        # A long queue run can be killed at its timeout; a torn state file would
-        # load as empty and make every video look unprocessed.
-        tmp_file = self.state_file.with_suffix(".json.tmp")
         try:
-            with open(tmp_file, "w", encoding="utf-8") as f:
-                json.dump(self.state, f, indent=2, ensure_ascii=False)
-            os.replace(tmp_file, self.state_file)
-        except IOError as e:
-            logger.error(f"Error saving state file: {e}")
+            state = json.loads(self.state_file.read_text(encoding='utf-8'))
+        except FileNotFoundError:
+            state = {"processed_videos": {}, "video_metadata": {}}
+        if 'processed_by_destination' not in state:
+            records = state['processed_by_destination'] = {'daily': {}, 'narrative': {}}
+            for vid, metadata in state.get('video_metadata', {}).items():
+                if vid in state.get('processed_videos', {}) and isinstance(metadata.get('summary_file'), str):
+                    destination = _legacy_destination(metadata['summary_file'])
+                    if destination:
+                        records[destination][vid] = metadata
+        return state
+
+    def refresh(self):
+        self.state = self._load_state()
+
+    def _claim_path(self, key: str) -> Path:
+        return self.state_file.parent / '.processing-locks' / key
+
+    def processing_claim(self, video_id: str, destination: str):
+        key = hashlib.sha256(f'{destination}\0{video_id}'.encode('utf-8')).hexdigest()
+        return exclusive_claim(self._claim_path(key))
+
+    def _save_state(self, state=None):
+        """Save the state to file."""
+        atomic_write_text(self.state_file, json.dumps(self.state if state is None else state,
+                                                     indent=2, ensure_ascii=False))
 
     def _load_last_run(self) -> dict:
         """Load the last run information from file."""
@@ -65,13 +82,14 @@ class StateManager:
     def _save_last_run(self):
         """Save the last run information to file."""
         try:
-            with open(self.last_run_file, "w", encoding="utf-8") as f:
-                json.dump(self.last_run, f, indent=2, ensure_ascii=False)
+            atomic_write_text(self.last_run_file, json.dumps(self.last_run, indent=2, ensure_ascii=False))
         except IOError as e:
             logger.error(f"Error saving last run file: {e}")
 
-    def is_video_processed(self, video_id: str) -> bool:
+    def is_video_processed(self, video_id: str, destination: str = None) -> bool:
         """Check if a video has already been processed."""
+        if destination is not None:
+            return self.get_video_metadata(video_id, destination) is not None
         return video_id in self.state.get("processed_videos", {})
 
     def mark_video_processed(
@@ -80,33 +98,39 @@ class StateManager:
         title: str,
         channel: str,
         summary_file: str,
-        published_date: str = None
+        published_date: str = None,
+        *,
+        destination: str = None,
     ):
         """Mark a video as processed and store its metadata."""
-        # A queue run in the container and a playback delivery can both be writing;
-        # merge with the file so neither process drops the other's marks.
-        latest = self._load_state()
-        for key in ("processed_videos", "video_metadata"):
-            latest.setdefault(key, {}).update(self.state.get(key, {}))
-        self.state = latest
-
         timestamp = datetime.now().isoformat()
-
-        self.state["processed_videos"][video_id] = timestamp
-        self.state["video_metadata"][video_id] = {
+        metadata = {
             "title": title,
             "channel": channel,
             "summary_file": summary_file,
             "published_date": published_date,
             "processed_at": timestamp
         }
-
-        self._save_state()
+        destination = destination or _legacy_destination(summary_file)
+        with exclusive_claim(self._claim_path('state'), wait=True, stale_after=120) as claim:
+            state = self._load_state()
+            state.setdefault('processed_videos', {})[video_id] = timestamp
+            state.setdefault('video_metadata', {})[video_id] = metadata
+            if destination:
+                state['processed_by_destination'].setdefault(destination, {})[video_id] = metadata
+            check_claim(claim)
+            self._save_state(state)
+            self.state = state
         logger.info(f"Marked video as processed: {video_id} - {title}")
 
-    def get_video_metadata(self, video_id: str) -> Optional[dict]:
+    def get_video_metadata(self, video_id: str, destination: str = None) -> Optional[dict]:
         """Get metadata for a processed video."""
-        return self.state.get("video_metadata", {}).get(video_id)
+        return self._processed_records(destination).get(video_id)
+
+    def _processed_records(self, destination):
+        if destination is None:
+            return self.state.get('video_metadata', {})
+        return self.state.get('processed_by_destination', {}).get(destination, {})
 
     def get_recently_processed(self, since: datetime = None) -> list:
         """Get list of videos processed since a given time."""
@@ -167,27 +191,35 @@ class StateManager:
         self._save_last_run()
         logger.error(f"Run failed: {error_message}")
 
-    def get_all_processed_video_ids(self) -> set:
+    def get_all_processed_video_ids(self, destination: str = None) -> set:
         """Get all processed video IDs."""
+        if destination is not None:
+            return set(self._processed_records(destination))
         return set(self.state.get("processed_videos", {}).keys())
 
     def cleanup_old_entries(self, days: int = 90):
         """Remove entries older than specified days to prevent state file bloat."""
         cutoff = datetime.now().timestamp() - (days * 24 * 60 * 60)
 
-        to_remove = []
-        for video_id, timestamp_str in self.state.get("processed_videos", {}).items():
-            try:
-                timestamp = datetime.fromisoformat(timestamp_str).timestamp()
-                if timestamp < cutoff:
-                    to_remove.append(video_id)
-            except (ValueError, TypeError):
-                continue
+        with exclusive_claim(self._claim_path('state'), wait=True, stale_after=120) as claim:
+            state = self._load_state()
+            to_remove = []
+            for video_id, timestamp_str in state.get("processed_videos", {}).items():
+                try:
+                    timestamp = datetime.fromisoformat(timestamp_str).timestamp()
+                    if timestamp < cutoff:
+                        to_remove.append(video_id)
+                except (ValueError, TypeError):
+                    continue
 
-        for video_id in to_remove:
-            self.state["processed_videos"].pop(video_id, None)
-            self.state["video_metadata"].pop(video_id, None)
+            for video_id in to_remove:
+                state["processed_videos"].pop(video_id, None)
+                state.get("video_metadata", {}).pop(video_id, None)
+                for records in state['processed_by_destination'].values():
+                    records.pop(video_id, None)
 
-        if to_remove:
-            self._save_state()
-            logger.info(f"Cleaned up {len(to_remove)} old entries from state")
+            if to_remove:
+                check_claim(claim)
+                self._save_state(state)
+                logger.info(f"Cleaned up {len(to_remove)} old entries from state")
+            self.state = state

@@ -1,10 +1,10 @@
 """Daily Telegram offer and selection loop for automated YouTube playback (host only).
 
-At 08:00 KST the conversation bot sends the newest in-window queue videos. The user
+At 08:00 KST the conversation bot sends the in-window queue videos in priority order. The user
 answers with numbers, and the chosen videos play one at a time through
 autoplay.AutoPlayer, then are summarized into the NarrativeRadar inbox and
 summaries/. Every three hours of processing the bot asks whether to go on. Videos
-left over return at the top of the next morning's offer. Playback stays inside the
+left over return in the next morning's offer. Playback stays inside the
 09:00-23:00 KST collection window.
 """
 import argparse
@@ -27,7 +27,9 @@ from zoneinfo import ZoneInfo
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from autoplay import AutoPlayer, PlaybackStopped
+from channel_priority import prioritize_channels
 from realtime_fallback import PlaybackQueue, get_project_root, load_config
+from state_manager import StateManager
 
 KST = ZoneInfo('Asia/Seoul')
 OFFER_HOUR = 8
@@ -165,7 +167,7 @@ def hours_text(seconds):
 
 def format_offer(day, items, in_window, carried):
     lines = [f'YouTube 처리 후보 · {day}',
-             f'기한 내 미처리 {in_window}건 중 최신순' + (f', 앞의 {len(carried)}건은 어제 남은 영상' if carried else ''), '']
+             f'기한 내 미처리 {in_window}건 중 우선순위순' + (f', 이전 목록에서 이월 {len(carried)}건' if carried else ''), '']
     for number, item in enumerate(items, start=1):
         title = item['title'] if len(item['title']) <= 70 else item['title'][:69] + '…'
         lines.append(f"{number}. [{item['channel_title']}] {title} · {minutes(item['duration_seconds'])}분")
@@ -259,6 +261,7 @@ class PlaybackBot:
         carried = list({item['video_id']: item for item in carried}.values())
         seen = {item['video_id'] for item in carried}
         items = carried + [item for item in offer['items'] if item['video_id'] not in seen][:OFFER_SIZE]
+        items = prioritize_channels(items, lambda item: item.get('channel_id'), load_config())
         self._say(format_offer(day, items, offer['in_window'], carried))
         logger.info('offer sent for %s: %s items, %s carried', day, len(items), len(carried))
         self.store.set('offer', {'date': day, 'items': items, 'in_window': offer['in_window']})
@@ -341,7 +344,11 @@ class PlaybackBot:
                       f"남은 {len(session['queue'])}건(재생 약 {hours_text(left)}).\n"
                       "3시간 더 진행할까요? '계속' 또는 '중단'으로 답해 주세요.")
             return
-        item = session['queue'][0]
+        ordered = prioritize_channels(session['queue'], lambda item: item.get('channel_id'), load_config())
+        if ordered != session['queue']:
+            session['queue'] = ordered
+            self.store.set('session', session)
+        item = ordered[0]
         now = self.now()
         if self.is_processed(item['video_id']) or too_old(item, now):
             session['queue'].pop(0)
@@ -366,6 +373,8 @@ class PlaybackBot:
         if outcome['status'] == 'ready':
             try:
                 outcome = dict(outcome, **self.deliver(item['video_id']))
+                if outcome.get('busy'):
+                    outcome['status'] = 'busy'
             except Exception as error:
                 outcome = {'status': 'failed', 'error': f'summary: {error}'}
         session = self.store.get('session') or session
@@ -377,7 +386,8 @@ class PlaybackBot:
             if not session.get('busy_told'):
                 session['busy_told'] = True
                 self.store.set('session', session)
-                self._say('다른 녹음(강의 등)이 진행 중이라 10분 뒤 다시 시도합니다.')
+                reason = '해당 영상의 요약이 진행 중' if outcome.get('busy') else '다른 녹음(강의 등)이 진행 중'
+                self._say(f'{reason}이라 10분 뒤 다시 시도합니다.')
             return
         if outcome['status'] == 'stopped':
             self._stop(session, '현재 영상을 멈추고 중단했습니다. 이 영상은 내일 목록에 다시 올립니다.')
@@ -427,7 +437,7 @@ class PlaybackBot:
         self._say(f"{message} 완료 {len(session['done'])}건, 실패 {len(session['failed'])}건, "
                   f"재생·전사 대기 {len(session.get('deferred', []))}건, "
                   f"처리 시간 {hours_text(session['elapsed'])}. 남은 {len(session['queue'])}건은 "
-                  '내일 08:00 목록 맨 위에 다시 올립니다.')
+                  '내일 08:00 목록에 다시 올립니다.')
 
     def _finish(self, session):
         self.store.set('session', None)
@@ -469,19 +479,24 @@ def deliver(video_id):
 
 
 def is_processed(video_id):
-    state = json.loads((get_project_root() / 'data' / 'state.json').read_text(encoding='utf-8'))
-    return video_id in state.get('processed_videos', {})
+    state = StateManager()
+    queue = PlaybackQueue()
+    return all(state.is_video_processed(video_id, destination) or queue.delivery_output(video_id, destination)
+               for destination in ('daily', 'narrative'))
 
 
 def play(item, stop_requested):
     queue = PlaybackQueue()
+    state = StateManager()
     payload = {key: item.get(key) for key in ('video_id', 'title', 'channel_title', 'channel_id',
                                               'published_at', 'url')}
     for destination in ('narrative', 'daily'):
-        queue.enqueue(payload, 'user_selected', destination)
-    if queue.get(item['video_id'])['status'] == 'ready':
+        if not state.is_video_processed(item['video_id'], destination):
+            queue.enqueue(payload, 'user_selected', destination)
+    job = queue.get(item['video_id'])
+    if job is None or job['status'] == 'ready':
         return {'status': 'ready', 'chars': 0}
-    if (queue.get(item['video_id'])['next_action'] == 'playback'
+    if (job['next_action'] == 'playback'
             and (load_config().get('transcript_fallback') or {}).get('automated_playback') is not True):
         return {'status': 'deferred', 'next_action': 'playback'}
     with AutoPlayer(queue) as player:

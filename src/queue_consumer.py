@@ -31,7 +31,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils import setup_logging
+from channel_priority import prioritize_channels
+from processing_lock import check_claim
+from utils import atomic_write_text, load_config, setup_logging
 from state_manager import StateManager
 from summarizer import Summarizer
 from realtime_fallback import CAPTION_MODEL, PlaybackQueue, enabled as realtime_enabled
@@ -173,15 +175,16 @@ def _read_queue(queue_dir: Path) -> list[dict]:
     return list(by_id.values())
 
 
-def _newest_first(rows: list[dict]) -> list[dict]:
-    """A caption block ends a run after a few requests; spend them on fresh videos."""
+def _processing_order(rows: list[dict]) -> list[dict]:
+    """Try priority channels first, then the newest videos within each group."""
     def published(row: dict) -> datetime:
         try:
             pub = datetime.fromisoformat((row.get("published_at") or "").replace("Z", "+00:00"))
         except ValueError:
             return datetime.min.replace(tzinfo=timezone.utc)
         return pub if pub.tzinfo else pub.replace(tzinfo=timezone.utc)
-    return sorted(rows, key=published, reverse=True)
+    newest_first = sorted(rows, key=published, reverse=True)
+    return prioritize_channels(newest_first, lambda row: row.get('channel_id'), load_config())
 
 
 def _combined_summary(sections: dict) -> str:
@@ -203,25 +206,37 @@ def _combined_summary(sections: dict) -> str:
 
 def _write_contract(inbox_dir: Path, doc: dict) -> Path:
     out = inbox_dir / f"{doc['video_id']}.json"
-    tmp = out.with_suffix(".json.tmp")
-    tmp.write_text(json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8")
-    tmp.replace(out)  # atomic: ingest never sees a half-written file
+    atomic_write_text(out, json.dumps(doc, ensure_ascii=False, indent=2))
     return out
 
 
+def _existing_contract(inbox_dir: Path, vid: str, *, force: bool) -> Path | None:
+    path = inbox_dir / f'{vid}.json'
+    candidates = (path,) if force else (path, inbox_dir / '_archive' / path.name)
+    for candidate in candidates:
+        try:
+            doc = json.loads(candidate.read_text(encoding='utf-8'))
+        except (FileNotFoundError, ValueError):
+            continue
+        if isinstance(doc, dict) and doc.get('video_id') == vid and doc.get('published_at') and doc.get('summary'):
+            return candidate
+    return None
+
+
 def candidates(limit: int = 30) -> dict:
-    """Newest unprocessed in-window videos, with length, for the daily playback offer."""
+    """Unprocessed in-window videos, with length, for the daily playback offer."""
     from youtube_api import YouTubeAPI
 
     state = StateManager()
     playback = PlaybackQueue()
     rows = []
-    for row in _newest_first(_read_queue(_queue_dir())):
+    for row in _processing_order(_read_queue(_queue_dir())):
+        if _too_old(row.get("published_at") or ""):
+            continue
         vid = row["video_id"]
         job = playback.get(vid)
-        if state.is_video_processed(vid) or (job and job["status"] in ("ready", "recording")):
-            continue
-        if _too_old(row.get("published_at") or ""):
+        if (state.is_video_processed(vid, 'narrative') or playback.delivery_output(vid, 'narrative')
+                or (job and job["status"] in ("ready", "recording"))):
             continue
         rows.append(row)
     # Look up a margin beyond the limit: deleted, private and live videos drop out.
@@ -262,11 +277,11 @@ def run(limit: int | None = None, force: bool = False, only: set[str] | None = N
     if playback:
         seen = {row['video_id'] for row in rows}
         rows += [job['payload'] for job in playback.ready('narrative') if job['video_id'] not in seen]
-    rows = _newest_first(rows)
+    rows = _processing_order(rows)
     if playback:
         # A recovered transcript needs no YouTube request, so deliver it before
         # --limit is spent on caption fetches; otherwise newer uploads keep
-        # pushing it back. The sort is stable, so the rest stay newest-first.
+        # pushing it back. Keep the channel and publication order within each group.
         recovered = {job['video_id'] for job in playback.ready('narrative')}
         rows.sort(key=lambda row: row['video_id'] not in recovered)
     if only is not None:
@@ -274,7 +289,7 @@ def run(limit: int | None = None, force: bool = False, only: set[str] | None = N
     result = {"queued": len(rows), "written": 0, "skipped": 0,
               "no_transcript": 0, "unavailable": 0, "too_old": 0,
               "caption_used": 0, "whisper_used": 0, "realtime_used": 0, "ui_used": 0, "deferred": 0,
-              "errors": 0, "blocked": False}
+              "errors": 0, "busy": 0, "blocked": False}
     logger.info("queue: %d unique videos pending", len(rows))
 
     processed_count = 0
@@ -282,180 +297,208 @@ def run(limit: int | None = None, force: bool = False, only: set[str] | None = N
     stopped_at_limit = False
     for row in rows:
         vid = row["video_id"]
-
-        existing_job = playback.get(vid) if playback else None
-        if existing_job and not (inbox_dir / f'{vid}.json').exists():
-            playback.enqueue(row, existing_job['reason'], 'narrative')
-        pending_delivery = playback and playback.needs_delivery(vid, 'narrative')
-        if not force and state.is_video_processed(vid) and not pending_delivery:
-            result["skipped"] += 1
-            continue
-        if (inbox_dir / f"{vid}.json").exists():
-            result["skipped"] += 1
-            continue
-        if limit is not None and processed_count >= limit:
-            stopped_at_limit = True
-            break
-
-        # Metadata comes straight from the official Data API discovery row
-        # (published_at / channel / title) — no per-video scraping needed.
-        published_at = row.get("published_at")
-        channel_title = row.get("channel_title") or "youtube"
-        channel_id = row.get("channel_id")
-        title = row.get("title") or vid
-        url = row.get("url") or f"https://youtu.be/{vid}"
-
-        if not published_at:
-            # Required by the contract; without it the ingest side would DLQ.
-            # Use processing time as a last resort but log loudly — this can
-            # mis-bucket the Emergence phase, so it should be rare.
-            published_at = datetime.now(timezone.utc).isoformat()
-            logger.warning("queue: no published_at for %s; using now() (phase risk)", vid)
-        elif _too_old(published_at) and not pending_delivery:
-            # Defensive age cap (discovery already filters via publishedAfter, but
-            # a stale queue file could still carry old rows). Mark processed so the
-            # same old video isn't re-summarized every run.
-            logger.info("queue: %s too old (%s) — skipping", vid, published_at[:10])
-            state.mark_video_processed(vid, title, channel_title, summary_file="", published_date=published_at[:10])
-            result["too_old"] += 1
+        if (not force and state.is_video_processed(vid, 'narrative')
+                and not (playback and playback.needs_delivery(vid, 'narrative'))):
+            result['skipped'] += 1
             continue
 
-        job = playback.get(vid) if playback else None
-        if job and job['status'] == 'ready':
-            transcript, status = job['transcript'], 'ok'
-        elif job and job['status'] == 'recording':
-            transcript, status = None, 'deferred'
-        else:
-            # Waiting jobs retry captions too: a block or a missing track can clear
-            # on its own, and manual playback may never happen.
-            if _REQUEST_DELAY > 0:
-                time.sleep(_REQUEST_DELAY)  # throttle transcript requests to avoid IP rate-limit
-            transcript, status = extractor.extract_with_status(vid)
-        if playback and status in {'blocked', 'no_captions', 'deferred'}:
-            playback.enqueue(dict(row, title=title, channel_title=channel_title,
-                                  published_at=published_at, url=url),
-                             f'captions_{status}', 'narrative')
-            result['deferred'] += 1
-            if status == 'blocked':
-                # Every later fetch would be blocked too. Stop so the rest stay queued
-                # for a caption retry instead of all moving to manual playback.
-                logger.warning("queue: YouTube IP-blocked at %s — aborting run", vid)
+        with state.processing_claim(vid, 'narrative') as claim:
+            if claim is None:
+                result['busy'] += 1
+                continue
+            state.refresh()
+            pending_delivery = playback and playback.needs_delivery(vid, 'narrative')
+            existing = _existing_contract(inbox_dir, vid, force=force)
+            if existing is not None:
+                check_claim(claim)
+                if pending_delivery:
+                    playback.delivered(vid, 'narrative', existing)
+                if not state.is_video_processed(vid, 'narrative'):
+                    state.mark_video_processed(
+                        vid, row.get('title') or vid, row.get('channel_title') or 'youtube',
+                        summary_file=existing.name, published_date=(row.get('published_at') or '')[:10],
+                        destination='narrative',
+                    )
+                result['skipped'] += 1
+                continue
+            if not force and (
+                (state.is_video_processed(vid, 'narrative') and not pending_delivery)
+                or (playback and playback.delivery_output(vid, 'narrative'))
+            ):
+                result['skipped'] += 1
+                continue
+            if limit is not None and processed_count >= limit:
+                stopped_at_limit = True
+                break
+
+            job = playback.get(vid) if playback else None
+            if job and not pending_delivery and not playback.delivery_output(vid, 'narrative'):
+                playback.enqueue(row, job['reason'], 'narrative')
+                pending_delivery = True
+
+            # Metadata comes straight from the official Data API discovery row
+            # (published_at / channel / title) — no per-video scraping needed.
+            published_at = row.get("published_at")
+            channel_title = row.get("channel_title") or "youtube"
+            channel_id = row.get("channel_id")
+            title = row.get("title") or vid
+            url = row.get("url") or f"https://youtu.be/{vid}"
+
+            if not published_at:
+                # Required by the contract; without it the ingest side would DLQ.
+                # Use processing time as a last resort but log loudly — this can
+                # mis-bucket the Emergence phase, so it should be rare.
+                published_at = datetime.now(timezone.utc).isoformat()
+                logger.warning("queue: no published_at for %s; using now() (phase risk)", vid)
+            elif _too_old(published_at) and not pending_delivery:
+                # Defensive age cap (discovery already filters via publishedAfter, but
+                # a stale queue file could still carry old rows). Mark processed so the
+                # same old video isn't re-summarized every run.
+                logger.info("queue: %s too old (%s) — skipping", vid, published_at[:10])
+                state.mark_video_processed(vid, title, channel_title, summary_file="",
+                                           published_date=published_at[:10], destination="narrative")
+                result["too_old"] += 1
+                continue
+
+            if job and job['status'] == 'ready':
+                transcript, status = job['transcript'], 'ok'
+            elif job and job['status'] == 'recording':
+                transcript, status = None, 'deferred'
+            else:
+                # Waiting jobs retry captions too: a block or a missing track can clear
+                # on its own, and manual playback may never happen.
+                if _REQUEST_DELAY > 0:
+                    time.sleep(_REQUEST_DELAY)  # throttle transcript requests to avoid IP rate-limit
+                transcript, status = extractor.extract_with_status(vid)
+            if playback and status in {'blocked', 'no_captions', 'deferred'}:
+                playback.enqueue(dict(row, title=title, channel_title=channel_title,
+                                      published_at=published_at, url=url),
+                                 f'captions_{status}', 'narrative')
+                result['deferred'] += 1
+                if status == 'blocked':
+                    # Every later fetch would be blocked too. Stop so the rest stay queued
+                    # for a caption retry instead of all moving to manual playback.
+                    logger.warning("queue: YouTube IP-blocked at %s — aborting run", vid)
+                    blocked = True
+                    break
+                # A job that was already waiting must not use up --limit and starve the
+                # videos queued behind it.
+                if job is None:
+                    processed_count += 1
+                continue
+            if status == "blocked":
+                # YouTube rate-limited us. Every subsequent fetch will fail too, and
+                # marking them "processed" would silently drop them. Stop now and
+                # leave the rest of the queue intact for a later retry.
+                logger.warning("queue: YouTube IP-blocked at %s — aborting run, %d left", vid, len(rows) - processed_count)
                 blocked = True
                 break
-            # A job that was already waiting must not use up --limit and starve the
-            # videos queued behind it.
-            if job is None:
+            if status == "no_captions":
+                # Genuinely no transcript — permanent, mark done so we don't retry.
+                logger.info("queue: no captions for %s — marking processed (skip)", vid)
+                state.mark_video_processed(vid, title, channel_title, summary_file="",
+                                           published_date=published_at[:10], destination="narrative")
+                result["no_transcript"] += 1
+                continue
+            if status == "unavailable":
+                logger.info("queue: video unavailable for %s — marking processed (skip)", vid)
+                state.mark_video_processed(
+                    vid, title, channel_title, summary_file="", published_date=published_at[:10], destination="narrative"
+                )
+                if job:
+                    playback.discard_pending_delivery(vid, "narrative")
+                result["unavailable"] += 1
+                continue
+            if status == "error" or not transcript:
+                # Transient non-block failure — do NOT mark processed; retry next run.
+                logger.warning("queue: transient transcript error for %s — will retry", vid)
+                result["errors"] += 1
+                continue
+
+            check_claim(claim)
+            if summarizer is None:
+                summarizer = Summarizer()
+            sections = summarizer.summarize(transcript=transcript, title=title, channel=channel_title)
+            if not sections:
+                logger.error("queue: summarization failed for %s", vid)
+                result["errors"] += 1
+                continue
+
+            summary_text = _combined_summary(sections)
+            doc = {
+                "video_id": vid,
+                "url": url,
+                "channel_id": channel_id,
+                "channel_title": channel_title,
+                "title": title,
+                "published_at": published_at,
+                "summary": summary_text,
+                "discovery": row.get("discovery") or {"mode": "unknown", "query": None},
+                "stt": {
+                    "engine": getattr(extractor, "engine", "youtube-transcript-api"),
+                    "model": getattr(extractor, "model", None),
+                    "lang": (getattr(extractor, "last_track_info", None) or {}).get(
+                        "language", "ko"
+                    ),
+                    "generated": (getattr(extractor, "last_track_info", None) or {}).get(
+                        "generated"
+                    ),
+                    "acquisition": (
+                        "direct_media"
+                        if getattr(extractor, "engine", "") == "whisper"
+                        else "captions"
+                    ),
+                    "fallback_reason": getattr(extractor, "fallback_reason", None),
+                },
+                "summary_meta": {
+                    "source_char_len": len(transcript),
+                    "summary_char_len": len(summary_text),
+                },
+            }
+            source = from_job(job) if job and job['status'] == 'ready' else from_extractor(extractor)
+            played_back = source['source'] == LOCAL_SOURCE
+            doc['stt'] = {'engine': source['engine'], 'model': source['model'],
+                          'lang': source['language'], 'generated': source['generated'],
+                          'acquisition': ('realtime_playback' if played_back else 'captions_ui'
+                                          if source['source'] == UI_SOURCE else doc['stt']['acquisition']),
+                          'fallback_reason': job['reason'] if job else doc['stt']['fallback_reason']}
+            doc['summary_meta']['review'] = review_summary(transcript, sections)
+            doc['summary_meta']['transcript_source'] = source['source']
+            segments = source['segments']
+            if segments:
+                import hashlib
+                captured_at = source['evidence'].get('captured_at')
+                observed_at = (datetime.fromtimestamp(captured_at, timezone.utc).isoformat()
+                               if isinstance(captured_at, (int, float)) else datetime.now(timezone.utc).isoformat())
+                body = {"version": ('youtube-visible-transcript-v1' if source['source'] == UI_SOURCE
+                                    else 'youtube-timed-caption-v1'), "video_id": vid,
+                        "channel_id": channel_id, "published_at": published_at,
+                        "observed_at": observed_at,
+                        "language": doc["stt"]["lang"], "generated": doc["stt"]["generated"],
+                        "segments": segments, "acquisition": doc['stt']['acquisition']}
+                encoded = json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
+                doc["transcript_evidence"] = dict(body, sha256=hashlib.sha256(encoded.encode()).hexdigest())
+            check_claim(claim)
+            output = _write_contract(inbox_dir, doc)
+            if job and job['status'] == 'ready':
+                playback.delivered(vid, 'narrative', output)
+            elif job:
+                playback.recover_with_captions(vid, transcript, 'narrative', output, source)
+            state.mark_video_processed(vid, title, channel_title, summary_file=output.name,
+                                       published_date=published_at[:10], destination="narrative")
+            result["written"] += 1
+            if played_back:
+                result['realtime_used'] += 1
+            elif source['source'] == UI_SOURCE:
+                result['ui_used'] += 1
+            elif getattr(extractor, "engine", "") == "whisper":
+                result["whisper_used"] += 1
+            else:
+                result["caption_used"] += 1
+            if not (job and job['status'] == 'ready'):
+                # --limit rations YouTube requests; a recovered transcript made none.
                 processed_count += 1
-            continue
-        if status == "blocked":
-            # YouTube rate-limited us. Every subsequent fetch will fail too, and
-            # marking them "processed" would silently drop them. Stop now and
-            # leave the rest of the queue intact for a later retry.
-            logger.warning("queue: YouTube IP-blocked at %s — aborting run, %d left", vid, len(rows) - processed_count)
-            blocked = True
-            break
-        if status == "no_captions":
-            # Genuinely no transcript — permanent, mark done so we don't retry.
-            logger.info("queue: no captions for %s — marking processed (skip)", vid)
-            state.mark_video_processed(vid, title, channel_title, summary_file="", published_date=published_at[:10])
-            result["no_transcript"] += 1
-            continue
-        if status == "unavailable":
-            logger.info("queue: video unavailable for %s — marking processed (skip)", vid)
-            state.mark_video_processed(
-                vid, title, channel_title, summary_file="", published_date=published_at[:10]
-            )
-            if job:
-                playback.forget(vid)
-            result["unavailable"] += 1
-            continue
-        if status == "error" or not transcript:
-            # Transient non-block failure — do NOT mark processed; retry next run.
-            logger.warning("queue: transient transcript error for %s — will retry", vid)
-            result["errors"] += 1
-            continue
-
-        if summarizer is None:
-            summarizer = Summarizer()
-        sections = summarizer.summarize(transcript=transcript, title=title, channel=channel_title)
-        if not sections:
-            logger.error("queue: summarization failed for %s", vid)
-            result["errors"] += 1
-            continue
-
-        summary_text = _combined_summary(sections)
-        doc = {
-            "video_id": vid,
-            "url": url,
-            "channel_id": channel_id,
-            "channel_title": channel_title,
-            "title": title,
-            "published_at": published_at,
-            "summary": summary_text,
-            "discovery": row.get("discovery") or {"mode": "unknown", "query": None},
-            "stt": {
-                "engine": getattr(extractor, "engine", "youtube-transcript-api"),
-                "model": getattr(extractor, "model", None),
-                "lang": (getattr(extractor, "last_track_info", None) or {}).get(
-                    "language", "ko"
-                ),
-                "generated": (getattr(extractor, "last_track_info", None) or {}).get(
-                    "generated"
-                ),
-                "acquisition": (
-                    "direct_media"
-                    if getattr(extractor, "engine", "") == "whisper"
-                    else "captions"
-                ),
-                "fallback_reason": getattr(extractor, "fallback_reason", None),
-            },
-            "summary_meta": {
-                "source_char_len": len(transcript),
-                "summary_char_len": len(summary_text),
-            },
-        }
-        source = from_job(job) if job and job['status'] == 'ready' else from_extractor(extractor)
-        played_back = source['source'] == LOCAL_SOURCE
-        doc['stt'] = {'engine': source['engine'], 'model': source['model'],
-                      'lang': source['language'], 'generated': source['generated'],
-                      'acquisition': ('realtime_playback' if played_back else 'captions_ui'
-                                      if source['source'] == UI_SOURCE else doc['stt']['acquisition']),
-                      'fallback_reason': job['reason'] if job else doc['stt']['fallback_reason']}
-        doc['summary_meta']['review'] = review_summary(transcript, sections)
-        doc['summary_meta']['transcript_source'] = source['source']
-        segments = source['segments']
-        if segments:
-            import hashlib
-            captured_at = source['evidence'].get('captured_at')
-            observed_at = (datetime.fromtimestamp(captured_at, timezone.utc).isoformat()
-                           if isinstance(captured_at, (int, float)) else datetime.now(timezone.utc).isoformat())
-            body = {"version": ('youtube-visible-transcript-v1' if source['source'] == UI_SOURCE
-                                else 'youtube-timed-caption-v1'), "video_id": vid,
-                    "channel_id": channel_id, "published_at": published_at,
-                    "observed_at": observed_at,
-                    "language": doc["stt"]["lang"], "generated": doc["stt"]["generated"],
-                    "segments": segments, "acquisition": doc['stt']['acquisition']}
-            encoded = json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
-            doc["transcript_evidence"] = dict(body, sha256=hashlib.sha256(encoded.encode()).hexdigest())
-        _write_contract(inbox_dir, doc)
-        if job and job['status'] == 'ready':
-            playback.delivered(vid, 'narrative', inbox_dir / f'{vid}.json')
-        elif job:
-            playback.recover_with_captions(vid, transcript, 'narrative', inbox_dir / f'{vid}.json', source)
-        state.mark_video_processed(vid, title, channel_title, summary_file=f"{vid}.json", published_date=published_at[:10])
-        result["written"] += 1
-        if played_back:
-            result['realtime_used'] += 1
-        elif source['source'] == UI_SOURCE:
-            result['ui_used'] += 1
-        elif getattr(extractor, "engine", "") == "whisper":
-            result["whisper_used"] += 1
-        else:
-            result["caption_used"] += 1
-        if not (job and job['status'] == 'ready'):
-            # --limit rations YouTube requests; a recovered transcript made none.
-            processed_count += 1
-        logger.info("queue: wrote contract for %s (%s)", vid, title[:40])
+            logger.info("queue: wrote contract for %s (%s)", vid, title[:40])
 
     result["blocked"] = blocked
 
@@ -465,7 +508,7 @@ def run(limit: int | None = None, force: bool = False, only: set[str] | None = N
     # errors keeps the files for the next pass. Once a limit-bounded backlog is
     # fully drained, the final short run can still archive it.
     if (only is None and not stopped_at_limit and not blocked
-            and result["errors"] == 0 and result["deferred"] == 0):
+            and result["errors"] == 0 and result["deferred"] == 0 and result["busy"] == 0):
         archive = queue_dir / "_archive"
         archive.mkdir(parents=True, exist_ok=True)
         for qfile in queue_dir.glob("pending_*.jsonl"):

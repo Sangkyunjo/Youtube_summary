@@ -5,6 +5,7 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from realtime_fallback import CAPTION_MODEL, PlaybackQueue
+from test_state_manager import state_at
 from unittest.mock import patch
 
 
@@ -95,17 +96,6 @@ class TooOldTest(unittest.TestCase):
             self.assertFalse(queue_consumer._too_old(recent))
 
 
-class _State:
-    def __init__(self):
-        self.processed = set()
-
-    def is_video_processed(self, video_id):
-        return video_id in self.processed
-
-    def mark_video_processed(self, video_id, *_args, **_kwargs):
-        self.processed.add(video_id)
-
-
 class _Summarizer:
     def summarize(self, **_kwargs):
         return {"overview": "요약"}
@@ -121,7 +111,7 @@ class QueueLimitTest(unittest.TestCase):
         self.queue_dir.mkdir()
         self.inbox_dir.mkdir()
         self.playback = PlaybackQueue(root / "realtime.sqlite3")
-        self.state = _State()
+        self.state = state_at(root)
         published_at = datetime.now(timezone.utc).isoformat()
         self.rows = [
             {"video_id": f"video{i:06d}", "published_at": published_at}
@@ -170,13 +160,51 @@ class QueueLimitTest(unittest.TestCase):
         self.assertEqual(self._inbox_ids(), [selected])
         self.assertTrue((self.queue_dir / "pending_1.jsonl").exists())
 
+    def test_daily_completion_without_playback_allows_narrative_output(self):
+        vid = self.rows[0]['video_id']
+        self.state.mark_video_processed(vid, 'title', 'channel', 'prior.txt')
+
+        result, _ = self._run(('충분한 자막', 'ok'), only={vid})
+
+        self.assertEqual(result['written'], 1)
+        self.assertIsNone(self.playback.get(vid))
+        self.assertTrue(self.state.is_video_processed(vid, 'daily'))
+        self.assertTrue(self.state.is_video_processed(vid, 'narrative'))
+
+    def test_busy_narrative_claim_keeps_the_queue_for_retry(self):
+        vid = self.rows[0]['video_id']
+        with self.state.processing_claim(vid, 'narrative'):
+            result, _ = self._run(('충분한 자막', 'ok'))
+        self.assertEqual(result['busy'], 1)
+        self.assertNotIn(vid, self._inbox_ids())
+        self.assertTrue((self.queue_dir / 'pending_1.jsonl').exists())
+
+        result, _ = self._run(('충분한 자막', 'ok'))
+        self.assertEqual(result['written'], 1)
+        self.assertIn(vid, self._inbox_ids())
+
+    def test_archived_contract_repairs_missing_completion_without_resummarizing(self):
+        row = self.rows[0]
+        vid = row['video_id']
+        self._wait_for_playback([row])
+        archive = self.inbox_dir / '_archive'
+        archive.mkdir()
+        (archive / f'{vid}.json').write_text(json.dumps(dict(row, summary='Existing summary')))
+
+        result, _ = self._run(('충분한 자막', 'ok'), only={vid})
+
+        self.assertEqual(result['written'], 0)
+        self.assertTrue(self.state.is_video_processed(vid, 'narrative'))
+        self.assertFalse(self.playback.needs_delivery(vid, 'narrative'))
+        self.assertEqual(self._inbox_ids(), [])
+
     def test_candidates_are_newest_unprocessed_videos_with_length(self):
         now = datetime.now(timezone.utc)
         for i, row in enumerate(self.rows):
             row["published_at"] = (now - timedelta(hours=10 - i)).isoformat()
         self.rows[0]["published_at"] = "2020-01-01T00:00:00Z"
         self._write_queue()
-        self.state.processed.add(self.rows[4]["video_id"])
+        self.state.mark_video_processed(self.rows[4]['video_id'], 'title', 'channel', 'prior.json')
         lengths = {self.rows[3]["video_id"]: {"duration_seconds": 600, "live": False},
                    self.rows[2]["video_id"]: {"duration_seconds": 0, "live": True}}
 
@@ -214,24 +242,28 @@ class QueueLimitTest(unittest.TestCase):
         now = datetime.now(timezone.utc)
         for i, row in enumerate(self.rows):
             row["published_at"] = (now - timedelta(hours=10 - i)).isoformat()
+        self.rows[1]["channel_id"] = "UCpriority"
         self._write_queue()
         oldest = self.rows[0]["video_id"]
         self._wait_for_playback(self.rows[:1])
         self.playback.claim(oldest)
         self.playback.finish(oldest, "재생으로 확보한 대본 " * 30, "local-model")
-        self.state.processed.add(oldest)  # the daily summary already went out
+        self.state.mark_video_processed(oldest, 'title', 'channel', 'prior.txt')
         fetched = []
 
         def captions(vid):
+            self.assertFalse(self.playback.needs_delivery(oldest, "narrative"))
             fetched.append(vid)
             return ("충분한 자막", "ok")
 
-        result, _sleep = self._run(captions, limit=2)
+        config = {"youtube": {"priority_channel_ids": ["UCpriority"]}}
+        with patch.object(queue_consumer, "load_config", return_value=config):
+            result, _sleep = self._run(captions, limit=2)
 
         self.assertEqual(result["written"], 3)
         self.assertEqual(result["realtime_used"], 1)
         self.assertNotIn(oldest, fetched)
-        self.assertEqual(fetched, [self.rows[4]["video_id"], self.rows[3]["video_id"]])
+        self.assertEqual(fetched, [self.rows[1]["video_id"], self.rows[4]["video_id"]])
         self.assertFalse(self.playback.needs_delivery(oldest, "narrative"))
 
     def test_waiting_jobs_without_captions_do_not_use_up_the_limit(self):
@@ -288,7 +320,20 @@ class QueueLimitTest(unittest.TestCase):
         self._run((None, "unavailable"))
 
         self.assertIsNone(self.playback.get(vid))
-        self.assertIn(vid, self.state.processed)
+        self.assertTrue(self.state.is_video_processed(vid, 'narrative'))
+
+    def test_unavailable_narrative_output_keeps_daily_delivery(self):
+        row = self.rows[0]
+        vid = row['video_id']
+        self._wait_for_playback([row])
+        self.playback.enqueue(row, 'captions_blocked', 'daily')
+
+        self._run((None, 'unavailable'), only={vid})
+
+        self.assertTrue(self.state.is_video_processed(vid, 'narrative'))
+        self.assertFalse(self.state.is_video_processed(vid, 'daily'))
+        self.assertFalse(self.playback.needs_delivery(vid, 'narrative'))
+        self.assertTrue(self.playback.needs_delivery(vid, 'daily'))
 
     def test_captions_kept_for_another_destination_are_labelled_captions(self):
         vid = self.rows[0]["video_id"]
@@ -328,7 +373,7 @@ class QueueLimitTest(unittest.TestCase):
 
         self.assertIsNone(self.playback.get(self.rows[0]["video_id"]))
         self.assertIsNone(self.playback.get("videodaily1"))
-        self.assertIn(self.rows[0]["video_id"], self.state.processed)
+        self.assertTrue(self.state.is_video_processed(self.rows[0]['video_id'], 'narrative'))
         self.assertEqual(result["too_old"], 1)
         self.assertEqual(result["deferred"], 0)
         self.assertEqual(

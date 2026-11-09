@@ -8,8 +8,9 @@ import json
 import math
 import re
 import time
-import tempfile
 from pathlib import Path
+
+from utils import atomic_write_text
 
 API_SOURCE = 'youtube_captions_api'
 UI_SOURCE = 'youtube_visible_transcript'
@@ -119,14 +120,5 @@ def summary_metadata(vid, transcript, sections, source):
 
 def write_metadata(path, metadata):
     target = Path(path).with_suffix('.meta.json')
-    temp = None
-    try:
-        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=target.parent,
-                                         prefix=target.name + '.', suffix='.tmp', delete=False) as f:
-            temp = Path(f.name)
-            json.dump(metadata, f, ensure_ascii=False, indent=2, allow_nan=False)
-        temp.replace(target)
-    finally:
-        if temp and temp.exists():
-            temp.unlink()
+    atomic_write_text(target, json.dumps(metadata, ensure_ascii=False, indent=2, allow_nan=False))
     return target

@@ -6,8 +6,8 @@ This DAG orchestrates the YouTube channel monitoring and summarization pipeline:
 2. Extract transcripts and generate summaries
 3. Send email report with results
 
-Schedule: Daily at 11:00 PM
-Catchup: Enabled (will backfill missed runs)
+Schedule: Daily at 15:00 KST
+Catchup: Disabled
 """
 
 import sys
@@ -100,7 +100,7 @@ def get_new_videos(**context) -> list:
     """
     Task 1: Fetch new videos from all monitored YouTube channels.
 
-    Uses RSS feeds to get recent videos and filters out already-processed ones.
+    Uses the channel monitor and filters out already-processed videos.
     Returns list of video metadata via XCom for the next task.
     """
     _setup_path()
@@ -111,7 +111,7 @@ def get_new_videos(**context) -> list:
     state = StateManager()
 
     # Get already processed video IDs
-    processed_ids = state.get_all_processed_video_ids()
+    processed_ids = state.get_all_processed_video_ids('daily')
     print(f"Already processed {len(processed_ids)} videos")
 
     # Get new videos from all channels
@@ -128,6 +128,8 @@ def get_new_videos(**context) -> list:
             "video_id": video.video_id,
             "title": video.title,
             "channel_name": video.channel_name,
+            "channel_id": video.channel_id,
+            "channel_handle": video.channel_handle,
             "published_date": video.published_date.isoformat(),
             "url": video.url,
         })
@@ -137,159 +139,69 @@ def get_new_videos(**context) -> list:
 
 
 def process_videos(**context) -> dict:
-    """
-    Task 2: Process each video - extract transcript and generate summary.
-
-    For each video:
-    1. Extract transcript (Korean preferred, English fallback)
-    2. Generate AI summary using Claude API
-    3. Save summary file to configured directory
-    4. Mark video as processed in state
-
-    Returns processing results for email report.
-    """
+    """Use the same transcript recovery and summarization as the daily CLI."""
     _setup_path()
-    from datetime import datetime as dt
     from channel_monitor import VideoInfo
-    from transcript_extractor import TranscriptExtractor
-    from summarizer import Summarizer
-    from state_manager import StateManager
-    from utils import generate_summary_filename, get_summaries_dir
+    from main import YouTubeSummarySystem
 
-    # Get videos from previous task
-    ti = context["ti"]
-    video_list = ti.xcom_pull(task_ids="get_new_videos")
-
-    if not video_list:
-        print("No videos to process")
-        return {
-            "videos_found": 0,
-            "videos_processed": 0,
-            "videos_skipped": 0,
-            "errors": 0,
-            "processed_videos": [],
-        }
-
-    # Initialize components
-    extractor = TranscriptExtractor()
-    summarizer = None  # Lazy initialization
-    state = StateManager()
-    summaries_dir = get_summaries_dir()
-
+    video_list = context["ti"].xcom_pull(task_ids="get_new_videos") or []
     results = {
         "videos_found": len(video_list),
         "videos_processed": 0,
         "videos_skipped": 0,
+        "videos_deferred": 0,
         "errors": 0,
         "processed_videos": [],
     }
+    if not video_list:
+        print("No videos to process")
+        return results
 
+    system = YouTubeSummarySystem()
     for v in video_list:
-        video_id = v["video_id"]
-        title = v["title"]
-        channel_name = v["channel_name"]
-        published_date = dt.fromisoformat(v["published_date"])
-        url = v["url"]
-
-        print(f"\nProcessing: {title} ({video_id})")
-
-        # Reconstruct VideoInfo object
         video = VideoInfo(
-            video_id=video_id,
-            title=title,
-            channel_name=channel_name,
-            published_date=published_date,
-            url=url,
+            video_id=v["video_id"],
+            title=v["title"],
+            channel_name=v["channel_name"],
+            channel_id=v.get("channel_id", ""),
+            channel_handle=v.get("channel_handle"),
+            published_date=datetime.fromisoformat(v["published_date"]),
+            url=v["url"],
         )
-
-        # Step 1: Extract transcript
         try:
-            transcript = extractor.extract(video_id)
-            if not transcript:
-                print(f"  No transcript available - skipping")
-                results["videos_skipped"] += 1
-                continue
-            print(f"  Transcript extracted: {len(transcript)} characters")
+            result = system.process_video(video)
         except Exception as e:
-            print(f"  Transcript extraction failed: {e}")
+            print(f"  Processing failed for {video.video_id}: {e}")
             results["errors"] += 1
             continue
 
-        # Step 2: Generate summary (lazy init summarizer)
-        try:
-            if summarizer is None:
-                summarizer = Summarizer()
-
-            sections = summarizer.summarize(
-                transcript=transcript,
-                title=title,
-                channel=channel_name,
-            )
-
-            if not sections:
-                print(f"  Summarization returned empty - skipping")
-                results["errors"] += 1
-                continue
-
-            print(f"  Summary generated with {len(sections)} sections")
-        except Exception as e:
-            print(f"  Summarization failed: {e}")
+        if result.get('skipped') == 'in_progress':
+            results['videos_deferred'] += 1
+        elif result.get('skipped'):
+            results['videos_skipped'] += 1
+        elif result["success"]:
+            results["videos_processed"] += 1
+            results["processed_videos"].append({
+                "video_id": video.video_id,
+                "title": video.title,
+                "channel": video.channel_name,
+                "summary_file": result["summary_file"],
+                "summary_path": result["summary_path"],
+                "published_date": video.published_date.strftime("%Y-%m-%d"),
+            })
+        elif result["error"] == "Awaiting realtime playback":
+            results["videos_deferred"] += 1
+        elif result["error"] == "No transcript available":
+            results["videos_skipped"] += 1
+        else:
+            print(f"  Processing failed for {video.video_id}: {result['error']}")
             results["errors"] += 1
-            continue
 
-        # Step 3: Create and save summary file
-        try:
-            summary_text = summarizer.create_summary_text(
-                title=title,
-                channel=channel_name,
-                published=published_date.strftime("%Y-%m-%d %H:%M"),
-                url=url,
-                sections=sections,
-            )
-
-            filename = generate_summary_filename(
-                channel_name=channel_name,
-                video_title=title,
-                published_date=published_date,
-            )
-
-            summary_path = summaries_dir / filename
-
-            with open(summary_path, "w", encoding="utf-8") as f:
-                f.write(summary_text)
-
-            print(f"  Summary saved: {filename}")
-        except Exception as e:
-            print(f"  Failed to save summary: {e}")
-            results["errors"] += 1
-            continue
-
-        # Step 4: Mark as processed
-        try:
-            state.mark_video_processed(
-                video_id=video_id,
-                title=title,
-                channel=channel_name,
-                summary_file=filename,
-                published_date=published_date.strftime("%Y-%m-%d"),
-            )
-        except Exception as e:
-            print(f"  Warning: Failed to mark as processed: {e}")
-
-        # Record success
-        results["videos_processed"] += 1
-        results["processed_videos"].append({
-            "video_id": video_id,
-            "title": title,
-            "channel": channel_name,
-            "summary_file": filename,
-            "published_date": published_date.strftime("%Y-%m-%d"),
-        })
-
-    print(f"\nProcessing complete:")
+    print("\nProcessing complete:")
     print(f"  Found: {results['videos_found']}")
     print(f"  Processed: {results['videos_processed']}")
     print(f"  Skipped (no transcript): {results['videos_skipped']}")
+    print(f"  Deferred: {results['videos_deferred']}")
     print(f"  Errors: {results['errors']}")
 
     return results
@@ -366,11 +278,13 @@ def record_run_status(**context):
     if process_result:
         videos_processed = process_result.get("videos_processed", 0)
         errors = process_result.get("errors", 0)
+        deferred = process_result.get("videos_deferred", 0)
         state.record_run_complete(
             videos_processed=videos_processed,
             errors=errors,
+            deferred=deferred,
         )
-        print(f"Run recorded: {videos_processed} processed, {errors} errors")
+        print(f"Run recorded: {videos_processed} processed, {deferred} deferred, {errors} errors")
     else:
         state.record_run_complete(videos_processed=0, errors=0)
         print("Run recorded: no videos processed")

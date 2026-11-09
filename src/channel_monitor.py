@@ -10,6 +10,7 @@ from dataclasses import dataclass
 
 from dateutil import parser as date_parser
 
+from channel_priority import prioritize_channels
 from utils import load_config, load_channels, setup_logging
 from youtube_api import YouTubeAPI
 
@@ -204,7 +205,7 @@ class ChannelMonitor:
 
         all_videos.sort(key=lambda v: v.published_date, reverse=True)
         logger.info(f"Found {len(all_videos)} new videos total")
-        return all_videos
+        return prioritize_channels(all_videos, lambda video: video.channel_id, self.config)
 
 
 def main():

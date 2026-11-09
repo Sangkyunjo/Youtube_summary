@@ -32,6 +32,8 @@ openai:
 youtube:
   # Rate limit delay between API calls (seconds)
   request_delay: 0.5
+  priority_channel_ids:
+    - UCpqD9_OJNtF6suPpi6mOQCQ  # @wsaj
 
 # Transcript extraction settings
 transcript:

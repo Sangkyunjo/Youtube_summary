@@ -1,13 +1,18 @@
 import tempfile
 import unittest
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
 from pathlib import Path
 from datetime import datetime, timezone
+from threading import Event
 from unittest.mock import Mock, patch
 
 import main
 import queue_consumer as qc
+import realtime_fallback
 from channel_monitor import VideoInfo
 from realtime_fallback import PlaybackQueue
+from test_state_manager import state_at
 from test_transcript_acquisition import document
 
 VID = 'abcdefghijk'
@@ -25,8 +30,73 @@ class IntegrationTest(unittest.TestCase):
         self.system.playback = self.queue
         self.system._captions_blocked = False
         self.system.transcript_extractor = Mock()
-        self.system.state_manager = Mock()
+        self.system.state_manager = state_at(self.root)
+        mark = self.system.state_manager.mark_video_processed
+        self.system.state_manager.mark_video_processed = Mock(wraps=mark)
         self.system.summarizer = Mock()
+        summaries = patch.object(main, 'get_summaries_dir', return_value=self.root)
+        summaries.start()
+        self.addCleanup(summaries.stop)
+
+    def test_narrative_completion_without_playback_allows_daily_output(self):
+        self.system.state_manager.mark_video_processed(VID, 'Test', 'Channel', f'{VID}.json')
+        self.system.transcript_extractor.extract_with_status.return_value = ('caption text ' * 20, 'ok')
+        self.system.summarizer.summarize.return_value = {'overview': 'Summary'}
+        self.system.summarizer.create_summary_text.return_value = 'Daily summary'
+
+        self.assertNotIn(VID, self.system.state_manager.get_all_processed_video_ids('daily'))
+        self.assertTrue(self.system.process_video(self.video)['success'])
+        self.assertIsNone(self.queue.get(VID))
+        self.assertTrue(self.system.state_manager.is_video_processed(VID, 'narrative'))
+        self.assertTrue(self.system.state_manager.is_video_processed(VID, 'daily'))
+
+    def test_concurrent_daily_call_only_summarizes_once(self):
+        self.system.transcript_extractor.extract_with_status.return_value = ('caption text ' * 20, 'ok')
+        self.system.summarizer.create_summary_text.return_value = 'Daily summary'
+        started, finish = Event(), Event()
+
+        def summarize(**kwargs):
+            started.set()
+            self.assertTrue(finish.wait(timeout=5))
+            return {'overview': 'Summary'}
+
+        self.system.summarizer.summarize.side_effect = summarize
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            running = pool.submit(self.system.process_video, self.video)
+            try:
+                self.assertTrue(started.wait(timeout=5))
+                self.assertEqual(self.system.process_video(self.video)['skipped'], 'in_progress')
+            finally:
+                finish.set()
+            self.assertTrue(running.result(timeout=5)['success'])
+        self.assertEqual(self.system.process_video(self.video)['skipped'], 'already_completed')
+        self.system.summarizer.summarize.assert_called_once()
+
+    def test_distinct_ids_with_same_timestamp_and_title_have_distinct_files(self):
+        self.system.transcript_extractor.extract_with_status.return_value = ('caption text ' * 20, 'ok')
+        self.system.summarizer.summarize.return_value = {'overview': 'Summary'}
+        self.system.summarizer.create_summary_text.return_value = 'Daily summary'
+        other = replace(self.video, video_id=VID.upper())
+        first = self.system.process_video(self.video)
+        second = self.system.process_video(other)
+
+        self.assertTrue(first['success'] and second['success'])
+        self.assertNotEqual(first['summary_file'].casefold(), second['summary_file'].casefold())
+        self.assertEqual(len(list(self.root.glob('*.txt'))), 2)
+
+    def test_written_daily_artifact_recovers_a_failed_state_commit(self):
+        self.system.transcript_extractor.extract_with_status.return_value = ('caption text ' * 20, 'ok')
+        self.system.summarizer.summarize.return_value = {'overview': 'Summary'}
+        self.system.summarizer.create_summary_text.return_value = 'Daily summary'
+        with patch.object(self.system.state_manager, 'mark_video_processed', side_effect=OSError('test stop')):
+            failed = self.system.process_video(self.video)
+        self.assertFalse(failed['success'])
+
+        resumed = self.system.process_video(replace(self.video, title='Updated title'))
+        self.assertTrue(resumed['success'])
+        self.assertEqual(resumed['skipped'], 'already_completed')
+        self.assertTrue(self.system.state_manager.is_video_processed(VID, 'daily'))
+        self.system.summarizer.summarize.assert_called_once()
 
     def test_daily_block_defers_and_does_not_mark_processed_or_call_llm(self):
         self.system.transcript_extractor.extract_with_status.return_value = (None, 'blocked')
@@ -51,15 +121,19 @@ class IntegrationTest(unittest.TestCase):
 
     def test_resume_retries_waiting_jobs_and_stops_at_a_block(self):
         published_at = datetime.now(timezone.utc).isoformat()
-        for vid in (VID, 'bcdefghijkl'):
+        priority = 'bcdefghijkl'
+        for vid, channel_id in ((VID, 'UCregular'), (priority, 'UCpriority')):
             self.queue.enqueue(dict(video_id=vid, title='Title', channel_title='Channel',
+                                    channel_id=channel_id,
                                     published_at=published_at, url='https://youtu.be/x'),
                                'captions_blocked', 'daily')
         self.system.transcript_extractor.extract_with_status.return_value = (None, 'blocked')
-        with patch.object(qc, '_REQUEST_DELAY', 0):
+        config = {'youtube': {'priority_channel_ids': ['UCpriority']}}
+        with (patch.object(qc, '_REQUEST_DELAY', 0),
+              patch.object(realtime_fallback, 'load_config', return_value=config)):
             results = self.system.resume_realtime()
         self.assertEqual(len(results), 1)
-        self.system.transcript_extractor.extract_with_status.assert_called_once()
+        self.system.transcript_extractor.extract_with_status.assert_called_once_with(priority)
         self.assertEqual(len(self.queue.waiting('daily')), 2)
 
     def test_ready_local_transcript_resumes_without_caption_request(self):
@@ -97,7 +171,7 @@ class IntegrationTest(unittest.TestCase):
     def test_queue_retains_deferred_rows_without_paid_stt_or_success_marker(self):
         qdir = self.root / 'pending'; qdir.mkdir()
         infile = qdir / 'pending_test.jsonl'; infile.write_text('placeholder')
-        state = Mock(); state.is_video_processed.return_value = False
+        state = self.system.state_manager
         captions = Mock(); captions.extract_with_status.return_value = (None, 'blocked')
         row = dict(video_id=VID, title='Title', published_at=datetime.now(timezone.utc).isoformat())
         with (patch.object(qc, '_queue_dir', return_value=qdir),
@@ -131,7 +205,8 @@ class QueueResumeTest(unittest.TestCase):
                                published_at=datetime.now(timezone.utc).isoformat()),
                           'blocked', 'narrative')
             queue.import_ui(VID, document())
-            state = Mock(); state.is_video_processed.return_value = True
+            state = state_at(root)
+            state.mark_video_processed(VID, 'Title', 'Channel', 'prior.txt')
             captions = Mock(engine='youtube-transcript-api')
             summarizer = Mock()
             summarizer.summarize.return_value = {'overview': 'UI source summary'}
@@ -167,7 +242,8 @@ class QueueResumeTest(unittest.TestCase):
             queue.claim(VID)
             queue.finish(VID, 'local transcript ' * 30, 'local-model')
             queue.delivered(VID, 'daily', 'existing-summary.txt')
-            state = Mock(); state.is_video_processed.return_value = True
+            state = state_at(root)
+            state.mark_video_processed(VID, 'Title', 'Channel', 'prior.txt')
             captions = Mock(engine='youtube-transcript-api', model=None, last_track_info=None)
             summarizer = Mock()
             summarizer.summarize.return_value = {'overview': 'Verified narrative summary'}

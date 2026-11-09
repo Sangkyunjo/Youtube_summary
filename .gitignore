@@ -11,3 +11,4 @@ CLAUDE.md
 /.venv-host/
 /data/recovery-test-*/
 /data/backups/
+/data/.processing-locks/

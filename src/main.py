@@ -7,13 +7,17 @@ import sys
 import json
 import time
 import argparse
+import hashlib
 from datetime import datetime
+from itertools import islice
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 # Add src directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
 from utils import (
+    atomic_write_text,
     setup_logging,
     load_config,
     load_channels,
@@ -21,6 +25,7 @@ from utils import (
     get_summaries_dir
 )
 from state_manager import StateManager
+from processing_lock import check_claim
 from channel_monitor import ChannelMonitor, VideoInfo
 from historical_fetcher import HistoricalFetcher
 from transcript_extractor import TranscriptExtractor
@@ -31,6 +36,30 @@ from realtime_fallback import PlaybackQueue, enabled as realtime_enabled
 from transcript_acquisition import from_extractor, from_job, summary_metadata, write_metadata
 
 logger = setup_logging("main")
+
+
+def _summary_matches(path: Path, video_id: str, *, legacy: bool) -> bool:
+    if not path.is_file():
+        return False
+    sidecar = path.with_suffix('.meta.json')
+    try:
+        if sidecar.is_file():
+            metadata = json.loads(sidecar.read_text(encoding='utf-8'))
+            if not isinstance(metadata, dict) or metadata.get('video_id') != video_id:
+                return False
+            digest = metadata.get('summary_sha256')
+            return not digest or hashlib.sha256(path.read_bytes()).hexdigest() == digest
+        if legacy:
+            with path.open(encoding='utf-8') as file:
+                for line in islice(file, 20):
+                    if line.startswith('URL:'):
+                        url = urlparse(line.removeprefix('URL:').strip())
+                        return (url.netloc in {'youtube.com', 'www.youtube.com', 'm.youtube.com'}
+                                and parse_qs(url.query).get('v') == [video_id]
+                                or url.netloc == 'youtu.be' and url.path == f'/{video_id}')
+    except (ValueError, FileNotFoundError):
+        return False
+    return False
 
 
 class YouTubeSummarySystem:
@@ -56,25 +85,79 @@ class YouTubeSummarySystem:
                 logger.error(f"Failed to initialize summarizer: {e}")
                 raise
 
-    def process_video(self, video: VideoInfo) -> dict:
-        """
-        Process a single video: extract transcript, summarize, save.
-
-        Args:
-            video: VideoInfo object with video details
-
-        Returns:
-            Dictionary with processing result
-        """
+    def process_video(self, video: VideoInfo, *, force=False) -> dict:
+        """Deliver the daily summary once per video, including concurrent callers."""
         result = {
             "video_id": video.video_id,
             "title": video.title,
             "channel": video.channel_name,
             "success": False,
             "error": None,
-            "summary_file": None
+            "summary_file": None,
+            "summary_path": None,
         }
+        vid = video.video_id
+        with self.state_manager.processing_claim(vid, 'daily') as claim:
+            if claim is None:
+                result['skipped'] = 'in_progress'
+                return result
 
+            try:
+                self.state_manager.refresh()
+                prior = self.state_manager.get_video_metadata(vid, 'daily')
+                delivered = self.playback.delivery_output(vid, 'daily') if self.playback else None
+                pending = self.playback and self.playback.needs_delivery(vid, 'daily')
+                directory = get_summaries_dir(channel_handle=video.channel_handle)
+                filename = generate_summary_filename(video.channel_name, video.title,
+                                                     video.published_date, video_id=vid)
+                expected = directory / filename
+                if not force and not pending and prior:
+                    stored = Path(delivered).name if delivered else prior['summary_file']
+                    result.update(success=True, skipped='already_completed',
+                                  summary_file=stored, summary_path=str(directory / stored))
+                    return result
+
+                legacy = generate_summary_filename(video.channel_name, video.title, video.published_date)
+                candidates = [expected]
+                if prior and prior['summary_file']:
+                    candidates.append(directory / Path(prior['summary_file']).name)
+                if delivered:
+                    candidates.append(directory / Path(delivered).name)
+                suffix = f"_{vid.encode('utf-8').hex()}.txt"
+                candidates.extend(directory.glob(f'*{suffix}'))
+                candidates.append(directory / legacy)
+                existing = next((path for path in dict.fromkeys(candidates)
+                                 if _summary_matches(path, vid, legacy=not path.name.endswith(suffix))), None)
+                if existing is not None and not force:
+                    check_claim(claim)
+                    if pending:
+                        self.playback.delivered(vid, 'daily', existing)
+                    self._record_daily_output(video, existing)
+                    result.update(success=True, skipped='already_completed',
+                                  summary_file=existing.name, summary_path=str(existing))
+                    return result
+                if not force and delivered:
+                    result.update(success=True, skipped='already_completed',
+                                  summary_file=Path(delivered).name, summary_path=delivered)
+                    return result
+
+                return self._process_video(video, result, existing or expected, claim)
+            except OSError as error:
+                result['error'] = f'Failed to save summary: {error}'
+                logger.error('Daily output failed for %s: %s', vid, error)
+                return result
+
+    def _record_daily_output(self, video, summary_path):
+        self.state_manager.mark_video_processed(
+            video_id=video.video_id,
+            title=video.title,
+            channel=video.channel_name,
+            summary_file=summary_path.name,
+            published_date=video.published_date.strftime('%Y-%m-%d'),
+            destination='daily',
+        )
+
+    def _process_video(self, video, result, summary_path, claim):
         logger.info(f"Processing: {video.title} ({video.video_id})")
 
         # Extract transcript
@@ -107,6 +190,7 @@ class YouTubeSummarySystem:
 
         # Generate summary
         source = from_job(job) if job and job['status'] == 'ready' else from_extractor(self.transcript_extractor)
+        check_claim(claim)
         self._ensure_summarizer()
         sections = self.summarizer.summarize(
             transcript=transcript,
@@ -130,43 +214,18 @@ class YouTubeSummarySystem:
         metadata = summary_metadata(video.video_id, transcript, sections, source)
         summary_text += '\n검수 상태: 확인 대기 (발언자·고유명사·수치 대조 필요)\n'
 
-        # Save summary file
-        filename = generate_summary_filename(
-            channel_name=video.channel_name,
-            video_title=video.title,
-            published_date=video.published_date
-        )
-        summary_path = get_summaries_dir(channel_handle=video.channel_handle) / filename
-
-        try:
-            with open(summary_path, "w", encoding="utf-8") as f:
-                f.write(summary_text)
-            metadata_path = write_metadata(summary_path, metadata)
-
-            result["success"] = True
-            result["summary_file"] = filename
-            result["summary_path"] = str(summary_path)
-            result['metadata_path'] = str(metadata_path)
-            result['acquisition'] = source['source']
-            result['review'] = metadata['review']
-            logger.info(f"Summary saved: {summary_path}")
-            if job and job['status'] == 'ready':
-                self.playback.delivered(video.video_id, 'daily', summary_path)
-            elif job:
-                self.playback.recover_with_captions(video.video_id, transcript, 'daily', summary_path, source)
-
-            # Mark as processed
-            self.state_manager.mark_video_processed(
-                video_id=video.video_id,
-                title=video.title,
-                channel=video.channel_name,
-                summary_file=filename,
-                published_date=video.published_date.strftime("%Y-%m-%d")
-            )
-
-        except IOError as e:
-            result["error"] = f"Failed to save summary: {e}"
-            logger.error(f"Failed to save summary for {video.title}: {e}")
+        check_claim(claim)
+        metadata['summary_sha256'] = hashlib.sha256(summary_text.encode('utf-8')).hexdigest()
+        metadata_path = write_metadata(summary_path, metadata)
+        atomic_write_text(summary_path, summary_text)
+        if job and job['status'] == 'ready':
+            self.playback.delivered(video.video_id, 'daily', summary_path)
+        elif job:
+            self.playback.recover_with_captions(video.video_id, transcript, 'daily', summary_path, source)
+        self._record_daily_output(video, summary_path)
+        logger.info(f"Summary saved: {summary_path}")
+        result.update(success=True, summary_file=summary_path.name, summary_path=str(summary_path),
+                      metadata_path=str(metadata_path), acquisition=source['source'], review=metadata['review'])
 
         return result
 
@@ -210,7 +269,7 @@ class YouTubeSummarySystem:
                 return run_result
 
             # Get new videos
-            processed_ids = self.state_manager.get_all_processed_video_ids()
+            processed_ids = self.state_manager.get_all_processed_video_ids('daily')
             new_videos = self.channel_monitor.get_all_new_videos(processed_ids)
 
             run_result["videos_found"] = len(new_videos)
@@ -225,7 +284,11 @@ class YouTubeSummarySystem:
             for video in new_videos:
                 result = self.process_video(video)
 
-                if result["success"]:
+                if result.get('skipped') == 'in_progress':
+                    run_result['videos_deferred'] += 1
+                elif result.get('skipped'):
+                    run_result['videos_skipped'] += 1
+                elif result["success"]:
                     run_result["videos_processed"] += 1
                     run_result["processed_videos"].append({
                         "video_id": result["video_id"],
@@ -300,16 +363,19 @@ class YouTubeSummarySystem:
 
         # A manually imported UI transcript may originally have only a narrative
         # destination. An explicit delivery request also asks for the daily file.
+        self.state_manager.refresh()
         for vid in video_ids:
             job = self.playback.get(vid) if self.playback else None
-            if job and job['status'] == 'ready':
+            if (job and job['status'] == 'ready'
+                    and not self.state_manager.is_video_processed(vid, 'daily')):
                 self.playback.enqueue(job['payload'], job['reason'], 'daily')
         queue_result = run_queue(only=video_ids)
         daily = [self.process_video(self.video_from_job(job))
                  for job in self.playback.ready('daily') if job['video_id'] in video_ids]
         return {"narrative_written": queue_result["written"],
-                "daily_written": sum(r["success"] for r in daily),
-                "errors": queue_result["errors"] + sum(not r["success"] for r in daily)}
+                "daily_written": sum(r["success"] and not r.get('skipped') for r in daily),
+                "errors": queue_result["errors"] + sum(not r["success"] and not r.get('skipped') for r in daily),
+                "busy": queue_result['busy'] + sum(r.get('skipped') == 'in_progress' for r in daily)}
 
     def run_historical(
         self,
@@ -365,7 +431,7 @@ class YouTubeSummarySystem:
             print(f"\nDry Run - Found {len(videos)} videos in date range:")
             print("-" * 60)
             for video in videos:
-                already_processed = self.state_manager.is_video_processed(video.video_id)
+                already_processed = self.state_manager.is_video_processed(video.video_id, 'daily')
                 status = "[SKIP - already processed]" if already_processed and not reprocess else "[WOULD PROCESS]"
                 print(f"  {status} {video.published_date.strftime('%Y-%m-%d')} - {video.title}")
             return run_result
@@ -373,14 +439,18 @@ class YouTubeSummarySystem:
         # Process each video
         for video in videos:
             # Check if already processed (unless reprocess flag is set)
-            if not reprocess and self.state_manager.is_video_processed(video.video_id):
+            if not reprocess and self.state_manager.is_video_processed(video.video_id, 'daily'):
                 logger.info(f"Skipping already processed: {video.title}")
                 run_result["videos_skipped"] += 1
                 continue
 
-            result = self.process_video(video)
+            result = self.process_video(video, force=reprocess)
 
-            if result["success"]:
+            if result.get('skipped') == 'in_progress':
+                run_result['videos_deferred'] += 1
+            elif result.get('skipped'):
+                run_result['videos_skipped'] += 1
+            elif result["success"]:
                 run_result["videos_processed"] += 1
                 run_result["processed_videos"].append({
                     "video_id": result["video_id"],
@@ -503,10 +573,10 @@ def main():
         return
     if args.resume_realtime:
         results = YouTubeSummarySystem().resume_realtime()
-        print(f"Realtime summaries: {sum(r['success'] for r in results)}/{len(results)}")
+        print(f"Realtime summaries: {sum(r['success'] and not r.get('skipped') for r in results)}/{len(results)}")
         for result in results:
             print(result)
-        if any(not r['success'] for r in results):
+        if any(not r['success'] and not r.get('skipped') for r in results):
             sys.exit(1)
         return
 
@@ -524,6 +594,7 @@ def main():
         print(f"Whisper used:  {res.get('whisper_used', 0)}")
         print(f"Realtime used: {res.get('realtime_used', 0)}")
         print(f"Awaiting transcript recovery: {res.get('deferred', 0)}")
+        print(f"In progress:   {res['busy']}")
         print(f"Skipped:       {res['skipped']}")
         print(f"No captions:   {res['no_transcript']}")
         print(f"Unavailable:   {res.get('unavailable', 0)}")
@@ -630,7 +701,7 @@ def main():
         if channels:
             monitor = ChannelMonitor()
             state = StateManager()
-            processed_ids = state.get_all_processed_video_ids()
+            processed_ids = state.get_all_processed_video_ids('daily')
             new_videos = monitor.get_all_new_videos(processed_ids)
 
             print(f"New videos found: {len(new_videos)}")

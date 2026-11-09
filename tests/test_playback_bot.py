@@ -2,6 +2,7 @@ import tempfile
 import unittest
 from datetime import datetime
 from pathlib import Path
+from unittest.mock import patch
 
 import playback_bot
 from autoplay import PlaybackStopped
@@ -103,6 +104,22 @@ class PlaybackBotTest(unittest.TestCase):
         self.assertIn('선택한 영상 처리를 마쳤습니다. 완료 2건', self.telegram.sent[-1])
         self.assertIsNone(self.store.get('session'))
 
+    def test_priority_channel_precedes_carryover_and_other_selected_videos(self):
+        self.store.set('carry', [item(1)])
+        self.items = [item(2), dict(item(3), channel_id='UCpriority')]
+        self.at(2026, 11, 6, 8, 0)
+        config = {'youtube': {'priority_channel_ids': ['UCpriority']}}
+        with patch.object(playback_bot, 'load_config', return_value=config):
+            self.bot.step(poll_timeout=0)
+            offer = self.store.get('offer')
+            self.assertEqual([entry['video_id'] for entry in offer['items']],
+                             ['video000003', 'video000001', 'video000002'])
+            self.reply('3,1,2')
+            self.at(2026, 11, 6, 9, 0)
+            for _ in range(3):
+                self.bot.step(poll_timeout=0)
+        self.assertEqual(self.played, ['video000003', 'video000002', 'video000001'])
+
     def test_asks_after_three_hours_and_carries_leftovers_to_next_offer(self):
         self.at(2026, 11, 6, 9, 0)
         self.bot.step(poll_timeout=0)
@@ -114,13 +131,13 @@ class PlaybackBotTest(unittest.TestCase):
         self.bot.step(poll_timeout=0)
         self.assertEqual(len(self.played), 2)
         self.reply('중단')
-        self.assertIn('남은 1건은 내일 08:00 목록 맨 위에', self.telegram.sent[-1])
+        self.assertIn('남은 1건은 내일 08:00 목록에', self.telegram.sent[-1])
         self.items = [item(4)]
         self.at(2026, 11, 7, 8, 0)
         self.bot.step(poll_timeout=0)
         offer = self.store.get('offer')
         self.assertEqual([i['video_id'] for i in offer['items']], ['video000003', 'video000004'])
-        self.assertIn('앞의 1건은 어제 남은 영상', self.telegram.sent[-1])
+        self.assertIn('이전 목록에서 이월 1건', self.telegram.sent[-1])
 
     def test_continue_adds_three_more_hours(self):
         self.at(2026, 11, 6, 9, 0)

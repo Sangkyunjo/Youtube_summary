@@ -7,12 +7,13 @@ import functools
 import os
 import re
 import logging
+import tempfile
+import unicodedata
 from datetime import datetime
 from pathlib import Path
 from logging.handlers import RotatingFileHandler
 
 import yaml
-from dotenv import load_dotenv
 
 
 def get_project_root() -> Path:
@@ -62,6 +63,8 @@ def get_channel_output_dir_map() -> dict:
 
 def load_env():
     """Load environment variables from .env file."""
+    from dotenv import load_dotenv
+
     env_path = get_project_root() / "config" / ".env"
     load_dotenv(env_path)
 
@@ -135,7 +138,9 @@ def sanitize_filename(text: str, max_length: int = 50) -> str:
 def generate_summary_filename(
     channel_name: str,
     video_title: str,
-    published_date: datetime = None
+    published_date: datetime = None,
+    *,
+    video_id: str = None,
 ) -> str:
     """
     Generate a summary filename following the naming convention:
@@ -151,7 +156,26 @@ def generate_summary_filename(
     channel_clean = sanitize_filename(channel_name, max_length=20)
     title_clean = sanitize_filename(video_title, max_length=50)
 
-    return f"{date_str}_{time_str}_{channel_clean}_{title_clean}.txt"
+    stem = f"{date_str}_{time_str}_{channel_clean}_{title_clean}"
+    if video_id:
+        # Hex preserves case-sensitive IDs on case-insensitive filesystems.
+        stem = unicodedata.normalize('NFD', stem).encode('utf-8')[:180].decode('utf-8', 'ignore')
+        stem = f"{unicodedata.normalize('NFC', stem)}_{video_id.encode('utf-8').hex()}"
+    return f"{stem}.txt"
+
+
+def atomic_write_text(path: Path, content: str):
+    """Publish a complete UTF-8 file using a private temporary sibling."""
+    temp = None
+    try:
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', newline='\n', dir=path.parent,
+                                         prefix='.write-', suffix='.tmp', delete=False) as file:
+            temp = Path(file.name)
+            file.write(content)
+        temp.replace(path)
+    finally:
+        if temp is not None:
+            temp.unlink(missing_ok=True)
 
 
 def get_summaries_dir(channel_handle: str = None) -> Path:

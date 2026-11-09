@@ -10,6 +10,8 @@ from pathlib import Path
 
 import yaml
 
+from channel_priority import prioritize_channels
+from processing_lock import check_claim, exclusive_claim
 from transcript_acquisition import (API_SOURCE, LOCAL_SOURCE, acquisition,
                                     validate_ui_document)
 
@@ -58,13 +60,17 @@ class PlaybackQueue:
 
     @contextmanager
     def connect(self):
-        db = sqlite3.connect(self.path, timeout=30)
-        db.row_factory = sqlite3.Row
-        try:
-            with db:
-                yield db
-        finally:
-            db.close()
+        lock_path = self.path.parent / '.processing-locks' / self.path.name
+        # SQLite kernel locks are local to each side of the Mac/Docker mount.
+        with exclusive_claim(lock_path, wait=True, keepalive=False, stale_after=120) as claim:
+            db = sqlite3.connect(self.path, timeout=30)
+            db.row_factory = sqlite3.Row
+            try:
+                with db:
+                    yield db
+                    check_claim(claim)
+            finally:
+                db.close()
 
     def enqueue(self, payload, reason, destination='daily'):
         vid = video_id(payload['video_id'])
@@ -78,6 +84,10 @@ class PlaybackQueue:
     def get(self, vid):
         with self.connect() as db:
             row = db.execute('SELECT * FROM jobs WHERE video_id=?', (video_id(vid),)).fetchone()
+        return self._decode_job(row)
+
+    @staticmethod
+    def _decode_job(row):
         if row is None:
             return None
         result = dict(row)
@@ -88,30 +98,46 @@ class PlaybackQueue:
 
     def list(self):
         with self.connect() as db:
-            return [dict(r) for r in db.execute(
-                '''SELECT j.video_id,j.status,j.reason,j.error,j.updated,j.next_action,
+            rows = [dict(r) for r in db.execute(
+                '''SELECT j.video_id,j.status,j.reason,j.error,j.updated,j.next_action,j.payload,
                     (SELECT count(*) FROM deliveries d WHERE d.video_id=j.video_id
                      AND d.output IS NULL) AS pending_outputs
                    FROM jobs j ORDER BY j.updated,j.video_id''' )]
+        rows = prioritize_channels(rows, lambda row: json.loads(row['payload']).get('channel_id'), load_config())
+        for row in rows:
+            del row['payload']
+        return rows
 
     def ready(self, destination):
         with self.connect() as db:
-            rows = db.execute('''SELECT j.video_id FROM jobs j JOIN deliveries d
+            rows = db.execute('''SELECT j.* FROM jobs j JOIN deliveries d
                 ON j.video_id=d.video_id WHERE j.status='ready' AND
                 d.destination=? AND d.output IS NULL ORDER BY j.updated''', (destination,)).fetchall()
-        return [self.get(r['video_id']) for r in rows]
+        jobs = [self._decode_job(row) for row in rows]
+        return prioritize_channels(jobs, lambda job: job['payload'].get('channel_id'), load_config())
 
     def waiting(self, destination):
         with self.connect() as db:
-            rows = db.execute('''SELECT j.video_id FROM jobs j JOIN deliveries d
+            rows = db.execute('''SELECT j.* FROM jobs j JOIN deliveries d
                 ON j.video_id=d.video_id WHERE j.status IN ('pending','failed') AND
                 d.destination=? AND d.output IS NULL ORDER BY j.updated''', (destination,)).fetchall()
-        return [self.get(r['video_id']) for r in rows]
+        jobs = [self._decode_job(row) for row in rows]
+        return prioritize_channels(jobs, lambda job: job['payload'].get('channel_id'), load_config())
 
     def forget(self, vid):
         with self.connect() as db:
             db.execute('DELETE FROM deliveries WHERE video_id=?', (video_id(vid),))
             db.execute('DELETE FROM jobs WHERE video_id=?', (video_id(vid),))
+
+    def discard_pending_delivery(self, vid, destination):
+        vid = video_id(vid)
+        with self.connect() as db:
+            changed = db.execute('''DELETE FROM deliveries WHERE video_id=? AND destination=?
+                AND output IS NULL AND EXISTS (SELECT 1 FROM jobs WHERE video_id=?
+                AND status IN ('pending','failed'))''', (vid, destination, vid)).rowcount
+            if changed:
+                db.execute('DELETE FROM jobs WHERE video_id=? AND NOT EXISTS '
+                           '(SELECT 1 FROM deliveries WHERE video_id=?)', (vid, vid))
 
     def drop_waiting(self, is_expired):
         """Remove jobs still waiting on playback once is_expired(payload) is true."""
@@ -119,9 +145,17 @@ class PlaybackQueue:
             rows = db.execute("SELECT video_id,payload FROM jobs "
                               "WHERE status IN ('pending','failed')").fetchall()
         expired = [r['video_id'] for r in rows if is_expired(json.loads(r['payload']))]
-        for vid in expired:
-            self.forget(vid)
-        return len(expired)
+        if not expired:
+            return 0
+        dropped = 0
+        with self.connect() as db:
+            for vid in expired:
+                changed = db.execute("DELETE FROM jobs WHERE video_id=? AND status IN ('pending','failed')",
+                                     (vid,)).rowcount
+                if changed:
+                    db.execute('DELETE FROM deliveries WHERE video_id=?', (vid,))
+                    dropped += 1
+        return dropped
 
     def recover_with_captions(self, vid, text, destination, output, source=None):
         """Close a waiting job once captions worked after all; no playback is needed."""
@@ -168,6 +202,12 @@ class PlaybackQueue:
             row = db.execute('SELECT output FROM deliveries WHERE video_id=? AND destination=?',
                              (video_id(vid), destination)).fetchone()
             return row is not None and row['output'] is None
+
+    def delivery_output(self, vid, destination):
+        with self.connect() as db:
+            row = db.execute('SELECT output FROM deliveries WHERE video_id=? AND destination=?',
+                             (video_id(vid), destination)).fetchone()
+        return row['output'] if row else None
 
     def delivered(self, vid, destination, output):
         with self.connect() as db:
