@@ -55,17 +55,39 @@ default_args = {
 def _setup_path():
     """Add project src directory to Python path and load environment."""
     src_path = str(SRC_DIR)
-    # The shared Airflow PYTHONPATH also lists FinanceHub, which owns a top-level
-    # `utils` package. This project's helpers are `ytsum_utils` (renamed from
-    # `utils` on 2026-11-13) so neither project has to evict the other's module.
-    if src_path not in sys.path:
-        sys.path.insert(0, src_path)
+    # The shared Airflow PYTHONPATH lists FinanceHub and DataConductor before this
+    # src folder, so move it to the front even when it is already on the path.
+    # FinanceHub owns a top-level `utils` package; this project's helpers are
+    # `ytsum_utils` (renamed from `utils` on 2026-11-13), and src/main.py is loaded
+    # by _load_cli() because all three projects have a top-level `main.py`.
+    if src_path in sys.path:
+        sys.path.remove(src_path)
+    sys.path.insert(0, src_path)
 
     # Load .env file if exists (for local development)
     env_file = PROJECT_DIR / "config" / ".env"
     if env_file.exists():
         from dotenv import load_dotenv
         load_dotenv(env_file)
+
+
+def _load_cli():
+    """Load src/main.py as `ytsum_main`.
+
+    FinanceHub and DataConductor also have a top-level `main.py` on the shared
+    Airflow PYTHONPATH, and `main` may already be in sys.modules from another
+    project, so `from main import ...` is not safe here.
+    """
+    import importlib.util
+
+    name = "ytsum_main"
+    if name in sys.modules:
+        return sys.modules[name]
+    spec = importlib.util.spec_from_file_location(name, SRC_DIR / "main.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def check_channels_configured(**context) -> bool:
@@ -135,7 +157,7 @@ def process_videos(**context) -> dict:
     """Use the same transcript recovery and summarization as the daily CLI."""
     _setup_path()
     from channel_monitor import VideoInfo
-    from main import YouTubeSummarySystem
+    YouTubeSummarySystem = _load_cli().YouTubeSummarySystem
 
     video_list = context["ti"].xcom_pull(task_ids="get_new_videos") or []
     results = {
