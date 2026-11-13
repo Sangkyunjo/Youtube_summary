@@ -35,7 +35,7 @@ from typing import Optional
 
 import openai
 
-from utils import get_env, load_config, setup_logging
+from ytsum_utils import get_env, load_config, setup_logging
 
 logger = setup_logging("whisper_transcript")
 

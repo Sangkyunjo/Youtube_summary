@@ -10,7 +10,7 @@ from typing import Optional
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-from utils import load_config, get_env, setup_logging
+from ytsum_utils import load_config, get_env, setup_logging
 
 logger = setup_logging("youtube_api")
 

@@ -21,7 +21,7 @@ from youtube_transcript_api._errors import (
 )
 from youtube_transcript_api.proxies import GenericProxyConfig
 
-from utils import get_env, load_config, setup_logging
+from ytsum_utils import get_env, load_config, setup_logging
 
 logger = setup_logging("transcript_extractor")
 

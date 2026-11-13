@@ -6,7 +6,7 @@ Determines if the system should run and handles missed runs.
 from datetime import datetime, timedelta
 from typing import Optional
 
-from utils import load_config, setup_logging
+from ytsum_utils import load_config, setup_logging
 from state_manager import StateManager
 
 logger = setup_logging("scheduler")

@@ -12,7 +12,7 @@ from email import encoders
 from datetime import datetime
 from typing import Optional
 
-from utils import load_config, get_env, setup_logging, get_summaries_dir
+from ytsum_utils import load_config, get_env, setup_logging, get_summaries_dir
 
 logger = setup_logging("email_notifier")
 

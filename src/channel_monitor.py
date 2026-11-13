@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from dateutil import parser as date_parser
 
 from channel_priority import prioritize_channels
-from utils import load_config, load_channels, setup_logging
+from ytsum_utils import load_config, load_channels, setup_logging
 from youtube_api import YouTubeAPI
 
 logger = setup_logging("channel_monitor")

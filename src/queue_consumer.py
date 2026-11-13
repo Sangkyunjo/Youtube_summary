@@ -33,7 +33,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from channel_priority import prioritize_channels
 from processing_lock import check_claim
-from utils import atomic_write_text, load_config, setup_logging
+from ytsum_utils import atomic_write_text, load_config, setup_logging
 from state_manager import StateManager
 from summarizer import Summarizer
 from realtime_fallback import CAPTION_MODEL, PlaybackQueue, enabled as realtime_enabled

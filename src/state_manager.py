@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Optional
 
 from processing_lock import check_claim, exclusive_claim
-from utils import atomic_write_text, get_project_root, load_config, setup_logging
+from ytsum_utils import atomic_write_text, get_project_root, load_config, setup_logging
 
 logger = setup_logging("state_manager")
 

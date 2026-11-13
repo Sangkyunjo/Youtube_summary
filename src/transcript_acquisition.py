@@ -10,7 +10,7 @@ import re
 import time
 from pathlib import Path
 
-from utils import atomic_write_text
+from ytsum_utils import atomic_write_text
 
 API_SOURCE = 'youtube_captions_api'
 UI_SOURCE = 'youtube_visible_transcript'

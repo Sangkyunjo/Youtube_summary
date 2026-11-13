@@ -16,7 +16,7 @@ from urllib.parse import parse_qs, urlparse
 # Add src directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils import (
+from ytsum_utils import (
     atomic_write_text,
     setup_logging,
     load_config,

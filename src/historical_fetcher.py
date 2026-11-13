@@ -7,7 +7,7 @@ from datetime import datetime
 
 from dateutil import parser as date_parser
 
-from utils import setup_logging
+from ytsum_utils import setup_logging
 
 logger = setup_logging("historical_fetcher")
 

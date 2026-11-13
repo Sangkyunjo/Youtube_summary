@@ -55,18 +55,11 @@ default_args = {
 def _setup_path():
     """Add project src directory to Python path and load environment."""
     src_path = str(SRC_DIR)
-    # PYTHONPATH can list src behind another project's `utils` (e.g., financehub),
-    # so move it to the front even when it is already on the path.
-    if src_path in sys.path:
-        sys.path.remove(src_path)
-    sys.path.insert(0, src_path)
-
-    # Clear cached 'utils' module if it's from a different project (e.g., financehub)
-    # to avoid import collisions in shared Airflow environments
-    if 'utils' in sys.modules:
-        mod_file = getattr(sys.modules['utils'], '__file__', '') or ''
-        if src_path not in mod_file:
-            del sys.modules['utils']
+    # The shared Airflow PYTHONPATH also lists FinanceHub, which owns a top-level
+    # `utils` package. This project's helpers are `ytsum_utils` (renamed from
+    # `utils` on 2026-11-13) so neither project has to evict the other's module.
+    if src_path not in sys.path:
+        sys.path.insert(0, src_path)
 
     # Load .env file if exists (for local development)
     env_file = PROJECT_DIR / "config" / ".env"
@@ -81,7 +74,7 @@ def check_channels_configured(**context) -> bool:
     ShortCircuitOperator will skip downstream tasks if False.
     """
     _setup_path()
-    from utils import load_channels
+    from ytsum_utils import load_channels
 
     channels = load_channels()
     num_channels = len(channels) if channels else 0

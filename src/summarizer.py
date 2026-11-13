@@ -8,7 +8,7 @@ from typing import Optional
 
 import openai
 
-from utils import load_config, get_env, setup_logging, format_summary
+from ytsum_utils import load_config, get_env, setup_logging, format_summary
 
 logger = setup_logging("summarizer")
 
