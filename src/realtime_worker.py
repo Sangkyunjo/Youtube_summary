@@ -54,8 +54,25 @@ def record(queue, vid, seconds, cut_interruptions=False, capture_device=None, ou
     # Profile-free config prevents YouTube audio/transcripts from entering a
     # paid-course workspace. Existing capture checks and output repair are reused.
     cfg = dict(cfg, workspace='', vault='', default_profile=None)
+    route = None
+    try:
+        if not capture_device:
+            # Supervised playback: verify a route that carries sound with a test tone and
+            # switch the system output to it, instead of trusting the course setup
+            # (Jump Desktop Audio loops back below fkb-rec's silence threshold).
+            from autoplay import AudioRoute
+            route = AudioRoute(hold_lock=False).__enter__()
+            capture_device, output_device = route.input, route.output
+            print(json.dumps({'video_id': vid, 'audio_route': f'{route.output} -> {route.input}',
+                              'levels': route.levels, 'previous_output': route.previous},
+                             ensure_ascii=False), flush=True)
+    except BaseException as e:
+        queue.fail(vid, str(e) or type(e).__name__)
+        os.close(fd)
+        os.environ.pop('VIDEO_CAPTURE_LOCK_FD', None)
+        raise
     if capture_device:
-        # Automated playback records from its own loopback, leaving the course setup alone.
+        # Record from the verified (or explicitly given) loopback, leaving the course setup alone.
         cfg['audio'] = dict(cfg['audio'], device_name=capture_device,
                             output_device_name=output_device or cfg['audio'].get('output_device_name'))
     env = os.environ.copy()
@@ -96,7 +113,9 @@ def record(queue, vid, seconds, cut_interruptions=False, capture_device=None, ou
                 if time.time() - last['observed_at'] > 50:
                     raise ValueError('Playback observer stopped; recording rejected')
                 # An ad's own end also reports ended; only the content end stops recording.
-                if last.get('ended') and last.get('ad') is False:
+                # In cut mode a post-roll ad can leave only the visible player ended.
+                if last.get('ad') is False and (last.get('ended') or (
+                        cut_interruptions and last.get('player_ended') is True)):
                     recorder.send_signal(signal.SIGTERM)
                     stop_sent = True
             elif not samples and capture_started and time.time() - current['started'] > 45:
@@ -150,6 +169,8 @@ def record(queue, vid, seconds, cut_interruptions=False, capture_device=None, ou
     finally:
         temp_area.cleanup()
         signal.signal(signal.SIGTERM, old_term)
+        if route is not None:
+            route.__exit__(None, None, None)
         os.close(fd)
         os.environ.pop('VIDEO_CAPTURE_LOCK_FD', None)
 
@@ -158,6 +179,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest='command', required=True)
     sub.add_parser('list')
+    sub.add_parser('requested', help='Telegram playback requests awaiting supervised playback')
     sub.add_parser('check')
     imp = sub.add_parser('import-ui', help='Import a complete transcript read from the official UI')
     imp.add_argument('video_id'); imp.add_argument('--file', type=Path, required=True)
@@ -181,6 +203,14 @@ def main():
                           'database': str(q.path)}, ensure_ascii=False, indent=2))
     elif a.command == 'list':
         print(json.dumps(q.list(), ensure_ascii=False, indent=2))
+    elif a.command == 'requested':
+        jobs = q.requested_jobs()
+        print(json.dumps([{'video_id': job['video_id'], 'status': job['status'],
+                           'title': job['requested'].get('title') or job['payload'].get('title'),
+                           'channel_title': job['requested'].get('channel_title') or job['payload'].get('channel_title'),
+                           'duration_seconds': job['requested'].get('duration_seconds'),
+                           'url': f"https://www.youtube.com/watch?v={job['video_id']}",
+                           'last_error': job['error']} for job in jobs], ensure_ascii=False, indent=2))
     elif a.command == 'import-ui':
         job = q.import_ui(a.video_id, json.loads(a.file.read_text(encoding='utf-8')))
         print(json.dumps({'video_id': job['video_id'], 'status': job['status'],
@@ -199,7 +229,10 @@ def main():
         job.pop('transcript', None)
         print(json.dumps(job, ensure_ascii=False, indent=2))
     elif a.command == 'observe':
-        q.observe(a.video_id, json.loads(a.file.read_text()))
+        # One sample, or a list read in one browser call (submitted in capture order).
+        samples = json.loads(a.file.read_text())
+        for sample in samples if isinstance(samples, list) else [samples]:
+            q.observe(a.video_id, sample)
     elif a.command == 'recover':
         # Recovery cannot reset a live recorder: take the same host lock first.
         sys.path.insert(0, str(fanding_root() / 'lib'))

@@ -12,6 +12,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from pathlib import Path
@@ -25,6 +26,16 @@ logger = logging.getLogger('playback_bot')
 CAPTURE_OUTPUT = 'Fanding Capture'
 CAPTURE_INPUT = 'BlackHole 2ch'
 OUTPUT_TOOL_SOURCE = Path.home() / 'PersonalAgent' / 'fanding-kb' / 'lib' / 'fkb_set_output.swift'
+FKB_LIB = Path.home() / 'PersonalAgent' / 'fanding-kb' / 'lib'
+
+# System output -> loopback input pairs, tried in order until a test tone is heard.
+# Measured on 2026-11-16: Fanding Capture and BlackHole alone record a tone at about
+# -38 dB; Jump Desktop Audio loops back near -58 dB, under fkb-rec's -50 dB silence
+# check, which is how the 2026-11-08 attempts ended as "silence". The course setup in
+# fanding-kb/config.yaml is left as it is.
+ROUTES = ((CAPTURE_OUTPUT, CAPTURE_INPUT), ('BlackHole 2ch', 'BlackHole 2ch'))
+LOOPBACK_MIN_DB = -45.0
+TONE_SECONDS = 2
 
 POLL_SECONDS = 0.25
 SUBMIT_EVERY = 5
@@ -73,6 +84,15 @@ SKIP_AD_JS = """() => {
   return false;
 }"""
 
+SKIP_AD_SELECTOR = '.ytp-skip-ad-button, .ytp-ad-skip-button-modern, .ytp-ad-skip-button'
+
+RESUME_AD_JS = """() => {
+  const v = document.querySelector('video');
+  const p = document.querySelector('#movie_player');
+  if (v && p && p.classList.contains('ad-showing') && v.paused) { v.play(); return true; }
+  return false;
+}"""
+
 READY_AT_ZERO_JS = """() => {
   const v = document.querySelector('video');
   v.pause(); v.currentTime = 0; v.playbackRate = 1; v.muted = false;
@@ -108,17 +128,119 @@ def set_output(name):
         raise PlaybackStopped(f'소리 출력을 {name}(으)로 바꾸지 못했습니다: {result.stderr.strip()}')
 
 
+class CaptureBusy(PlaybackStopped):
+    """Another recording holds the shared capture lock; retry later."""
+
+
+def input_index(name):
+    """AVFoundation index of an audio input with exactly this name, as fkb-rec matches it."""
+    listing = subprocess.run(['ffmpeg', '-hide_banner', '-f', 'avfoundation', '-list_devices', 'true',
+                              '-i', ''], capture_output=True, text=True, timeout=60).stderr
+    audio = False
+    for line in listing.splitlines():
+        if 'AVFoundation audio devices' in line:
+            audio = True
+            continue
+        match = re.search(r'\[(\d+)\] (.+?)\s*$', line) if audio else None
+        if match and match.group(2) == name:
+            return match.group(1)
+    return None
+
+
+def mean_volume(path):
+    text = subprocess.run(['ffmpeg', '-hide_banner', '-i', str(path), '-af', 'volumedetect',
+                           '-f', 'null', '-'], capture_output=True, text=True, timeout=60).stderr
+    match = re.search(r'mean_volume: (-?[\d.]+) dB', text)
+    return float(match.group(1)) if match else None
+
+
+def loopback_level(output, input_name):
+    """Switch to output, play a short tone and return the level recorded from input_name."""
+    index = input_index(input_name)
+    if index is None:
+        return None
+    set_output(output)
+    time.sleep(1)
+    tone = get_project_root() / 'data' / '.loopback-tone.wav'
+    if not tone.exists():
+        subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i',
+                        f'sine=f=440:d={TONE_SECONDS}', '-af', 'volume=0.15', str(tone)],
+                       check=True, timeout=60)
+    with tempfile.TemporaryDirectory(prefix='loopback-') as temp:
+        capture = Path(temp) / 'capture.wav'
+        recorder = subprocess.Popen(['ffmpeg', '-loglevel', 'error', '-y', '-f', 'avfoundation',
+                                     '-i', f':{index}', '-t', str(TONE_SECONDS + 0.5),
+                                     '-ac', '1', '-ar', '16000', str(capture)])
+        try:
+            time.sleep(0.3)
+            subprocess.run(['afplay', str(tone)], timeout=30)
+            recorder.wait(timeout=30)
+        finally:
+            if recorder.poll() is None:
+                recorder.kill()
+        return mean_volume(capture) if capture.exists() else None
+
+
+def capture_lock():
+    """Take the shared YouTube / course capture lock; returns its release function."""
+    sys.path.insert(0, str(FKB_LIB))
+    from capture_lock import ENV, acquire
+    try:
+        fd = acquire()
+    except RuntimeError as error:
+        raise CaptureBusy(str(error)) from None
+
+    def release():
+        os.close(fd)
+        os.environ.pop(ENV, None)
+    return release
+
+
 class AudioRoute:
-    """Send system output to the capture device for one recording, then put it back."""
+    """Pick an output -> input pair that verifiably carries sound, then restore the output.
+
+    Each session plays a two-second test tone on every candidate pair until one is
+    recorded above LOOPBACK_MIN_DB, so a wrong default output (for example Jump
+    Desktop Audio after a remote session) is corrected instead of recorded as
+    silence. The shared capture lock is held while probing so a course recording
+    is never disturbed. During the recording fkb-rec repairs output changes itself.
+    """
+
+    def __init__(self, routes=ROUTES, hold_lock=True):
+        self.routes = routes
+        # The supervised recorder probes after taking the lock itself.
+        self.hold_lock = hold_lock
+        self.previous = None
+        self.output = self.input = None
+        self.levels = {}
 
     def __enter__(self):
-        self.previous = default_output()
-        if self.previous != CAPTURE_OUTPUT:
-            set_output(CAPTURE_OUTPUT)
-        return self
+        release = capture_lock() if self.hold_lock else (lambda: None)
+        try:
+            self.previous = default_output()
+            for output, input_name in self.routes:
+                try:
+                    level = loopback_level(output, input_name)
+                except Exception as error:
+                    logger.warning('loopback probe %s -> %s failed: %s', output, input_name, error)
+                    level = None
+                self.levels[f'{output}->{input_name}'] = level
+                if level is not None and level >= LOOPBACK_MIN_DB:
+                    self.output, self.input = output, input_name
+                    logger.info('audio route %s -> %s verified at %.1f dB (was %s)',
+                                output, input_name, level, self.previous)
+                    return self
+            measured = ', '.join(f'{pair} {"없음" if level is None else f"{level:.0f}dB"}'
+                                 for pair, level in self.levels.items())
+            raise PlaybackStopped(f'녹음되는 소리 경로를 찾지 못했습니다 ({measured})')
+        except BaseException:
+            self.__exit__(None, None, None)
+            raise
+        finally:
+            release()
 
     def __exit__(self, *_exc):
-        if self.previous and self.previous != CAPTURE_OUTPUT:
+        if self.previous and self.previous != self.output:
             try:
                 set_output(self.previous)
             except Exception:
@@ -220,7 +342,7 @@ class AutoPlayer:
         page.evaluate(READY_AT_ZERO_JS)
         logger.info('%s: player ready at 0, %.0fs of content', vid, duration)
         seconds = min(21615, math.ceil(duration * 1.25) + 600)
-        worker = Recorder(self.worker_python, vid, seconds)
+        worker = Recorder(self.worker_python, vid, seconds, self._route.input, self._route.output)
         try:
             if not worker.wait_ready(READY_TIMEOUT):
                 worker.stop()
@@ -266,7 +388,16 @@ class AutoPlayer:
             state = page.evaluate(SNAPSHOT_JS)
             if state and state['video_id'] == vid and not state['ad'] and math.isfinite(state['duration'] or float('nan')):
                 return state
-            page.evaluate(SKIP_AD_JS)
+            # The transcript-panel step pauses the visible <video>, which is the ad
+            # while one is showing; a paused ad never ends (2026-11-16 test).
+            page.evaluate(RESUME_AD_JS)
+            # The visible skip button ignores scripted clicks; use a real click.
+            skip = page.locator(SKIP_AD_SELECTOR)
+            try:
+                if skip.count() and skip.first.is_visible():
+                    skip.first.click(timeout=2000)
+            except Exception:
+                page.evaluate(SKIP_AD_JS)
             time.sleep(1)
         raise RuntimeError('pre-roll ad did not finish')
 
@@ -324,14 +455,14 @@ class AutoPlayer:
 class Recorder:
     """realtime_worker.py record in cut mode, with its output captured for status."""
 
-    def __init__(self, python, vid, seconds):
+    def __init__(self, python, vid, seconds, capture_device=CAPTURE_INPUT, output_device=CAPTURE_OUTPUT):
         worker = Path(__file__).resolve().parent / 'realtime_worker.py'
         env = dict(os.environ)
         # fkb-rec runs `python3` for its lock and config; use this interpreter's environment.
         env['PATH'] = f'{Path(python).parent}{os.pathsep}{env.get("PATH", "")}'
         self._process = subprocess.Popen(
             [python, str(worker), 'record', vid, '--seconds', str(seconds), '--cut-interruptions',
-             '--capture-device', CAPTURE_INPUT, '--output-device', CAPTURE_OUTPUT],
+             '--capture-device', capture_device, '--output-device', output_device],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, env=env)
         self._lines = []
         self._ready = threading.Event()

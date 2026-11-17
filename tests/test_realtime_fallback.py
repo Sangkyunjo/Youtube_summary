@@ -138,6 +138,23 @@ class PlaybackSegmentsTest(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     playback_segments(self.job(evidence), 2000, evidence[-1]['observed_at'] + 1)
 
+    def test_post_roll_ad_ending_counts_when_content_reached_the_end(self):
+        # 2026-11-17: a post-roll ad unloaded the <video>; only the visible player showed ended.
+        unloaded = dict(sample(196, 0), duration=None, paused=True, buffering=True, player_ended=True)
+        job = self.job([sample(102, 0), sample(132, 30), sample(161.5, 59.5),
+                        dict(ad(162), duration=93), ad(190), unloaded])
+        segments, duration = playback_segments(job, 98, 197)
+        self.assertEqual(duration, 60)
+        self.assertEqual(len(segments), 1)
+        self.assertAlmostEqual(segments[0][0], 2)
+        self.assertAlmostEqual(segments[0][1], 61.5)
+
+    def test_post_roll_ending_is_rejected_before_the_content_end(self):
+        unloaded = dict(sample(196, 0), duration=None, paused=True, buffering=True, player_ended=True)
+        job = self.job([sample(102, 0), sample(132, 30), sample(150, 48), ad(150.5), ad(180), unloaded])
+        with self.assertRaises(ValueError):
+            playback_segments(job, 98, 197)
+
     def test_reject_muted_content_and_wrong_video(self):
         for key, value in (('muted', True), ('video_id', 'other_id123'), ('rate', 2)):
             with self.subTest(key=key):

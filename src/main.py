@@ -599,6 +599,7 @@ def main():
         print(f"No captions:   {res['no_transcript']}")
         print(f"Unavailable:   {res.get('unavailable', 0)}")
         print(f"Too old:       {res.get('too_old', 0)}")
+        print(f"Pruned:        {res.get('pruned') or {}}")
         print(f"Errors:        {res['errors']}")
         if res.get("blocked"):
             print("\n[!] Aborted early: YouTube IP-blocked transcript requests.")

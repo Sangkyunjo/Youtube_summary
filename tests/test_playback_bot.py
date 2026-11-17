@@ -213,6 +213,30 @@ class PlaybackBotTest(unittest.TestCase):
         self.bot.step(poll_timeout=0)
         self.assertIn('재생·전사 대기 1건', self.telegram.sent[-1])
 
+    def test_playback_request_is_reported_and_not_carried(self):
+        self.at(2026, 11, 6, 9, 0)
+        self.bot.step(poll_timeout=0)
+        self.outcomes.append({'status': 'requested'})
+        self.reply('1')
+        session = self.store.get('session')
+        self.assertEqual(session['requested'], ['video000001'])
+        self.assertIn('재생 요청: [채널] 영상 1', '\n'.join(self.telegram.sent))
+        self.assertIn(playback_bot.PLAYBACK_RUN_TIME, '\n'.join(self.telegram.sent))
+        self.assertEqual(self.store.get('carry') or [], [])
+
+    def test_keyword_and_expired_carryover_is_dropped_like_the_queue(self):
+        keyword = dict(item(8), discovery={'mode': 'keyword', 'query': 'HBM'})
+        expired = item(9, published='2020-01-01T00:00:00Z')
+        self.store.set('carry', [keyword, expired, item(7)])
+        with patch.object(playback_bot, 'load_config',
+                          return_value={'narrative_queue': {'excluded_discovery_modes': ['keyword']}}):
+            self.at(2026, 11, 6, 8, 0)
+            self.bot.step(poll_timeout=0)
+        offered = [entry['video_id'] for entry in self.store.get('offer')['items']]
+        self.assertIn('video000007', offered)
+        self.assertNotIn('video000008', offered)
+        self.assertNotIn('video000009', offered)
+
     def test_settings_are_read_without_other_keys(self):
         with tempfile.TemporaryDirectory() as tmp:
             env = Path(tmp) / '.env'
@@ -223,3 +247,33 @@ class PlaybackBotTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class PlayRequestTest(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        from realtime_fallback import PlaybackQueue
+        from test_state_manager import state_at
+        self.queue = PlaybackQueue(Path(tmp.name) / 'realtime.sqlite3')
+        self.state = state_at(Path(tmp.name))
+
+    def _play(self, chosen, automated=False):
+        with (patch.object(playback_bot, 'PlaybackQueue', return_value=self.queue),
+              patch.object(playback_bot, 'StateManager', return_value=self.state),
+              patch.object(playback_bot, 'load_config',
+                           return_value={'transcript_fallback': {'automated_playback': automated}}),
+              patch.object(playback_bot, 'AutoPlayer', side_effect=AssertionError('no browser'))):
+            return playback_bot.play(chosen, lambda: False)
+
+    def test_waiting_job_needing_playback_becomes_a_request_with_its_own_destinations(self):
+        waiting = item(1, 140)
+        self.queue.enqueue({k: waiting[k] for k in ('video_id', 'published_at')}, 'captions_blocked', 'daily')
+        self.queue.ui_unavailable('video000001', 'ui_incomplete_or_loading')
+        result = self._play(dict(waiting, source='waiting'))
+        self.assertEqual(result, {'status': 'requested'})
+        self.assertIsNone(self.queue.delivery_output('video000001', 'narrative'))
+        self.assertFalse(self.queue.needs_delivery('video000001', 'narrative'))
+        requested = self.queue.requested_jobs()
+        self.assertEqual([job['video_id'] for job in requested], ['video000001'])
+        self.assertEqual(requested[0]['requested']['duration_seconds'], 140)

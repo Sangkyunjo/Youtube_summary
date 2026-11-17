@@ -57,6 +57,9 @@ class PlaybackQueue:
             if 'next_action' not in columns:
                 db.execute("ALTER TABLE jobs ADD COLUMN next_action TEXT NOT NULL DEFAULT 'ui_transcript'")
                 db.execute("UPDATE jobs SET next_action='deliver' WHERE status='ready'")
+            if 'requested' not in columns:
+                # JSON {at, duration_seconds, title, channel_title} once the user asked for playback.
+                db.execute('ALTER TABLE jobs ADD COLUMN requested TEXT')
 
     @contextmanager
     def connect(self):
@@ -188,6 +191,26 @@ class PlaybackQueue:
                 (str(reason), time.time(), video_id(vid))).rowcount
             if changed != 1:
                 raise ValueError('UI fallback needs a pending/failed job')
+
+    def request_playback(self, vid, item):
+        """Mark a waiting job for the supervised playback run (Telegram selection)."""
+        request = {'at': time.time(), 'duration_seconds': item.get('duration_seconds'),
+                   'title': item.get('title'), 'channel_title': item.get('channel_title')}
+        with self.connect() as db:
+            changed = db.execute("""UPDATE jobs SET requested=?,updated=?
+                WHERE video_id=? AND status IN ('pending','failed')""",
+                (json.dumps(request, ensure_ascii=False), time.time(), video_id(vid))).rowcount
+            if changed != 1:
+                raise ValueError('Playback request needs a pending/failed job')
+
+    def requested_jobs(self):
+        """Requested jobs still waiting, oldest request first, priority channels first."""
+        with self.connect() as db:
+            rows = db.execute("""SELECT * FROM jobs WHERE requested IS NOT NULL
+                AND status IN ('pending','failed') ORDER BY updated""").fetchall()
+        jobs = [dict(self._decode_job(row), requested=json.loads(row['requested'])) for row in rows]
+        jobs.sort(key=lambda job: job['requested']['at'])
+        return prioritize_channels(jobs, lambda job: job['payload'].get('channel_id'), load_config())
 
     def retry_ui(self, vid):
         with self.connect() as db:
@@ -334,9 +357,16 @@ def playback_segments(job, recorded_seconds, finished_at):
     duration = float(content[0]['duration'])
     if not 1 <= duration <= 21600:
         raise ValueError('Finite, non-live video duration required')
-    if content[0]['current_time'] > 2 or not samples[-1]['ended'] or interrupted(samples[-1]):
+    # A post-roll ad replaces the content's own ended state: the <video> is unloaded and
+    # only the visible player shows ended (player_ended). The content then counts as
+    # complete when its last sample reached the end and only interruptions followed.
+    post_roll = (not samples[-1]['ended'] and samples[-1].get('player_ended') is True
+                 and samples[-1].get('ad') is False and content[-1] is not samples[-1]
+                 and content[-1]['current_time'] >= duration - 2
+                 and all(interrupted(s) for s in samples[samples.index(content[-1]) + 1:]))
+    if content[0]['current_time'] > 2 or not (post_roll or (samples[-1]['ended'] and not interrupted(samples[-1]))):
         raise ValueError('Playback must start at zero and reach ended')
-    if samples[-1]['current_time'] < duration - 2:
+    if not post_roll and samples[-1]['current_time'] < duration - 2:
         raise ValueError('Playback ended before the full content was captured')
     if not 0 <= samples[0]['observed_at'] - job['started'] <= 30:
         raise ValueError('Playback start was not observed during capture startup')
@@ -381,7 +411,7 @@ def playback_segments(job, recorded_seconds, finished_at):
         if offset < -2:
             raise ValueError('Recorded audio is shorter than verified playback')
         start = 0 if index == 0 else run[0]['current_time']
-        end = duration if index == len(runs) - 1 else run[-1]['current_time']
+        end = duration if index == len(runs) - 1 and not post_roll else run[-1]['current_time']
         if end - start <= 0.05:
             continue
         if segments and max(0, start + offset) < segments[-1][1] - 0.5:

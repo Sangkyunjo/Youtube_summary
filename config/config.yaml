@@ -122,12 +122,27 @@ summary_template: |
   Generated: {generated_at}
   ================================================================================
 
+# NarrativeRadar work-queue (NAR-08). Rows discovered by these modes are moved to
+# youtube_queue/_archive/pruned_<date>.jsonl instead of being processed, together
+# with rows past the 30-day age cap. Keyword search excluded on 2026-11-16 (user
+# decision); DataConductor's youtube_sources.yaml also stopped keyword discovery.
+narrative_queue:
+  excluded_discovery_modes:
+    - keyword
+
 # Supervised Mac playback + local Whisper. No paid STT in this mode.
 realtime_fallback:
   enabled: true
 
 # Caption API -> official visible transcript -> supervised regular-browser playback.
-# Automated Chrome playback remains opt-in after the observed player failures.
+# Automated Chrome playback stays off. 2026-11-16 test: the sound route itself works
+# (autoplay.AudioRoute verifies one with a test tone and switches to it), but in the
+# Playwright-controlled Chrome YouTube replaces the player with "문제가 발생했습니다"
+# about 40 s into the content, reproducibly. That stop is not worked around. The
+# 2026-11-08 "silence" failures (61 s and 95 s after recording start) fit the same stop.
+# Supervised playback (realtime_worker.py record without --capture-device) runs the
+# same route check before recording and restores the output afterwards; verified
+# end to end on 2026-11-17 in the desktop app's browser pane (hzZBK9pF-yU, 140 s).
 transcript_fallback:
   ui_enabled: true
   ui_timeout_seconds: 20

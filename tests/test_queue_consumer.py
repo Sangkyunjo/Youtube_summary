@@ -225,6 +225,34 @@ class QueueLimitTest(unittest.TestCase):
         self.assertEqual([item["video_id"] for item in offer["items"]], [self.rows[3]["video_id"]])
         self.assertEqual(offer["items"][0]["duration_seconds"], 600)
 
+    def test_candidates_include_waiting_daily_jobs_under_the_same_rules(self):
+        now = datetime.now(timezone.utc).isoformat()
+        self.rows = []
+        self._write_queue()
+        daily = {"video_id": "daily000001", "published_at": now, "channel_id": "UC1"}
+        keyword = {"video_id": "kw000000001", "published_at": now, "discovery": {"mode": "keyword"}}
+        asked = {"video_id": "asked000001", "published_at": now}
+        for payload in (daily, keyword, asked):
+            self.playback.enqueue(payload, "captions_blocked", "daily")
+        self.playback.request_playback("asked000001", {"duration_seconds": 60})
+
+        class FakeApi:
+            def get_video_durations(self, ids):
+                return {vid: {"duration_seconds": 120, "live": False} for vid in ids}
+
+        with (
+            patch.object(queue_consumer, "_queue_dir", return_value=self.queue_dir),
+            patch.object(queue_consumer, "StateManager", return_value=self.state),
+            patch.object(queue_consumer, "PlaybackQueue", return_value=self.playback),
+            patch.object(queue_consumer, "_MAX_AGE_DAYS", 30),
+            patch.object(queue_consumer, "_excluded_modes", return_value={"keyword"}),
+            patch("youtube_api.YouTubeAPI", FakeApi),
+        ):
+            offer = queue_consumer.candidates(limit=5)
+
+        self.assertEqual([entry["video_id"] for entry in offer["items"]], ["daily000001"])
+        self.assertEqual(offer["items"][0]["source"], "waiting")
+
     def test_newest_videos_are_processed_first(self):
         now = datetime.now(timezone.utc)
         for i, row in enumerate(self.rows):
@@ -373,13 +401,95 @@ class QueueLimitTest(unittest.TestCase):
 
         self.assertIsNone(self.playback.get(self.rows[0]["video_id"]))
         self.assertIsNone(self.playback.get("videodaily1"))
-        self.assertTrue(self.state.is_video_processed(self.rows[0]['video_id'], 'narrative'))
-        self.assertEqual(result["too_old"], 1)
+        # Expired rows leave the queue before the loop; the ready transcript still delivers.
+        self.assertNotIn(self.rows[0]['video_id'],
+                         [row['video_id'] for row in queue_consumer._read_queue(self.queue_dir)])
+        self.assertEqual(result["pruned"], {"too_old": 2})
         self.assertEqual(result["deferred"], 0)
         self.assertEqual(
             self._inbox_ids(),
             sorted(self.rows[i]["video_id"] for i in (1, 2, 3, 4)),
         )
+
+
+class PruneQueueTest(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name)
+        self.queue_dir = root / "queue"
+        self.queue_dir.mkdir()
+        self.playback = PlaybackQueue(root / "realtime.sqlite3")
+        now = datetime.now(timezone.utc)
+        self.fresh = now.isoformat()
+        self.old = (now - timedelta(days=45)).isoformat()
+
+    def _write(self, name, rows):
+        (self.queue_dir / name).write_text(
+            "\n".join(json.dumps(row, ensure_ascii=False) for row in rows) + "\n", encoding="utf-8")
+
+    def _prune(self):
+        with (
+            patch.object(queue_consumer, "_MAX_AGE_DAYS", 30),
+            patch.object(queue_consumer, "_excluded_modes", return_value={"keyword"}),
+        ):
+            return queue_consumer.prune_queue(self.queue_dir, self.playback)
+
+    def test_keyword_and_expired_rows_move_to_the_archive(self):
+        channel = {"mode": "channel", "query": None}
+        keyword = {"mode": "keyword", "query": "HBM"}
+        self._write("pending_1.jsonl", [
+            {"video_id": "keep0000001", "published_at": self.fresh, "discovery": channel},
+            {"video_id": "kw000000001", "published_at": self.fresh, "discovery": keyword},
+            {"video_id": "old00000001", "published_at": self.old, "discovery": channel},
+        ])
+        self._write("pending_2.jsonl", [
+            {"video_id": "old00000002", "published_at": self.old, "discovery": keyword},
+        ])
+
+        result = self._prune()
+
+        self.assertEqual(result["pruned"], {"discovery_keyword": 2, "too_old": 1})
+        self.assertFalse((self.queue_dir / "pending_2.jsonl").exists())
+        kept = [row["video_id"] for row in queue_consumer._read_queue(self.queue_dir)]
+        self.assertEqual(kept, ["keep0000001"])
+        archived = [json.loads(line) for line in next((self.queue_dir / "_archive").glob("pruned_*.jsonl"))
+                    .read_text(encoding="utf-8").splitlines()]
+        self.assertEqual(sorted(row["video_id"] for row in archived),
+                         ["kw000000001", "old00000001", "old00000002"])
+        self.assertTrue(all(row["pruned_reason"] and row["pruned_from"] for row in archived))
+
+    def test_waiting_jobs_of_keyword_videos_are_dropped(self):
+        keyword = {"mode": "keyword", "query": "HBM"}
+        self._write("pending_1.jsonl", [
+            {"video_id": "kw000000001", "published_at": self.fresh, "discovery": keyword},
+            {"video_id": "both0000001", "published_at": self.fresh, "discovery": keyword},
+            {"video_id": "both0000001", "published_at": self.fresh, "discovery": {"mode": "channel"}},
+        ])
+        # The Telegram bot used to store selections without the discovery field.
+        self.playback.enqueue({"video_id": "kw000000001", "published_at": self.fresh},
+                              "user_selected", "narrative")
+        self.playback.enqueue({"video_id": "both0000001", "published_at": self.fresh},
+                              "captions_blocked", "narrative")
+        self.playback.enqueue({"video_id": "daily000001", "published_at": self.fresh},
+                              "captions_blocked", "daily")
+
+        result = self._prune()
+
+        self.assertEqual(result["dropped_jobs"], 1)
+        self.assertIsNone(self.playback.get("kw000000001"))
+        self.assertIsNotNone(self.playback.get("both0000001"))
+        self.assertIsNotNone(self.playback.get("daily000001"))
+
+    def test_nothing_to_prune_leaves_files_untouched(self):
+        self._write("pending_1.jsonl", [{"video_id": "keep0000001", "published_at": self.fresh}])
+        before = (self.queue_dir / "pending_1.jsonl").stat().st_mtime_ns
+
+        result = self._prune()
+
+        self.assertEqual(result, {"pruned": {}, "files": 0, "dropped_jobs": 0})
+        self.assertEqual((self.queue_dir / "pending_1.jsonl").stat().st_mtime_ns, before)
+        self.assertFalse((self.queue_dir / "_archive").exists())
 
 
 if __name__ == "__main__":

@@ -137,6 +137,88 @@ def _too_old(published_at_iso: str) -> bool:
     return pub < datetime.now(timezone.utc) - timedelta(days=_MAX_AGE_DAYS)
 
 
+def _excluded_modes() -> set[str]:
+    """Discovery modes the narrative queue does not process (config.yaml narrative_queue)."""
+    section = load_config().get("narrative_queue") or {}
+    return {str(mode) for mode in section.get("excluded_discovery_modes") or []}
+
+
+def _discovery_mode(row: dict) -> str | None:
+    return (row.get("discovery") or {}).get("mode")
+
+
+def _prune_reason(row: dict, excluded: set[str]) -> str | None:
+    mode = _discovery_mode(row)
+    if mode in excluded:
+        return f"discovery_{mode}"
+    if _too_old(row.get("published_at") or ""):
+        return "too_old"
+    return None
+
+
+def prune_queue(queue_dir: Path, playback=None) -> dict:
+    """Move excluded-discovery and expired rows out of the pending files.
+
+    Removed rows are appended to _archive/pruned_<UTC date>.jsonl with the reason,
+    so nothing is deleted. Without this, a --limit-bounded run never reaches old
+    rows and the pending files only grow. Waiting playback jobs for excluded
+    videos are dropped too; a video also queued by an allowed mode is kept.
+    """
+    excluded = _excluded_modes()
+    counts: dict[str, int] = {}
+    archived: list[str] = []
+    rewrites: list[tuple[Path, list[str]]] = []
+    excluded_ids: set[str] = set()
+    kept_ids: set[str] = set()
+    for qfile in sorted(queue_dir.glob("pending_*.jsonl")):
+        keep: list[str] = []
+        changed = False
+        for line in qfile.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                keep.append(line)
+                continue
+            reason = _prune_reason(row, excluded)
+            if reason is None:
+                keep.append(line)
+                kept_ids.add(row.get("video_id"))
+                continue
+            changed = True
+            counts[reason] = counts.get(reason, 0) + 1
+            if reason.startswith("discovery_"):
+                excluded_ids.add(row.get("video_id"))
+            archived.append(json.dumps(dict(row, pruned_reason=reason, pruned_from=qfile.name),
+                                       ensure_ascii=False))
+        if changed:
+            rewrites.append((qfile, keep))
+    if archived:
+        archive = queue_dir / "_archive"
+        archive.mkdir(parents=True, exist_ok=True)
+        target = archive / f"pruned_{datetime.now(timezone.utc):%Y%m%d}.jsonl"
+        with target.open("a", encoding="utf-8") as fh:
+            fh.write("\n".join(archived) + "\n")
+        # Rewrite only after the archive copy exists, so a crash cannot lose rows.
+        for qfile, keep in rewrites:
+            if keep:
+                atomic_write_text(qfile, "\n".join(keep) + "\n")
+            else:
+                qfile.unlink()
+    excluded_ids -= kept_ids
+    dropped_jobs = 0
+    if playback is not None:
+        dropped_jobs = playback.drop_waiting(
+            lambda payload: payload.get("video_id") in excluded_ids
+            or _discovery_mode(payload) in excluded)
+    if archived or dropped_jobs:
+        logger.info("queue: pruned %s rows from %d files, dropped %d excluded playback jobs",
+                    counts, len(rewrites), dropped_jobs)
+    return {"pruned": counts, "files": len(rewrites), "dropped_jobs": dropped_jobs}
+
+
 def drop_expired_jobs(playback) -> None:
     """Videos past the age cap get no fallback; captured transcripts stay deliverable."""
     dropped = playback.drop_waiting(lambda payload: _too_old(payload.get("published_at") or ""))
@@ -230,13 +312,26 @@ def candidates(limit: int = 30) -> dict:
     state = StateManager()
     playback = PlaybackQueue()
     rows = []
-    for row in _processing_order(_read_queue(_queue_dir())):
-        if _too_old(row.get("published_at") or ""):
-            continue
+    excluded = _excluded_modes()
+    # The NarrativeRadar queue and the playback queue (which also holds the daily
+    # summary's caption-blocked subscriptions) under the same exclusion and age rules.
+    sources = [dict(row, source="queue") for row in _read_queue(_queue_dir())]
+    queued = {row["video_id"] for row in sources}
+    sources += [dict(job["payload"], source="waiting")
+                for destination in ("narrative", "daily") for job in playback.waiting(destination)
+                if job["video_id"] not in queued]
+    seen = set()
+    for row in _processing_order(sources):
         vid = row["video_id"]
+        if vid in seen or _prune_reason(row, excluded):
+            continue
+        seen.add(vid)
         job = playback.get(vid)
-        if (state.is_video_processed(vid, 'narrative') or playback.delivery_output(vid, 'narrative')
-                or (job and job["status"] in ("ready", "recording"))):
+        if job and (job["status"] in ("ready", "recording") or job.get("requested")):
+            # Ready transcripts deliver on their own; requested ones await the playback run.
+            continue
+        if row["source"] == "queue" and (state.is_video_processed(vid, 'narrative')
+                                         or playback.delivery_output(vid, 'narrative')):
             continue
         rows.append(row)
     # Look up a margin beyond the limit: deleted, private and live videos drop out.
@@ -254,6 +349,8 @@ def candidates(limit: int = 30) -> dict:
             "channel_id": row.get("channel_id"),
             "published_at": row.get("published_at"),
             "url": row.get("url") or f"https://youtu.be/{row['video_id']}",
+            "discovery": row.get("discovery"),
+            "source": row["source"],
             "duration_seconds": info["duration_seconds"],
         })
         if len(items) == limit:
@@ -269,6 +366,7 @@ def run(limit: int | None = None, force: bool = False, only: set[str] | None = N
     playback = PlaybackQueue() if realtime_enabled() and _TRANSCRIBER == 'captions-first' else None
     extractor = _make_caption_transcriber() if playback else _make_transcriber()
     logger.info("queue: transcript backend = %s (engine=%s)", _TRANSCRIBER, getattr(extractor, "engine", "?"))
+    pruned = prune_queue(queue_dir, playback)
     if playback:
         drop_expired_jobs(playback)
     summarizer: Summarizer | None = None
@@ -289,7 +387,7 @@ def run(limit: int | None = None, force: bool = False, only: set[str] | None = N
     result = {"queued": len(rows), "written": 0, "skipped": 0,
               "no_transcript": 0, "unavailable": 0, "too_old": 0,
               "caption_used": 0, "whisper_used": 0, "realtime_used": 0, "ui_used": 0, "deferred": 0,
-              "errors": 0, "busy": 0, "blocked": False}
+              "errors": 0, "busy": 0, "blocked": False, "pruned": pruned["pruned"]}
     logger.info("queue: %d unique videos pending", len(rows))
 
     processed_count = 0
