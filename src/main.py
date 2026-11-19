@@ -560,10 +560,16 @@ def main():
                         help='Print the newest N unprocessed in-window queue videos as JSON')
     parser.add_argument('--deliver-ready', metavar='IDS',
                         help='Summarize played-back videos (comma-separated IDs) into both outputs')
+    parser.add_argument('--brief-digest', metavar='IDS',
+                        help='Print the morning briefing video part (per-video lines + synthesis) as JSON')
     args = parser.parse_args()
     if args.candidates:
         from queue_consumer import candidates
         print(json.dumps(candidates(args.candidates), ensure_ascii=False))
+        return
+    if args.brief_digest:
+        from brief_digest import build as build_digest
+        print(json.dumps(build_digest([v for v in args.brief_digest.split(',') if v]), ensure_ascii=False))
         return
     if args.deliver_ready:
         result = YouTubeSummarySystem().deliver_ready(set(filter(None, args.deliver_ready.split(','))))

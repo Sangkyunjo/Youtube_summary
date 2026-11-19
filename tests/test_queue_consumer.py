@@ -219,7 +219,7 @@ class QueueLimitTest(unittest.TestCase):
             patch.object(queue_consumer, "_MAX_AGE_DAYS", 30),
             patch("youtube_api.YouTubeAPI", FakeApi),
         ):
-            offer = queue_consumer.candidates(limit=5)
+            offer = queue_consumer.candidates(limit=5, subscriptions=[])
 
         self.assertEqual(offer["in_window"], 3)
         self.assertEqual([item["video_id"] for item in offer["items"]], [self.rows[3]["video_id"]])
@@ -248,10 +248,46 @@ class QueueLimitTest(unittest.TestCase):
             patch.object(queue_consumer, "_excluded_modes", return_value={"keyword"}),
             patch("youtube_api.YouTubeAPI", FakeApi),
         ):
-            offer = queue_consumer.candidates(limit=5)
+            offer = queue_consumer.candidates(limit=5, subscriptions=[])
 
         self.assertEqual([entry["video_id"] for entry in offer["items"]], ["daily000001"])
         self.assertEqual(offer["items"][0]["source"], "waiting")
+
+    def test_subscription_uploads_lead_the_offer_and_a_lookup_failure_keeps_the_backlog(self):
+        now = datetime.now(timezone.utc)
+        for i, row in enumerate(self.rows):
+            row["published_at"] = (now - timedelta(hours=10 - i)).isoformat()
+        self._write_queue()
+        sub = {"video_id": "subscrib001", "title": "a &amp; b", "channel_title": "소수몽키", "channel_id": "UCs",
+               "channel_handle": "@sosumonkey", "published_at": (now - timedelta(hours=20)).isoformat(),
+               "url": "https://www.youtube.com/watch?v=subscrib001", "source": "subscription"}
+
+        class FakeApi:
+            def get_video_durations(self, ids):
+                return {vid: {"duration_seconds": 300, "live": False} for vid in ids}
+
+        def broken(state, days):
+            raise RuntimeError("quota")
+
+        with (
+            patch.object(queue_consumer, "_queue_dir", return_value=self.queue_dir),
+            patch.object(queue_consumer, "StateManager", return_value=self.state),
+            patch.object(queue_consumer, "PlaybackQueue", return_value=self.playback),
+            patch.object(queue_consumer, "_MAX_AGE_DAYS", 30),
+            patch("youtube_api.YouTubeAPI", FakeApi),
+        ):
+            offer = queue_consumer.candidates(limit=3, subscriptions=[sub])
+            with patch.object(queue_consumer, "_subscription_rows", broken):
+                fallback = queue_consumer.candidates(limit=3)
+
+        self.assertEqual(offer["items"][0]["video_id"], "subscrib001")
+        self.assertEqual(offer["items"][0]["source"], "subscription")
+        self.assertEqual(offer["items"][0]["channel_handle"], "@sosumonkey")
+        self.assertEqual(offer["items"][0]["title"], "a & b")
+        self.assertEqual(offer["subscriptions"], 1)
+        self.assertEqual([i["source"] for i in offer["items"][1:]], ["queue", "queue"])
+        self.assertIn("quota", fallback["subscription_error"])
+        self.assertEqual(len(fallback["items"]), 3)
 
     def test_newest_videos_are_processed_first(self):
         now = datetime.now(timezone.utc)

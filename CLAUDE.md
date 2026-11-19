@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-YouTube channel monitor that extracts transcripts and summarizes videos using an OpenAI-compatible LLM API, then emails a daily digest.
+YouTube channel monitor that summarizes the subscription videos the user picks in the 08:00 Telegram offer (`src/playback_bot.py`) using an OpenAI-compatible LLM API, then sends the morning briefing (market and TrillionStack dashboard parts from `~/TrillionStack/scripts/morning_brief.py`, video part from `src/brief_digest.py`). Since 2026-11-19 nothing is summarized without a pick; the old emailing daily DAG is retired in `dags/legacy/`.
 
 **LLM:** Qwen (Alibaba) — currently `qwen-plus` via the DashScope OpenAI-compatible endpoint. Provider is selectable in `config/config.yaml` under `llm.provider` (`qwen` default, `minimax`, or `openai`).
 **API key env vars (in `config/.env`):** provider key (`QWEN_API_KEY` / `MINIMAX_API_KEY` / `OPENAI_API_KEY`) + `YOUTUBE_API_KEY`
@@ -26,7 +26,9 @@ YouTube channel monitor that extracts transcripts and summarizes videos using an
 | `config/config.yaml` | Main config: model, schedule, paths, email settings |
 | `config/channels.yaml` | List of YouTube channels to monitor |
 | `config/.env` | Secrets: OPENAI_API_KEY, email credentials |
-| `dags/youtube_summary_dag.py` | Airflow DAG (alternative to manual scheduling) |
+| `src/playback_bot.py` | Telegram offer, selection loop and morning briefing (launchd KeepAlive) |
+| `src/brief_digest.py` | Briefing video part: per-video lines + one synthesis (`main.py --brief-digest`) |
+| `dags/legacy/youtube_summary_dag.py` | Retired daily DAG (2026-11-19), not loaded |
 
 ---
 

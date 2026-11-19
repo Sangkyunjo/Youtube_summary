@@ -1,13 +1,22 @@
 # YouTube Summary System
 
-Monitors YouTube channels, extracts transcripts, and generates AI-powered summaries via email — automatically, every day.
+Lists new uploads of subscribed YouTube channels every morning, summarizes the videos the user
+picks in Telegram, and sends a morning briefing (market, picked videos, TrillionStack dashboard).
 
-## How It Works
+## How It Works (since 2026-11-19)
 
-1. Checks configured YouTube channels for new videos
-2. Extracts transcripts (Korean preferred, English fallback)
-3. Summarizes each video using Qwen through Alibaba DashScope
-4. Saves summaries to a folder and sends an email digest
+1. 08:00 KST: the Telegram bot (`src/playback_bot.py`) offers new uploads of the channels in
+   `config/channels.yaml` (last `morning_offer.subscription_days` days, each upload offered once),
+   then the NarrativeRadar/playback backlog
+2. The user replies with numbers; each pick is transcribed (visible transcript, else supervised
+   playback at 13:00) and summarized with Qwen through Alibaba DashScope into `summaries/`
+3. When the picks are done (or `없음`, or 10:00) the bot sends the morning briefing: market and
+   dashboard parts from `~/TrillionStack/scripts/morning_brief.py`, the video part from
+   `main.py --brief-digest` (per-video lines + one synthesis when two or more videos)
+
+Nothing is summarized without a pick. The old daily DAG that summarized every upload and mailed a
+digest was retired (moved to `dags/legacy/`). NarrativeRadar's own queue (NAR-06/08/07) still runs
+daily at 16:00 for its own purpose.
 
 ---
 
@@ -165,7 +174,8 @@ Arguments: C:\Users\trill\Youtube_summary\src\main.py --force
 
 See [airflow_setup.md](airflow_setup.md) for full setup instructions.
 
-The DAG `youtube_summary_system` runs daily at 11:00 PM with automatic catchup for missed runs.
+Retired on 2026-11-19: `dags/legacy/youtube_summary_dag.py` is kept for reference and
+`dags/.airflowignore` skips it. Scheduling is the Telegram bot's morning offer (below).
 
 ---
 
@@ -296,7 +306,16 @@ Use the personal `summarize-videos` skill for the complete operating procedure,
 audio setup/restore, and course-specific routing. Existing Airflow schedules
 are unchanged. No email or publishing is implied by playback or resume.
 
-## Daily playback selection bot (2026-11-05)
+## Daily playback selection bot (2026-11-05, morning briefing 2026-11-19)
+
+Since 2026-11-19 the offer leads with new subscription uploads (`[구독 채널 새 영상]`, each upload
+offered on one day only; a pick gets the daily summary only, no NarrativeRadar output), followed by
+the backlog (`[수집 대기 영상]`). Processing starts as soon as the user picks (08:00–23:00). The
+briefing goes out once a day in three messages (증시 / 구독 영상 정리 / 기억해 둘 것) when the picks
+are done, at once on `없음` or an empty offer, and at 10:00 with what is done by then; videos done
+later follow as `[추가 영상 정리]`, and the 13:00 supervised playback task sends
+`playback_bot.py digest IDS` (`[오후 영상 정리]`). `브리핑` sends it again; `playback_bot.py brief`
+does the same from a shell. The text below describes the 2026-11-05 design.
 
 The caption endpoint blocks this host after about eleven requests, so a host-side
 bot offers real-time playback instead. It reuses the supervised worker above but

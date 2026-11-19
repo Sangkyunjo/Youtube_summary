@@ -1,7 +1,12 @@
 """
-YouTube Summary System - Airflow DAG
+YouTube Summary System - Airflow DAG (RETIRED 2026-11-19, kept for reference)
 
-This DAG orchestrates the YouTube channel monitoring and summarization pipeline:
+Retired by user decision: subscription videos are no longer summarized wholesale. The
+08:00 KST Telegram offer (src/playback_bot.py) lists new subscription uploads and only the
+videos the user picks are summarized, followed by the morning briefing. The DAG had been
+paused since 2026-10-21; dags/.airflowignore skips this folder, so Airflow no longer loads it.
+
+This DAG orchestrated the YouTube channel monitoring and summarization pipeline:
 1. Get new videos from monitored channels
 2. Extract transcripts and generate summaries
 3. Send email report with results

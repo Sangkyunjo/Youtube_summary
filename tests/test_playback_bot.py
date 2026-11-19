@@ -60,7 +60,7 @@ class PlaybackBotTest(unittest.TestCase):
             self.telegram, self.store,
             fetch_candidates=lambda: {'in_window': 40, 'items': list(self.items)},
             play=self.play, deliver=lambda vid: {'narrative_written': 1, 'daily_written': 1, 'errors': 0},
-            is_processed=lambda vid: vid in self.processed, clock=lambda: self.now)
+            is_processed=lambda chosen: chosen['video_id'] in self.processed, clock=lambda: self.now)
 
     def at(self, *parts):
         self.now = datetime(*parts, tzinfo=KST).timestamp()
@@ -89,15 +89,14 @@ class PlaybackBotTest(unittest.TestCase):
         self.assertIn('1. [채널] 영상 1 · 120분', self.telegram.sent[0])
         self.assertIn('기한 내 미처리 40건', self.telegram.sent[0])
 
-    def test_selection_waits_for_the_window_then_plays_in_order(self):
+    def test_selection_after_the_offer_plays_at_once_in_order(self):
         self.at(2026, 11, 6, 8, 0)
         self.bot.step(poll_timeout=0)
         self.items = [item(1), item(2)]
         self.store.set('offer', {'date': '2026-11-06', 'items': self.items, 'in_window': 2})
         self.reply('2,1')
-        self.assertEqual(self.played, [])
-        self.assertIn('09:00부터 시작합니다', self.telegram.sent[-1])
-        self.at(2026, 11, 6, 9, 0)
+        started = next(text for text in self.telegram.sent if '2건을 처리합니다' in text)
+        self.assertNotIn('부터 시작합니다', started)
         for _ in range(3):
             self.bot.step(poll_timeout=0)
         self.assertEqual(self.played, ['video000002', 'video000001'])
@@ -237,12 +236,156 @@ class PlaybackBotTest(unittest.TestCase):
         self.assertNotIn('video000008', offered)
         self.assertNotIn('video000009', offered)
 
+    def test_subscription_uploads_come_first_and_are_offered_on_one_day_only(self):
+        sub = dict(item(5), source='subscription', channel_title='구독')
+        backlog = dict(item(6), source='queue')
+        self.items = [backlog, sub]
+        self.at(2026, 11, 6, 8, 0)
+        self.bot.step(poll_timeout=0)
+        offer = self.store.get('offer')
+        self.assertEqual([entry['video_id'] for entry in offer['items']], ['video000005', 'video000006'])
+        text = self.telegram.sent[-1]
+        self.assertLess(text.index('[구독 채널 새 영상]'), text.index('[수집 대기 영상'))
+        self.assertIn('구독 채널 새 영상 1건, 수집 대기 1건', text)
+        self.reply('없음')
+        # Next morning: the subscription upload not picked yesterday is not offered again; the backlog is.
+        self.at(2026, 11, 7, 8, 0)
+        self.bot.step(poll_timeout=0)
+        self.assertEqual([entry['video_id'] for entry in self.store.get('offer')['items']], ['video000006'])
+
     def test_settings_are_read_without_other_keys(self):
         with tempfile.TemporaryDirectory() as tmp:
             env = Path(tmp) / '.env'
             env.write_text('OTHER=1\nTELEGRAM_HERMES_BOT_TOKEN="tok"\n'
                            'export TELEGRAM_HERMES_CHAT_ID=5\nTELEGRAM_HERMES_USER_ID=7\n', encoding='utf-8')
             self.assertEqual(playback_bot.load_settings(env), ('tok', '5', '7'))
+
+
+class MorningBriefTest(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.telegram = FakeTelegram()
+        self.store = Store(Path(tmp.name) / 'bot.sqlite3')
+        self.store.set('offset', 1)
+        self.at(2026, 11, 6, 8, 0)
+        self.items = [dict(item(n, 600), source='subscription') for n in (1, 2, 3)]
+        self.digested, self.brief_error, self.digest_error = [], None, None
+        self.outcomes = []
+        self.bot = PlaybackBot(
+            self.telegram, self.store,
+            fetch_candidates=lambda: {'in_window': len(self.items), 'items': list(self.items)},
+            play=self.play, deliver=lambda vid: {'narrative_written': 0, 'daily_written': 1, 'errors': 0},
+            is_processed=lambda chosen: False, brief=self.brief, digest=self.digest, clock=lambda: self.now)
+
+    def at(self, *parts):
+        self.now = datetime(*parts, tzinfo=KST).timestamp()
+
+    def play(self, chosen, stop_requested):
+        if self.outcomes:
+            return self.outcomes.pop(0)
+        self.now += chosen['duration_seconds']
+        return {'status': 'ready', 'chars': 1000}
+
+    def brief(self):
+        if self.brief_error:
+            raise RuntimeError(self.brief_error)
+        return {'market': '코스피 5,000.00 (+1.00%)', 'dashboard': '[위험 신호]\n• 코스피 급락 위험: 경계', 'errors': []}
+
+    def digest(self, ids):
+        if self.digest_error:
+            raise RuntimeError(self.digest_error)
+        self.digested.append(list(ids))
+        return {'videos': [{'video_id': vid, 'channel': '채널', 'title': f'제목 {vid}', 'overview': '개요',
+                            'points': ['핵심'], 'url': f'https://youtu.be/{vid}'} for vid in ids],
+                'missing': [], 'synthesis': '공통 주제: 반도체' if len(ids) > 1 else None}
+
+    def reply(self, text):
+        self.telegram.push(text)
+        self.bot.step(poll_timeout=0)
+
+    def briefs(self):
+        return [text for text in self.telegram.sent if text.startswith('아침 브리핑')]
+
+    def test_brief_follows_the_chosen_videos_in_three_messages(self):
+        self.bot.step(poll_timeout=0)
+        self.reply('1,2')
+        for _ in range(3):
+            self.bot.step(poll_timeout=0)
+        self.assertEqual(self.digested, [['video000001', 'video000002']])
+        start = self.telegram.sent.index(self.briefs()[0])
+        market, videos, dashboard = self.telegram.sent[start:start + 3]
+        self.assertIn('[증시]\n코스피 5,000.00', market)
+        self.assertIn('[구독 영상 정리] 2건', videos)
+        self.assertIn('종합\n공통 주제: 반도체', videos)
+        self.assertTrue(dashboard.startswith('[기억해 둘 것]'))
+        self.bot.step(poll_timeout=0)
+        self.assertEqual(len(self.briefs()), 1)
+
+    def test_none_and_an_empty_offer_brief_at_once_without_videos(self):
+        self.bot.step(poll_timeout=0)
+        self.assertEqual(self.briefs(), [])
+        self.reply('없음')
+        self.assertEqual(len(self.briefs()), 1)
+        self.assertIn('오늘 요약한 구독 영상이 없습니다', '\n'.join(self.telegram.sent))
+        self.items = []
+        self.at(2026, 11, 7, 8, 0)
+        self.bot.step(poll_timeout=0)
+        self.assertEqual(len(self.briefs()), 2)
+
+    def test_deadline_sends_what_is_done_and_the_rest_follows(self):
+        self.items = [dict(item(n, 2400), source='subscription') for n in (1, 2, 3)]
+        self.at(2026, 11, 6, 9, 20)
+        self.bot.step(poll_timeout=0)
+        self.reply('전체')          # video 1 ends 10:00
+        self.bot.step(poll_timeout=0)  # 10:00: brief before video 2
+        self.assertEqual(len(self.briefs()), 1)
+        self.assertEqual(self.digested[0], ['video000001'])
+        self.assertIn('처리 중인 2건은 끝나면 추가로 보냅니다', '\n'.join(self.telegram.sent))
+        for _ in range(4):
+            self.bot.step(poll_timeout=0)
+        self.assertEqual(self.digested[-1], ['video000002', 'video000003'])
+        self.assertIn('[추가 영상 정리] 2건', self.telegram.sent[-1])
+
+    def test_no_answer_by_the_deadline_still_briefs(self):
+        self.bot.step(poll_timeout=0)
+        self.at(2026, 11, 6, 9, 59)
+        self.bot.step(poll_timeout=0)
+        self.assertEqual(self.briefs(), [])
+        self.at(2026, 11, 6, 10, 0)
+        self.bot.step(poll_timeout=0)
+        self.assertEqual(len(self.briefs()), 1)
+
+    def test_requested_and_failed_videos_are_noted_and_failures_do_not_stop_the_brief(self):
+        self.bot.step(poll_timeout=0)
+        self.outcomes += [{'status': 'requested'}, {'status': 'failed', 'error': 'x'}]
+        self.brief_error, self.digest_error = 'gateway down', 'container down'
+        self.reply('전체')
+        for _ in range(3):
+            self.bot.step(poll_timeout=0)
+        text = '\n'.join(self.telegram.sent)
+        self.assertIn('자료를 만들지 못했습니다(gateway down)', text)
+        self.assertIn('영상 정리를 만들지 못했습니다(container down)', text)
+        self.assertIn(f'화면 자막이 없는 1건은 {playback_bot.PLAYBACK_RUN_TIME} 재생 작업이', text)
+        self.assertIn('요약하지 못한 영상 1건', text)
+
+    def test_brief_word_resends_with_every_video_of_the_day(self):
+        self.bot.step(poll_timeout=0)
+        self.reply('1')
+        for _ in range(2):
+            self.bot.step(poll_timeout=0)
+        self.reply('브리핑')
+        self.assertEqual(len(self.briefs()), 2)
+        self.assertEqual(self.digested, [['video000001'], ['video000001']])
+
+
+class ChunksTest(unittest.TestCase):
+    def test_pieces_end_at_lines_and_long_lines_are_cut(self):
+        text = '\n'.join(['a' * 40] * 5 + ['b' * 130])
+        pieces = playback_bot.chunks(text, size=100)
+        self.assertTrue(all(len(piece) <= 100 for piece in pieces))
+        self.assertEqual(pieces[0], '\n'.join(['a' * 40] * 2))
+        self.assertEqual(''.join(pieces).replace('\n', ''), text.replace('\n', ''))
 
 
 if __name__ == '__main__':
@@ -277,3 +420,25 @@ class PlayRequestTest(unittest.TestCase):
         requested = self.queue.requested_jobs()
         self.assertEqual([job['video_id'] for job in requested], ['video000001'])
         self.assertEqual(requested[0]['requested']['duration_seconds'], 140)
+
+    def test_subscription_pick_is_queued_for_the_daily_summary_only(self):
+        chosen = dict(item(2, 300), source='subscription', channel_handle='@sosumonkey')
+        self.queue.enqueue({k: chosen[k] for k in ('video_id', 'published_at')}, 'seed', 'daily')
+        self.queue.ui_unavailable('video000002', 'ui_incomplete_or_loading')
+        self.queue.forget('video000002')
+        with patch.object(playback_bot, 'AutoPlayer') as player:
+            player.return_value.__enter__.return_value.play.return_value = {'status': 'ready'}
+            with (patch.object(playback_bot, 'PlaybackQueue', return_value=self.queue),
+                  patch.object(playback_bot, 'StateManager', return_value=self.state),
+                  patch.object(playback_bot, 'load_config', return_value={})):
+                self.assertEqual(playback_bot.play(chosen, lambda: False), {'status': 'ready'})
+        self.assertEqual(self.queue.destinations('video000002'), ['daily'])
+        self.assertEqual(self.queue.get('video000002')['payload']['channel_handle'], '@sosumonkey')
+
+    def test_destinations_follow_the_source(self):
+        self.queue.enqueue({'video_id': 'video000003', 'published_at': '2026-11-05T06:00:00Z'}, 'x', 'narrative')
+        self.assertEqual(playback_bot.destinations({'video_id': 'video000009', 'source': 'subscription'}), ('daily',))
+        self.assertEqual(playback_bot.destinations({'video_id': 'video000003', 'source': 'waiting'}, self.queue),
+                         ('narrative',))
+        self.assertEqual(playback_bot.destinations({'video_id': 'video000004', 'source': 'queue'}),
+                         ('narrative', 'daily'))

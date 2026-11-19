@@ -232,6 +232,13 @@ class PlaybackQueue:
                              (video_id(vid), destination)).fetchone()
         return row['output'] if row else None
 
+    def destinations(self, vid):
+        """The outputs a job was queued for ('daily', 'narrative'), oldest first."""
+        with self.connect() as db:
+            rows = db.execute('SELECT destination FROM deliveries WHERE video_id=? ORDER BY rowid',
+                              (video_id(vid),)).fetchall()
+        return [row['destination'] for row in rows]
+
     def delivered(self, vid, destination, output):
         with self.connect() as db:
             db.execute('''INSERT INTO deliveries(video_id,destination,output) VALUES(?,?,?)

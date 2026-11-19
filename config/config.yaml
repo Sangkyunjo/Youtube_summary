@@ -130,6 +130,12 @@ narrative_queue:
   excluded_discovery_modes:
     - keyword
 
+# Morning Telegram offer (playback_bot.py, 08:00 KST). Subscription uploads (channels.yaml)
+# published within this many days are listed once; nothing is summarized until the user picks
+# it (2026-11-19 user decision; the paused daily DAG that summarized every upload is retired).
+morning_offer:
+  subscription_days: 3
+
 # Supervised Mac playback + local Whisper. No paid STT in this mode.
 realtime_fallback:
   enabled: true

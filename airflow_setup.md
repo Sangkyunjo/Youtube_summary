@@ -1,5 +1,8 @@
 # Airflow Setup Guide for YouTube Summary System
 
+> Retired 2026-11-19: the `youtube_summary_system` DAG moved to `dags/legacy/` and is not loaded.
+> Subscription videos are summarized only when picked in the Telegram morning offer (README).
+
 This guide explains how to set up Apache Airflow to run the YouTube Summary System.
 
 ## Option 1: Local Installation (Recommended for Development)

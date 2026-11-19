@@ -305,23 +305,60 @@ def _existing_contract(inbox_dir: Path, vid: str, *, force: bool) -> Path | None
     return None
 
 
-def candidates(limit: int = 30) -> dict:
-    """Unprocessed in-window videos, with length, for the daily playback offer."""
+def subscription_days() -> int:
+    """How far back the morning offer looks for subscription uploads (config.yaml morning_offer)."""
+    section = load_config().get("morning_offer") or {}
+    return int(section.get("subscription_days", 3))
+
+
+def _subscription_rows(state: StateManager, days: int) -> list[dict]:
+    """New uploads of config/channels.yaml channels without a daily summary, newest first.
+
+    Only listed here: nothing is summarized until the user picks it in the Telegram offer
+    (user decision 2026-11-19; the old daily DAG summarized every upload).
+    """
+    from channel_monitor import ChannelMonitor
+
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    rows = []
+    for video in ChannelMonitor().get_all_new_videos(state.get_all_processed_video_ids('daily')):
+        published = video.published_date.replace(tzinfo=timezone.utc)
+        if published < cutoff:
+            continue
+        rows.append({"video_id": video.video_id, "title": video.title, "channel_title": video.channel_name,
+                     "channel_id": video.channel_id, "channel_handle": video.channel_handle,
+                     "published_at": published.isoformat().replace("+00:00", "Z"), "url": video.url,
+                     "source": "subscription"})
+    return rows
+
+
+def candidates(limit: int = 30, subscriptions=None) -> dict:
+    """Unprocessed in-window videos, with length, for the morning Telegram offer.
+
+    Subscription uploads come first, then the NarrativeRadar queue and the playback queue
+    (caption-blocked videos waiting for a transcript) under the queue's exclusion and age rules.
+    ``subscriptions`` replaces the channel lookup (tests).
+    """
     from youtube_api import YouTubeAPI
 
     state = StateManager()
     playback = PlaybackQueue()
     rows = []
     excluded = _excluded_modes()
-    # The NarrativeRadar queue and the playback queue (which also holds the daily
-    # summary's caption-blocked subscriptions) under the same exclusion and age rules.
-    sources = [dict(row, source="queue") for row in _read_queue(_queue_dir())]
-    queued = {row["video_id"] for row in sources}
-    sources += [dict(job["payload"], source="waiting")
-                for destination in ("narrative", "daily") for job in playback.waiting(destination)
-                if job["video_id"] not in queued]
+    error = None
+    try:
+        subscribed = (subscriptions if subscriptions is not None
+                      else _subscription_rows(state, subscription_days()))
+    except Exception as exc:  # the backlog part of the offer still goes out
+        logger.exception("candidates: subscription lookup failed")
+        subscribed, error = [], f"{type(exc).__name__}: {exc}"[:200]
+    others = [dict(row, source="queue") for row in _read_queue(_queue_dir())]
+    queued = {row["video_id"] for row in others}
+    others += [dict(job["payload"], source="waiting")
+               for destination in ("narrative", "daily") for job in playback.waiting(destination)
+               if job["video_id"] not in queued]
     seen = set()
-    for row in _processing_order(sources):
+    for row in _processing_order(subscribed) + _processing_order(others):
         vid = row["video_id"]
         if vid in seen or _prune_reason(row, excluded):
             continue
@@ -347,6 +384,7 @@ def candidates(limit: int = 30) -> dict:
             "title": html.unescape(row.get("title") or row["video_id"]),
             "channel_title": row.get("channel_title") or "youtube",
             "channel_id": row.get("channel_id"),
+            "channel_handle": row.get("channel_handle"),
             "published_at": row.get("published_at"),
             "url": row.get("url") or f"https://youtu.be/{row['video_id']}",
             "discovery": row.get("discovery"),
@@ -355,7 +393,11 @@ def candidates(limit: int = 30) -> dict:
         })
         if len(items) == limit:
             break
-    return {"in_window": len(rows), "items": items}
+    result = {"in_window": len(rows), "items": items,
+              "subscriptions": sum(row["source"] == "subscription" for row in rows)}
+    if error:
+        result["subscription_error"] = error
+    return result
 
 
 def run(limit: int | None = None, force: bool = False, only: set[str] | None = None) -> dict:
