@@ -6,8 +6,9 @@ picks in Telegram, and sends a morning briefing (market, picked videos, Trillion
 ## How It Works (since 2026-11-19)
 
 1. 08:00 KST: the Telegram bot (`src/playback_bot.py`) offers new uploads of the channels in
-   `config/channels.yaml` (last `morning_offer.subscription_days` days, each upload offered once),
-   then the NarrativeRadar/playback backlog
+   `config/channels.yaml` (last `morning_offer.subscription_days` days), then the
+   NarrativeRadar/playback backlog. A video neither picked nor excluded returns the next day
+   (marked `이월`); `제외 2,5` / `제외 나머지` drop videos from every later list, `제외취소 2` undoes it
 2. The user replies with numbers; each pick is transcribed (visible transcript, else supervised
    playback at 13:00) and summarized with Qwen through Alibaba DashScope into `summaries/`
 3. When the picks are done (or `없음`, or 10:00) the bot sends the morning briefing: market and
@@ -308,9 +309,15 @@ are unchanged. No email or publishing is implied by playback or resume.
 
 ## Daily playback selection bot (2026-11-05, morning briefing 2026-11-19)
 
-Since 2026-11-19 the offer leads with new subscription uploads (`[구독 채널 새 영상]`, each upload
-offered on one day only; a pick gets the daily summary only, no NarrativeRadar output), followed by
-the backlog (`[수집 대기 영상]`). Processing starts as soon as the user picks (08:00–23:00). The
+Since 2026-11-19 the offer leads with new subscription uploads (`[구독 채널 새 영상]`; a pick gets
+the daily summary only, no NarrativeRadar output), followed by the backlog (`[수집 대기 영상]`).
+Since 2026-11-21 every listed video the user neither picked nor excluded returns on the next list
+after the new ones (`· 이월`), so a morning without an answer loses nothing; videos beyond the
+30-item list wait for the next one. `제외 2,4`, `제외 3-6` or `제외 나머지` (everything not picked)
+keeps videos off every later list (`excluded` in `data/playback_bot.sqlite3`, kept 90 days);
+`제외취소 2` undoes it, and picking an excluded video undoes it too. Picked videos are never
+excluded (`중단` stops them). `목록` marks `이월`, `처리 요청` and `제외`. The 30-day age cap still
+applies. Processing starts as soon as the user picks (08:00–23:00). The
 briefing goes out once a day in three messages (증시 / 구독 영상 정리 / 기억해 둘 것) when the picks
 are done, at once on `없음` or an empty offer, and at 10:00 with what is done by then; videos done
 later follow as `[추가 영상 정리]`, and the 13:00 supervised playback task sends

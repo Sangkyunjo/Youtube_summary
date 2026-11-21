@@ -236,7 +236,7 @@ class PlaybackBotTest(unittest.TestCase):
         self.assertNotIn('video000008', offered)
         self.assertNotIn('video000009', offered)
 
-    def test_subscription_uploads_come_first_and_are_offered_on_one_day_only(self):
+    def test_subscription_uploads_come_first_and_unanswered_ones_return_next_day(self):
         sub = dict(item(5), source='subscription', channel_title='구독')
         backlog = dict(item(6), source='queue')
         self.items = [backlog, sub]
@@ -248,10 +248,116 @@ class PlaybackBotTest(unittest.TestCase):
         self.assertLess(text.index('[구독 채널 새 영상]'), text.index('[수집 대기 영상'))
         self.assertIn('구독 채널 새 영상 1건, 수집 대기 1건', text)
         self.reply('없음')
-        # Next morning: the subscription upload not picked yesterday is not offered again; the backlog is.
+        self.assertIn('고르지 않은 2건은 내일 목록에 다시 올립니다', self.telegram.sent[-1])
+        # Next morning the subscription upload is no longer a candidate, but it was not picked: it returns.
+        new = dict(item(7), source='subscription')
+        self.items = [backlog, new]
         self.at(2026, 11, 7, 8, 0)
         self.bot.step(poll_timeout=0)
-        self.assertEqual([entry['video_id'] for entry in self.store.get('offer')['items']], ['video000006'])
+        self.assertEqual([entry['video_id'] for entry in self.store.get('offer')['items']],
+                         ['video000007', 'video000005', 'video000006'])
+        text = self.telegram.sent[-1]
+        self.assertIn('이전 목록에서 이월 2건', text)
+        self.assertIn('2. [구독] 영상 5 · 10분 · 이월', text)
+        self.assertIn('1. [채널] 영상 7 · 10분\n', text)
+
+    def test_a_morning_without_an_answer_keeps_the_whole_list(self):
+        self.items = [dict(item(n), source='subscription') for n in (1, 2)]
+        self.at(2026, 11, 6, 8, 0)
+        self.bot.step(poll_timeout=0)
+        self.items = []
+        for day in (7, 8):
+            self.at(2026, 11, day, 8, 0)
+            self.bot.step(poll_timeout=0)
+            self.assertEqual([entry['video_id'] for entry in self.store.get('offer')['items']],
+                             ['video000001', 'video000002'])
+
+    def test_picked_videos_do_not_return_and_the_others_do(self):
+        self.items = [dict(item(n, 60), source='subscription') for n in (1, 2, 3)]
+        self.at(2026, 11, 6, 9, 0)
+        self.bot.step(poll_timeout=0)
+        self.outcomes += [{'status': 'requested'}]
+        self.reply('1')
+        self.assertIn('고르지 않은 2건은 내일 목록에 다시 올립니다', '\n'.join(self.telegram.sent))
+        for _ in range(2):
+            self.bot.step(poll_timeout=0)
+        self.items = []
+        self.at(2026, 11, 7, 8, 0)
+        self.bot.step(poll_timeout=0)
+        # Video 1 waits for the playback run, not processed yet, and still does not return.
+        self.assertEqual([entry['video_id'] for entry in self.store.get('offer')['items']],
+                         ['video000002', 'video000003'])
+
+    def test_excluded_videos_never_return_and_the_exclusion_can_be_undone(self):
+        backlog = [dict(item(n), source='queue') for n in (1, 2, 3, 4)]
+        self.items = list(backlog)
+        self.at(2026, 11, 6, 8, 0)
+        self.bot.step(poll_timeout=0)
+        self.reply('제외 2,4')
+        self.assertIn('2건을 제외했습니다. 앞으로 추천하지 않습니다.', self.telegram.sent[-1])
+        self.assertIn('- [채널] 영상 2', self.telegram.sent[-1])
+        self.reply('제외취소 4')
+        self.assertIn('1건의 제외를 취소했습니다', self.telegram.sent[-1])
+        self.reply('목록')
+        self.assertIn('2. [채널] 영상 2 · 10분 · 제외', self.telegram.sent[-1])
+        self.assertNotIn('영상 4 · 10분 · 제외', self.telegram.sent[-1])
+        # The backlog is a candidate again the next day; the excluded video still stays out.
+        self.at(2026, 11, 7, 8, 0)
+        self.bot.step(poll_timeout=0)
+        self.assertEqual([entry['video_id'] for entry in self.store.get('offer')['items']],
+                         ['video000001', 'video000003', 'video000004'])
+
+    def test_exclude_the_rest_leaves_picked_videos_alone(self):
+        self.items = [dict(item(n, 60), source='subscription') for n in (1, 2, 3)]
+        self.at(2026, 11, 6, 7, 30)
+        self.store.set('offer_date', '2026-11-06')
+        self.store.set('offer', {'date': '2026-11-06', 'items': list(self.items), 'in_window': 3, 'picked': []})
+        self.reply('1')
+        self.reply('제외 나머지')
+        self.assertIn('2건을 제외했습니다', self.telegram.sent[-1])
+        self.reply('제외 1')
+        self.assertIn('처리 요청한 1건은 제외하지 않았습니다', self.telegram.sent[-1])
+        self.assertEqual([entry['video_id'] for entry in self.store.get('session')['queue']], ['video000001'])
+        self.at(2026, 11, 7, 8, 0)
+        self.items = []
+        self.bot.step(poll_timeout=0)
+        self.assertEqual([entry['video_id'] for entry in self.store.get('offer')['items']], ['video000001'])
+
+    def test_picking_an_excluded_video_undoes_the_exclusion(self):
+        self.items = [dict(item(n), source='queue') for n in (1, 2)]
+        self.at(2026, 11, 6, 8, 0)
+        self.bot.step(poll_timeout=0)
+        self.reply('제외 2')
+        self.reply('2')
+        self.assertEqual(self.store.get('excluded'), {})
+        self.assertEqual(self.played[-1], 'video000002')
+
+    def test_exclude_needs_numbers_from_the_list(self):
+        self.at(2026, 11, 6, 8, 0)
+        self.bot.step(poll_timeout=0)
+        for text in ('제외', '제외 9', '제외 없음'):
+            with self.subTest(text=text):
+                self.reply(text)
+                self.assertIn("제외할 번호를 적어 주세요", self.telegram.sent[-1])
+        self.assertEqual(self.store.get('excluded') or {}, {})
+
+    def test_videos_beyond_the_list_size_wait_for_the_next_list(self):
+        self.items = [dict(item(n), source='subscription') for n in range(1, playback_bot.OFFER_SIZE + 3)]
+        self.at(2026, 11, 6, 8, 0)
+        self.bot.step(poll_timeout=0)
+        self.assertIn('목록에 다 싣지 못한 2건은 다음 목록으로 넘깁니다', self.telegram.sent[-1])
+        self.reply(f'제외 1-{playback_bot.OFFER_SIZE}')
+        self.items = []
+        self.at(2026, 11, 7, 8, 0)
+        self.bot.step(poll_timeout=0)
+        self.assertEqual([entry['video_id'] for entry in self.store.get('offer')['items']],
+                         [f'video{n:06d}' for n in (31, 32)])
+
+    def test_old_exclusions_are_forgotten(self):
+        self.store.set('excluded', {'video000001': '2026-01-01', 'video000002': '2026-11-01'})
+        self.at(2026, 11, 6, 8, 0)
+        self.bot.step(poll_timeout=0)
+        self.assertEqual(self.store.get('excluded'), {'video000002': '2026-11-01'})
 
     def test_settings_are_read_without_other_keys(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -328,6 +434,8 @@ class MorningBriefTest(unittest.TestCase):
         self.reply('없음')
         self.assertEqual(len(self.briefs()), 1)
         self.assertIn('오늘 요약한 구독 영상이 없습니다', '\n'.join(self.telegram.sent))
+        # Unpicked videos return the next day unless excluded; excluding all leaves an empty offer.
+        self.reply('제외 전체')
         self.items = []
         self.at(2026, 11, 7, 8, 0)
         self.bot.step(poll_timeout=0)

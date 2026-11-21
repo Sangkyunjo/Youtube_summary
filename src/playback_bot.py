@@ -8,7 +8,9 @@ At 08:00 KST the conversation bot sends the offer in two groups: new uploads of 
 channels (config/channels.yaml, published in the last morning_offer.subscription_days days and
 not offered on an earlier day), then the backlog of the NarrativeRadar queue and the playback
 queue (caption-blocked videos), under the queue's rules (keyword-search rows excluded, 30-day age
-cap). The user answers with numbers and processing starts at once. For each chosen video the bot
+cap). A video the user neither picked nor excluded returns on the next day's list (user request
+2026-11-21: a morning without an answer loses nothing); '제외 2,5' drops videos from every later
+list and '제외취소 2' undoes it. The user answers with numbers and processing starts at once. For each chosen video the bot
 reads the official visible transcript and writes the daily summary; a subscription video gets
 only the daily summary (user decision 2026-11-19), a NarrativeRadar video both outputs. If there
 is no visible transcript, the video is marked as a playback request, and the app's scheduled
@@ -56,6 +58,7 @@ BUDGET_SECONDS = 3 * 3600
 OFFER_SIZE = 30
 MAX_AGE_DAYS = 30
 OFFERED_KEEP_DAYS = 30
+EXCLUDED_KEEP_DAYS = 90
 PLAYBACK_RUN_TIME = '13:00'
 STOP_POLL_SECONDS = 15
 TELEGRAM_CHUNK = 3500
@@ -68,7 +71,10 @@ STOP_WORDS = {'중단', '그만', '정지', '아니오', '아니요', 'stop', 'n
 STATUS_WORDS = {'상태', 'status'}
 LIST_WORDS = {'목록', 'list'}
 BRIEF_WORDS = {'브리핑', 'brief'}
+EXCLUDE_WORD, UNDO_WORD = '제외', '취소'
+REST_WORDS = {'나머지', '전체', '모두', 'all'}
 HELP = ("번호로 답해 주세요. 예: 1,3,5-8 · '전체' · '없음'\n"
+        "받지 않을 영상은 '제외 2,4' 또는 '제외 나머지'(고르지 않은 전부), 되돌리기는 '제외취소 2'.\n"
         "그 밖에 '상태', '목록', '중단', '브리핑'을 쓸 수 있습니다.")
 
 logger = logging.getLogger('playback_bot')
@@ -220,7 +226,8 @@ def is_subscription(item):
     return item.get('source') == 'subscription'
 
 
-def format_offer(day, items, in_window, carried, note=None):
+def format_offer(day, items, in_window, carried, note=None, picked=(), excluded_ids=()):
+    carried_ids = {item['video_id'] for item in carried}
     subscribed = sum(is_subscription(item) for item in items)
     lines = [f'YouTube 요약 후보 · {day_label(day)}',
              f'구독 채널 새 영상 {subscribed}건, 수집 대기 {len(items) - subscribed}건'
@@ -236,7 +243,11 @@ def format_offer(day, items, in_window, carried, note=None):
             lines += ['', '[구독 채널 새 영상]' if current == 'subscription'
                       else '[수집 대기 영상 · 내러티브·재생 대기]']
         title = item['title'] if len(item['title']) <= 70 else item['title'][:69] + '…'
-        lines.append(f"{number}. [{item['channel_title']}] {title} · {minutes(item['duration_seconds'])}분")
+        vid = item['video_id']
+        marks = [mark for mark, on in (('이월', vid in carried_ids), ('처리 요청', vid in picked),
+                                       ('제외', vid in excluded_ids)) if on]
+        lines.append(f"{number}. [{item['channel_title']}] {title} · {minutes(item['duration_seconds'])}분"
+                     + ''.join(f' · {mark}' for mark in marks))
     if not items:
         lines += ['', '오늘은 새 후보가 없습니다. 아침 브리핑만 보냅니다.']
         return '\n'.join(lines)
@@ -244,7 +255,8 @@ def format_offer(day, items, in_window, carried, note=None):
     lines += ['', f'전체 재생 시간 약 {hours_text(total)}', HELP,
               '고른 영상은 바로 화면 자막으로 요약하고, 다 끝나면 아침 브리핑(증시·영상 정리·대시보드)을 '
               f'보냅니다. {BRIEF_DEADLINE_HOUR}:00까지 끝나지 않으면 그때까지 된 것만 담아 보냅니다. '
-              f'화면 자막이 없는 영상은 {PLAYBACK_RUN_TIME} 예약 작업이 재생·요약해 따로 보냅니다.']
+              f'화면 자막이 없는 영상은 {PLAYBACK_RUN_TIME} 예약 작업이 재생·요약해 따로 보냅니다. '
+              '고르지도 제외하지도 않은 영상은 다음 날 목록에 다시 올립니다.']
     return '\n'.join(lines)
 
 
@@ -375,30 +387,54 @@ class PlaybackBot:
                 self._say(f'오늘 후보 목록을 만들지 못했습니다. 15분 뒤 다시 시도합니다. ({error})')
             return
         session = self.store.get('session')
-        carried = self.store.get('carry', []) + (session['queue'] if session else [])
+        user_excluded = self._excluded(now)
+
+        def keep(items, seen=()):
+            kept = [item for item in items if item['video_id'] not in user_excluded and item['video_id'] not in seen
+                    and not self.is_processed(item) and not too_old(item, now) and not excluded(item)]
+            return list({item['video_id']: item for item in kept}.values())
+
+        # Picked but unfinished (a stopped session, videos waiting for playback) come first.
+        unfinished = keep(self.store.get('carry', []) + (session['queue'] if session else []))
         if session:
             self.store.set('session', None)
-        carried = [item for item in carried if not self.is_processed(item)
-                   and not too_old(item, now) and not excluded(item)]
-        carried = list({item['video_id']: item for item in carried}.values())
+        # Videos of an earlier list the user neither picked nor excluded follow the new ones:
+        # a morning without an answer loses nothing (user request 2026-11-21).
+        previous = self.store.get('offer') or {}
+        earlier = (previous.get('items') or []) + (previous.get('overflow') or [])
+        if previous.get('date') == day:
+            # Today's list sent again ('offer' command): today's new videos come back as fresh ones.
+            carried_before = set(previous.get('carried') or [])
+            earlier = [item for item in earlier if item['video_id'] in carried_before]
+        handled = set(previous.get('picked') or [])
+        leftover = keep([item for item in earlier if item['video_id'] not in handled],
+                        {item['video_id'] for item in unfinished})
+        carried = unfinished + leftover
         seen = {item['video_id'] for item in carried}
-        # A subscription upload is offered on one day only: one not picked is not offered again.
+        # A subscription upload enters the list on one day; after that only the carry-over brings it back.
         offered = {vid: when for vid, when in (self.store.get('offered') or {}).items()
                    if (now.date() - date.fromisoformat(when)).days <= OFFERED_KEEP_DAYS}
         fresh = [item for item in offer['items'] if item['video_id'] not in seen
+                 and item['video_id'] not in user_excluded
                  and not (is_subscription(item) and offered.get(item['video_id'], day) != day)]
         config = load_config()
-        pool = carried + fresh
+        pool = unfinished + fresh + leftover
         items = (prioritize_channels([i for i in pool if is_subscription(i)], lambda item: item.get('channel_id'), config)
                  + prioritize_channels([i for i in pool if not is_subscription(i)],
                                        lambda item: item.get('channel_id'), config))[:OFFER_SIZE]
+        shown = {item['video_id'] for item in items}
+        # Beyond OFFER_SIZE: kept for the next list instead of being dropped.
+        overflow = [item for item in pool if item['video_id'] not in shown]
         offered.update({item['video_id']: day for item in items if is_subscription(item)})
         note = ('구독 채널 목록을 읽지 못해 수집 대기 영상만 보냅니다: ' + offer['subscription_error']
                 if offer.get('subscription_error') else None)
+        if overflow:
+            note = (note + '\n' if note else '') + f'목록에 다 싣지 못한 {len(overflow)}건은 다음 목록으로 넘깁니다.'
         self._day(now)
         self._say(format_offer(day, items, offer['in_window'], carried, note))
-        logger.info('offer sent for %s: %s items, %s carried', day, len(items), len(carried))
-        self.store.set('offer', {'date': day, 'items': items, 'in_window': offer['in_window']})
+        logger.info('offer sent for %s: %s items, %s carried, %s overflow', day, len(items), len(carried), len(overflow))
+        self.store.set('offer', {'date': day, 'items': items, 'in_window': offer['in_window'], 'picked': [],
+                                 'carried': [item['video_id'] for item in carried], 'overflow': overflow})
         self.store.set('offer_date', day)
         self.store.set('offered', offered)
         self.store.set('carry', [])
@@ -415,11 +451,18 @@ class PlaybackBot:
             return
         if text.lower() in LIST_WORDS:
             offer = self.store.get('offer')
-            self._say(format_offer(offer['date'], offer['items'], offer['in_window'], []) if offer
-                      else '아직 오늘 후보 목록이 없습니다. 08:00에 보내 드립니다.')
+            if offer:
+                carried = [item for item in offer['items'] if item['video_id'] in (offer.get('carried') or [])]
+                self._say(format_offer(offer['date'], offer['items'], offer['in_window'], carried,
+                                       picked=offer.get('picked') or [], excluded_ids=self._excluded()))
+            else:
+                self._say('아직 오늘 후보 목록이 없습니다. 08:00에 보내 드립니다.')
             return
         if text.lower() in BRIEF_WORDS:
             self._send_brief(again=True)
+            return
+        if text.startswith(EXCLUDE_WORD):
+            self._exclude(text[len(EXCLUDE_WORD):].strip())
             return
         if session and session.get('awaiting'):
             if text.lower() in CONTINUE_WORDS:
@@ -447,15 +490,23 @@ class PlaybackBot:
             self._say(HELP)
             return
         if not picked:
-            self._say('오늘은 영상을 처리하지 않습니다. 아침 브리핑만 보냅니다.')
+            self._say('오늘은 영상을 처리하지 않습니다. 아침 브리핑만 보냅니다.' + self._leftover_hint(offer))
             self._brief_due()
             return
         chosen = [offer['items'][number - 1] for number in picked]
+        # Picking a video undoes its exclusion; a picked video does not return on the next list.
+        offer['picked'] = list(dict.fromkeys((offer.get('picked') or []) + [item['video_id'] for item in chosen]))
+        self.store.set('offer', offer)
+        user_excluded = self._excluded()
+        if any(item['video_id'] in user_excluded for item in chosen):
+            for item in chosen:
+                user_excluded.pop(item['video_id'], None)
+            self.store.set('excluded', user_excluded)
         if session:
             queued = {item['video_id'] for item in session['queue']}
             session['queue'] += [item for item in chosen if item['video_id'] not in queued]
             self.store.set('session', session)
-            self._say(f"{len(chosen)}건을 추가했습니다. 남은 {len(session['queue'])}건.")
+            self._say(f"{len(chosen)}건을 추가했습니다. 남은 {len(session['queue'])}건." + self._leftover_hint(offer))
             return
         session = {'queue': chosen, 'done': [], 'failed': [], 'elapsed': 0,
                    'budget': BUDGET_SECONDS, 'awaiting': False, 'retry_at': 0, 'deferred': []}
@@ -463,7 +514,73 @@ class PlaybackBot:
         logger.info('selected %s', [item['video_id'] for item in chosen])
         total = sum(item['duration_seconds'] for item in chosen)
         start = '' if self._in_window(self.now()) else f' {WINDOW_START:02d}:00부터 시작합니다.'
-        self._say(f'{len(chosen)}건을 처리합니다. 재생 시간 약 {hours_text(total)}.{start}')
+        self._say(f'{len(chosen)}건을 처리합니다. 재생 시간 약 {hours_text(total)}.{start}' + self._leftover_hint(offer))
+
+    # -- exclusions ---------------------------------------------------------
+
+    def _excluded(self, now=None):
+        """{video_id: day excluded}; entries older than EXCLUDED_KEEP_DAYS are forgotten."""
+        today = (now or self.now()).date()
+        stored = self.store.get('excluded') or {}
+        kept = {vid: when for vid, when in stored.items()
+                if (today - date.fromisoformat(when)).days <= EXCLUDED_KEEP_DAYS}
+        if len(kept) != len(stored):
+            self.store.set('excluded', kept)
+        return kept
+
+    def _leftover_hint(self, offer):
+        """Tells how many listed videos will return tomorrow and how to drop them."""
+        handled = set(offer.get('picked') or []) | set(self._excluded())
+        left = sum(item['video_id'] not in handled for item in offer['items'])
+        if not left:
+            return ''
+        return (f"\n고르지 않은 {left}건은 내일 목록에 다시 올립니다. "
+                "받지 않을 영상은 '제외 번호' 또는 '제외 나머지'로 빼 주세요.")
+
+    def _exclude(self, rest):
+        """'제외 2,5' / '제외 나머지' drops listed videos from later lists; '제외취소 2' undoes it."""
+        offer = self.store.get('offer')
+        if not offer:
+            self._say('아직 오늘 후보 목록이 없습니다. 08:00에 보내 드립니다.')
+            return
+        items = offer['items']
+        undo = rest.startswith(UNDO_WORD)
+        if undo:
+            rest = rest[len(UNDO_WORD):].strip()
+        picked = set(offer.get('picked') or [])
+        user_excluded = self._excluded()
+        if rest in REST_WORDS:
+            numbers = list(range(1, len(items) + 1))
+        else:
+            numbers = parse_selection(rest, len(items)) if rest not in ('없음', '안함', 'none', 'skip') else None
+        if not numbers:
+            self._say("제외할 번호를 적어 주세요. 예: '제외 2,4', '제외 3-6', '제외 나머지'. "
+                      "되돌리기는 '제외취소 2'.")
+            return
+        targets = [items[number - 1] for number in numbers]
+        if undo:
+            undone = [item for item in targets if user_excluded.pop(item['video_id'], None)]
+            self.store.set('excluded', user_excluded)
+            self._say(f'{len(undone)}건의 제외를 취소했습니다. 고르지 않으면 다음 목록에 다시 올립니다.'
+                      if undone else '제외한 영상이 아닙니다.')
+            return
+        # Picked videos are being processed: '중단' stops them, '제외' leaves them alone.
+        skipped = [item for item in targets if item['video_id'] in picked]
+        added = [item for item in targets if item['video_id'] not in picked and item['video_id'] not in user_excluded]
+        today = self.now().date().isoformat()
+        user_excluded.update({item['video_id']: today for item in added})
+        self.store.set('excluded', user_excluded)
+        logger.info('excluded %s', [item['video_id'] for item in added])
+        lines = [f'{len(added)}건을 제외했습니다. 앞으로 추천하지 않습니다.' if added
+                 else '새로 제외한 영상이 없습니다.']
+        lines += [f"- [{item['channel_title']}] {item['title'][:50]}" for item in added[:10]]
+        if len(added) > 10:
+            lines.append(f'- 외 {len(added) - 10}건')
+        if skipped:
+            lines.append(f'처리 요청한 {len(skipped)}건은 제외하지 않았습니다.')
+        if added:
+            lines.append("되돌리려면 '제외취소 번호'(오늘 목록 번호).")
+        self._say('\n'.join(lines))
 
     # -- processing ---------------------------------------------------------
 
