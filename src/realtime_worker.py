@@ -10,7 +10,8 @@ import tempfile
 import time
 import wave
 
-from realtime_fallback import PlaybackQueue, playback_segments, validate_playback, video_id
+from realtime_fallback import (PlaybackQueue, check_partial_playback, playback_segments,
+                               validate_playback, video_id)
 
 
 def fanding_root():
@@ -99,6 +100,7 @@ def record(queue, vid, seconds, cut_interruptions=False, capture_device=None, ou
             env=env, pass_fds=(fd,))
         capture_started = False
         stop_sent = False
+        checked = 0
         while recorder.poll() is None:
             current = queue.get(vid)
             samples = current['evidence']
@@ -112,6 +114,14 @@ def record(queue, vid, seconds, cut_interruptions=False, capture_device=None, ou
                     raise ValueError('Playback interrupted; recording rejected')
                 if time.time() - last['observed_at'] > 50:
                     raise ValueError('Playback observer stopped; recording rejected')
+                # A resume, seek or gap the final cut would reject stops the capture now
+                # instead of after the whole video (2026-11-22: 60 minutes lost that way).
+                if cut_interruptions and capture_started and len(samples) != checked:
+                    try:
+                        check_partial_playback(current)
+                    except ValueError as e:
+                        raise ValueError(f'{e}; recording stopped early') from e
+                    checked = len(samples)
                 # An ad's own end also reports ended; only the content end stops recording.
                 # In cut mode a post-roll ad can leave only the visible player ended.
                 if last.get('ad') is False and (last.get('ended') or (

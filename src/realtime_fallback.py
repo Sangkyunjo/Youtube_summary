@@ -379,6 +379,29 @@ def playback_segments(job, recorded_seconds, finished_at):
         raise ValueError('Playback start was not observed during capture startup')
     if not 0 <= finished_at - samples[-1]['observed_at'] <= 15:
         raise ValueError('Missing recent playback end observation')
+    runs = _content_runs(job, samples, duration)
+    segments = []
+    for index, run in enumerate(runs):
+        # The ended sample can arrive after the player clock stopped; leave it out.
+        timing = [s for s in run if not s['ended']] or run
+        offset = statistics.median(s['observed_at'] - job['started'] - s['current_time'] for s in timing)
+        if offset < -2:
+            raise ValueError('Recorded audio is shorter than verified playback')
+        start = 0 if index == 0 else run[0]['current_time']
+        end = duration if index == len(runs) - 1 and not post_roll else run[-1]['current_time']
+        if end - start <= 0.05:
+            continue
+        if segments and max(0, start + offset) < segments[-1][1] - 0.5:
+            raise ValueError('Inconsistent playback timing')
+        segments.append((max(0, start + offset), end + offset))
+    if recorded_seconds < segments[-1][1] - 2:
+        raise ValueError('Recorded audio is shorter than verified playback')
+    return segments, duration
+
+
+def _content_runs(job, samples, duration):
+    """Split evidence into content runs at interruptions and check each sample, each
+    run and each resume. Every rule looks only at a sample and the ones before it."""
     runs, previous = [[]], None
     for s in samples:
         # A loading or ad player can report NaN; only content samples need a real clock.
@@ -407,23 +430,29 @@ def playback_segments(job, recorded_seconds, finished_at):
                 raise ValueError('Seek or interrupted playback')
     for before, run in zip(runs, runs[1:]):
         if not -1 <= run[0]['current_time'] - before[-1]['current_time'] <= 3:
-            raise ValueError('Content did not resume where it stopped')
+            raise ValueError('Content did not resume where it stopped '
+                             f"({before[-1]['current_time']:.1f} s -> {run[0]['current_time']:.1f} s)")
         if run[0]['observed_at'] - before[-1]['observed_at'] > 900:
             raise ValueError('Interruption too long')
-    segments = []
-    for index, run in enumerate(runs):
-        # The ended sample can arrive after the player clock stopped; leave it out.
-        timing = [s for s in run if not s['ended']] or run
-        offset = statistics.median(s['observed_at'] - job['started'] - s['current_time'] for s in timing)
-        if offset < -2:
-            raise ValueError('Recorded audio is shorter than verified playback')
-        start = 0 if index == 0 else run[0]['current_time']
-        end = duration if index == len(runs) - 1 and not post_roll else run[-1]['current_time']
-        if end - start <= 0.05:
-            continue
-        if segments and max(0, start + offset) < segments[-1][1] - 0.5:
-            raise ValueError('Inconsistent playback timing')
-        segments.append((max(0, start + offset), end + offset))
-    if recorded_seconds < segments[-1][1] - 2:
-        raise ValueError('Recorded audio is shorter than verified playback')
-    return segments, duration
+    return runs
+
+
+def check_partial_playback(job):
+    """Rules of playback_segments that no later observation can repair.
+
+    Run on the evidence so far while recording, so a capture that is already
+    rejected stops at once instead of after the whole video. Only checks whose
+    outcome later samples cannot change are applied, so a recording that
+    playback_segments would accept is never stopped here.
+    """
+    samples = job['evidence']
+    if not samples:
+        return
+    if not 0 <= samples[0]['observed_at'] - job['started'] <= 30:
+        raise ValueError('Playback start was not observed during capture startup')
+    content = [s for s in samples if not interrupted(s)]
+    if not content:
+        return
+    if content[0]['current_time'] > 2:
+        raise ValueError('Playback must start at zero and reach ended')
+    _content_runs(job, samples, float(content[0]['duration']))

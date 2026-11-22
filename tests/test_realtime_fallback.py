@@ -4,7 +4,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from realtime_fallback import PlaybackQueue, playback_segments, validate_playback
+from realtime_fallback import (PlaybackQueue, check_partial_playback, playback_segments,
+                               validate_playback)
 
 VID = 'abcdefghijk'
 
@@ -162,6 +163,57 @@ class PlaybackSegmentsTest(unittest.TestCase):
                 evidence[1][key] = value
                 with self.assertRaises(ValueError):
                     playback_segments(self.job(evidence), 67, 167)
+
+
+class PartialPlaybackTest(unittest.TestCase):
+    """The check run while recording must never stop a capture the final cut accepts."""
+
+    def job(self, evidence):
+        return dict(video_id=VID, started=100, evidence=evidence)
+
+    def assert_prefixes_pass(self, evidence):
+        for end in range(len(evidence) + 1):
+            with self.subTest(samples=end):
+                check_partial_playback(self.job(evidence[:end]))
+
+    def test_every_prefix_of_accepted_evidence_passes(self):
+        unloaded = dict(sample(196, 0), duration=None, paused=True, buffering=True, player_ended=True)
+        accepted = {
+            'plain': ([sample(102, 0), sample(132, 30), sample(162, 60, True)], 67, 167),
+            'mid-roll': ([sample(102, 0), sample(122, 20), ad(122.3), ad(140),
+                          sample(153, 20.2), sample(183, 50.2), sample(193, 60, True)], 95, 195),
+            'pre-roll and stall': ([ad(101), sample(110, 0), sample(130, 20), dict(sample(131, 20), buffering=True),
+                                    sample(136, 20.1), sample(166, 50.1), sample(175.9, 60, True)], 80, 178),
+            'post-roll': ([sample(102, 0), sample(132, 30), sample(161.5, 59.5),
+                           dict(ad(162), duration=93), ad(190), unloaded], 98, 197),
+        }
+        for name, (evidence, recorded, finished) in accepted.items():
+            with self.subTest(name=name):
+                playback_segments(self.job(evidence), recorded, finished)
+                self.assert_prefixes_pass(evidence)
+
+    def test_stops_at_the_first_sample_the_final_cut_rejects(self):
+        # 2026-11-22: the content after a mid-roll ad was first sampled 15.8 s past the stop.
+        late_resume = [sample(102, 0), sample(122, 20), ad(122.3), ad(140), sample(156, 35.8)]
+        cases = {
+            'late resume': (late_resume, 'did not resume'),
+            'gap': ([sample(102, 0), sample(122, 20), ad(125), ad(165)], 'gap'),
+            'seek': ([sample(102, 0), sample(122, 40)], 'Seek'),
+            'late start': ([sample(131, 0)], 'not observed'),
+            'not from zero': ([ad(101), sample(110, 5)], 'zero'),
+        }
+        for name, (evidence, message) in cases.items():
+            with self.subTest(name=name):
+                self.assert_prefixes_pass(evidence[:-1])
+                with self.assertRaisesRegex(ValueError, message):
+                    check_partial_playback(self.job(evidence))
+                with self.assertRaises(ValueError):
+                    playback_segments(self.job(evidence + [sample(200, 60, True)]), 2000, 201)
+
+    def test_unfinished_evidence_is_left_to_the_final_cut(self):
+        # Ending in an ad or in a long break is only known to be wrong at the end.
+        self.assert_prefixes_pass([sample(102, 0), sample(132, 30), ad(150)])
+        self.assert_prefixes_pass([sample(102, 0), sample(122, 20)] + [ad(122 + 30 * i) for i in range(1, 32)])
 
 
 if __name__ == '__main__':

@@ -4,6 +4,8 @@
 //   await window.__ytStart()              -> plays from 0, returns the first sample list
 //   await window.__ytStep(13000)          -> next sample list (JSON) to submit with
 //                                            realtime_worker.py observe VIDEO_ID --file
+// A sampler inside the page keeps the samples around every ad/stall/end edge, also
+// while no tool call is running, so call __ytStep again right after each submission.
 // Read-only except play/pause/seek-to-0 of the visible <video>; it never touches
 // stream URLs, player internals or authentication.
 (() => {
@@ -31,6 +33,29 @@
 
   window.__ytSample = sample;
 
+  // Every 250 ms, keep the samples on both sides of each state change. An ad or a
+  // stall that ends between two tool calls is otherwise first seen by the next
+  // call, many seconds after the content resumed, and the recording is rejected.
+  // Re-pasting the file replaces the sampler.
+  if (window.__ytTimer) clearInterval(window.__ytTimer);
+  let last = sample(), edges = [], returnedAt = 0, errorSeen = null;
+  // The worker accepts only samples newer than the ones it already has.
+  const keep = (s) => {
+    const newest = edges.length ? edges[edges.length - 1].captured_at : returnedAt;
+    if (s.captured_at > newest) edges.push(s);
+  };
+  // The sampler and __ytStep's own last read both pass through here, so whichever
+  // sees a change first still keeps the sample just before it.
+  const track = (cur) => {
+    if (cur.error && !errorSeen) errorSeen = cur.error;
+    if (cur.video_id !== last.video_id || state(cur) !== state(last)) {
+      keep(last); keep(cur);
+      if (edges.length > 400) edges.splice(0, edges.length - 400);
+    }
+    last = cur;
+  };
+  window.__ytTimer = setInterval(() => track(sample()), 250);
+
   // Call repeatedly until ready: one browser tool call is limited to about 45 s.
   window.__ytPrepare = async (vid, maxMs = 35000) => {
     const start = Date.now();
@@ -56,25 +81,31 @@
     v.currentTime = 0;
     await v.play();
     await sleep(500);
-    return JSON.stringify([clean(sample())]);
+    const first = sample();
+    // Edges from preparation (pre-roll ads, the pause at 0) precede the recording.
+    edges = []; errorSeen = null; last = first; returnedAt = first.captured_at;
+    return JSON.stringify([clean(first)]);
   };
 
-  // Returns [latest] after maxMs, or [just before, just after] as soon as the
-  // content ends, an ad/stall starts or stops, the video changes or an error shows,
-  // so cut mode can cut an interruption at its real edges.
+  // Returns the edge samples kept since the previous call followed by the latest
+  // sample. It returns at once when an edge is already kept (the content ended, an
+  // ad/stall started or stopped, or the video changed, even between calls) and
+  // otherwise as soon as one occurs or after maxMs, so cut mode cuts each
+  // interruption at its real edges.
   window.__ytStep = async (maxMs = 13000) => {
-    let prev = sample();
     const start = Date.now();
-    while (Date.now() - start < maxMs) {
-      await sleep(500);
-      const cur = sample();
-      if (cur.error) return JSON.stringify({ error: cur.error, samples: [clean(prev)] });
-      if (cur.ended || cur.player_ended || cur.video_id !== prev.video_id || state(cur) !== state(prev)) {
-        return JSON.stringify([clean(prev), clean(cur)]);
-      }
-      prev = cur;
+    while (!edges.length && !errorSeen && !last.ended && !last.player_ended
+           && Date.now() - start < maxMs) {
+      await sleep(250);
     }
-    return JSON.stringify([clean(prev)]);
+    const cur = sample();
+    track(cur);
+    keep(cur);
+    const out = edges.map(clean);
+    edges = [];
+    if (out.length) returnedAt = out[out.length - 1].captured_at;
+    if (errorSeen) return JSON.stringify({ error: errorSeen, samples: out });
+    return JSON.stringify(out);
   };
   return 'ready';
 })();
