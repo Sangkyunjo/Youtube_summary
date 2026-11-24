@@ -26,7 +26,7 @@ YouTube channel monitor that summarizes the subscription videos the user picks i
 | `config/config.yaml` | Main config: model, schedule, paths, email settings |
 | `config/channels.yaml` | List of YouTube channels to monitor |
 | `config/.env` | Secrets: OPENAI_API_KEY, email credentials |
-| `src/playback_bot.py` | Telegram offer, selection loop and morning briefing (launchd KeepAlive) |
+| `src/playback_bot.py` | Telegram offer, selection loop and morning briefing (launchd KeepAlive); a fourth '[새 매크로 견해]' message comes from `~/PersonalAgent/macro_views` only when there are new views |
 | `src/brief_digest.py` | Briefing video part: per-video lines + one synthesis (`main.py --brief-digest`) |
 | `dags/legacy/youtube_summary_dag.py` | Retired daily DAG (2026-11-19), not loaded |
 

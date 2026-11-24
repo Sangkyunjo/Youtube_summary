@@ -24,6 +24,10 @@ The briefing goes out once a day when the chosen videos are done, at once when t
 finished after it follow in one more message when the session ends. '브리핑' sends it again.
 The market and dashboard parts come from ~/TrillionStack/scripts/morning_brief.py, the video
 part from ``main.py --brief-digest`` in the Airflow container.
+
+User request 2026-11-22: market and macro views of 박종훈 and 월가아재 (Valley AI 분석팀 left out
+since 2026-11-24) go into a ledger (~/PersonalAgent/macro_views) and the briefing gets a fourth
+message, '[새 매크로 견해]', with at most three new views, only on a day when there is one.
 """
 import argparse
 import http.client
@@ -65,6 +69,7 @@ TELEGRAM_CHUNK = 3500
 CONTAINER = 'devenv-airflow-scheduler'
 ENV_FILE = Path.home() / 'PersonalAgent' / '.env'
 MORNING_BRIEF = Path.home() / 'TrillionStack' / 'scripts' / 'morning_brief.py'
+PERSONAL_AGENT = Path.home() / 'PersonalAgent'
 WEEKDAYS = '월화수목금토일'
 CONTINUE_WORDS = {'계속', '예', '네', '응', '진행', 'yes', 'y'}
 STOP_WORDS = {'중단', '그만', '정지', '아니오', '아니요', 'stop', 'no', 'n'}
@@ -295,12 +300,13 @@ def excluded(item):
 
 class PlaybackBot:
     def __init__(self, telegram, store, *, fetch_candidates, play, deliver, is_processed,
-                 brief=None, digest=None, clock=time.time):
+                 brief=None, digest=None, views=None, clock=time.time):
         self.telegram, self.store = telegram, store
         self.fetch_candidates, self.play, self.deliver = fetch_candidates, play, deliver
         self.is_processed, self.clock = is_processed, clock
         # brief() -> {'market', 'dashboard', 'errors'}; digest(ids) -> {'videos', 'missing', 'synthesis'}
-        self.brief, self.digest = brief, digest
+        # views(consume) -> text of the new macro views or None
+        self.brief, self.digest, self.views = brief, digest, views
 
     def now(self):
         return datetime.fromtimestamp(self.clock(), KST)
@@ -758,6 +764,16 @@ class PlaybackBot:
             return (f'{title}\n영상 정리를 만들지 못했습니다({str(error)[:160]}). '
                     f'요약 {len(video_ids)}건은 Youtube_summary/summaries 폴더에 있습니다.')
 
+    def _views_part(self, consume):
+        """New macro views since the last briefing; nothing when there are none or the ledger fails."""
+        if self.views is None:
+            return None
+        try:
+            return self.views(consume)
+        except Exception:
+            logger.exception('macro views failed')
+            return None
+
     def _send_brief(self, again=False):
         """The three briefing messages: market, videos, dashboard."""
         if self.brief is None:
@@ -785,6 +801,9 @@ class PlaybackBot:
         if day['failed']:
             notes.append(f"요약하지 못한 영상 {len(day['failed'])}건.")
         self._say(self._video_part(videos, '[구독 영상 정리]') + ('\n\n' + '\n'.join(notes) if notes else ''))
+        views = self._views_part(consume=not again)
+        if views:
+            self._say(views)
         self._say(f'[기억해 둘 것]\n\n{dashboard}')
         day = self._day(now)
         day['briefed'] = sorted(set(day['briefed']) | set(videos))
@@ -816,6 +835,21 @@ def fetch_brief():
     if not lines:
         raise RuntimeError(f'morning_brief exit {result.returncode}: {result.stderr[-300:]}')
     return json.loads(lines[-1])
+
+
+def fetch_views(consume=True):
+    """'[새 매크로 견해]' lines from the PersonalAgent ledger; consume marks them as briefed."""
+    python = PERSONAL_AGENT / '.venv' / 'bin' / 'python'
+    args = [str(python if python.exists() else 'python3'), '-m', 'macro_views', 'morning', '--json']
+    result = subprocess.run(args + (['--consume'] if consume else []), capture_output=True, text=True,
+                            timeout=60, cwd=str(PERSONAL_AGENT))
+    lines = [line for line in result.stdout.splitlines() if line.startswith('{')]
+    if not lines:
+        raise RuntimeError(f'macro_views exit {result.returncode}: {result.stderr[-300:]}')
+    payload = json.loads(lines[-1])
+    if payload.get('error'):
+        logger.warning('macro views: %s', payload['error'])
+    return payload.get('text')
 
 
 def fetch_digest(video_ids):
@@ -905,7 +939,7 @@ def main():
     logging.basicConfig(level=logging.INFO, handlers=[handler, logging.StreamHandler()])
     bot = PlaybackBot(Telegram(*load_settings()), Store(get_project_root() / 'data' / 'playback_bot.sqlite3'),
                       fetch_candidates=fetch_candidates, play=play, deliver=deliver, is_processed=is_processed,
-                      brief=fetch_brief, digest=fetch_digest)
+                      brief=fetch_brief, digest=fetch_digest, views=fetch_views)
     if args.command == 'offer':
         bot.store.set('offer_date', None)
         bot.store.set('offer_retry_at', 0)

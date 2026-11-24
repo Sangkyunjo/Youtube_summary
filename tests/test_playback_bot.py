@@ -477,6 +477,31 @@ class MorningBriefTest(unittest.TestCase):
         self.assertIn(f'화면 자막이 없는 1건은 {playback_bot.PLAYBACK_RUN_TIME} 재생 작업이', text)
         self.assertIn('요약하지 못한 영상 1건', text)
 
+    def test_new_macro_views_come_as_a_fourth_message_only_when_present(self):
+        calls = []
+        answers = ['[새 매크로 견해] 1건\n• 박종훈 (11/5 팬딩) 코스피 ↓ · 외국인 매도 지속', None]
+        self.bot.views = lambda consume: calls.append(consume) or answers.pop(0)
+        self.bot.step(poll_timeout=0)
+        self.reply('없음')
+        start = self.telegram.sent.index(self.briefs()[0])
+        sent = self.telegram.sent[start:]
+        self.assertEqual(len(sent), 4)
+        self.assertTrue(sent[2].startswith('[새 매크로 견해] 1건'))
+        self.assertTrue(sent[3].startswith('[기억해 둘 것]'))
+        self.reply('브리핑')                    # a resend does not consume and adds nothing new
+        self.assertEqual(calls, [True, False])
+        self.assertTrue(self.telegram.sent[-1].startswith('[기억해 둘 것]'))
+        self.assertFalse(self.telegram.sent[-2].startswith('[새 매크로 견해]'))
+
+    def test_a_failing_view_ledger_does_not_stop_the_brief(self):
+        def broken(consume):
+            raise RuntimeError('DataDrive missing')
+        self.bot.views = broken
+        self.bot.step(poll_timeout=0)
+        self.reply('없음')
+        self.assertTrue(self.telegram.sent[-1].startswith('[기억해 둘 것]'))
+        self.assertNotIn('DataDrive', '\n'.join(self.telegram.sent))
+
     def test_brief_word_resends_with_every_video_of_the_day(self):
         self.bot.step(poll_timeout=0)
         self.reply('1')
