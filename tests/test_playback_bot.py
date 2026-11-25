@@ -79,6 +79,20 @@ class PlaybackBotTest(unittest.TestCase):
         self.telegram.push(text)
         self.bot.step(poll_timeout=0)
 
+    def test_a_valuation_answer_goes_to_the_valuation_cycle_not_the_video_list(self):
+        answers = []
+        self.bot.valuation = lambda text: (answers.append(text), '가치평가 순환 결정을 기록했습니다.')[1]
+        self.store.set('offer', {'date': '2026-11-06', 'items': self.items, 'in_window': 3})
+        self.reply('대한해운·LF 승인, 나머지 보류')
+        self.assertEqual(answers, ['대한해운·LF 승인, 나머지 보류'])
+        self.assertEqual(self.telegram.sent, ['가치평가 순환 결정을 기록했습니다.'])
+        self.assertIsNone(self.store.get('session'))
+        self.bot.valuation = lambda text: 1 / 0
+        self.reply('전부 승인')
+        self.assertIn('기록하지 못했습니다', self.telegram.sent[-1])
+        self.reply('1,2')
+        self.assertIn('2건을 처리합니다', self.telegram.sent[-1])
+
     def test_offer_is_sent_once_a_day_from_eight(self):
         self.bot.step(poll_timeout=0)
         self.assertEqual(self.telegram.sent, [])

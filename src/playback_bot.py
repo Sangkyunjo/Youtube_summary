@@ -69,6 +69,10 @@ TELEGRAM_CHUNK = 3500
 CONTAINER = 'devenv-airflow-scheduler'
 ENV_FILE = Path.home() / 'PersonalAgent' / '.env'
 MORNING_BRIEF = Path.home() / 'TrillionStack' / 'scripts' / 'morning_brief.py'
+VALUATION_CYCLE = Path.home() / 'TrillionStack' / 'scripts' / 'valuation_cycle.py'
+VALUATION_PYTHON = Path.home() / 'TrillionStack' / 'services' / 'foxhound' / 'crash_agent' / '.venv' / 'bin' / 'python'
+# An answer to TrillionStack's valuation-cycle notice (user request 2026-11-23); no video command uses these.
+VALUATION_WORDS = re.compile(r'승인|보류|거절|반려')
 PERSONAL_AGENT = Path.home() / 'PersonalAgent'
 WEEKDAYS = '월화수목금토일'
 CONTINUE_WORDS = {'계속', '예', '네', '응', '진행', 'yes', 'y'}
@@ -300,13 +304,15 @@ def excluded(item):
 
 class PlaybackBot:
     def __init__(self, telegram, store, *, fetch_candidates, play, deliver, is_processed,
-                 brief=None, digest=None, views=None, clock=time.time):
+                 brief=None, digest=None, views=None, valuation=None, clock=time.time):
         self.telegram, self.store = telegram, store
         self.fetch_candidates, self.play, self.deliver = fetch_candidates, play, deliver
         self.is_processed, self.clock = is_processed, clock
         # brief() -> {'market', 'dashboard', 'errors'}; digest(ids) -> {'videos', 'missing', 'synthesis'}
         # views(consume) -> text of the new macro views or None
         self.brief, self.digest, self.views = brief, digest, views
+        # valuation(text) -> reply text: the valuation cycle records an approve / decline answer
+        self.valuation = valuation
 
     def now(self):
         return datetime.fromtimestamp(self.clock(), KST)
@@ -451,6 +457,9 @@ class PlaybackBot:
 
     def _on_text(self, text):
         text = text.strip()
+        if self.valuation is not None and VALUATION_WORDS.search(text):
+            self._say(self._valuation_part(text))
+            return
         session = self.store.get('session')
         if text.lower() in STATUS_WORDS:
             self._say(self._status(session))
@@ -764,6 +773,13 @@ class PlaybackBot:
             return (f'{title}\n영상 정리를 만들지 못했습니다({str(error)[:160]}). '
                     f'요약 {len(video_ids)}건은 Youtube_summary/summaries 폴더에 있습니다.')
 
+    def _valuation_part(self, text):
+        try:
+            return self.valuation(text)
+        except Exception as error:
+            logger.exception('valuation reply failed')
+            return f'가치평가 순환 결정을 기록하지 못했습니다({str(error)[:160]}). 포털 화면에서 승인해 주세요.'
+
     def _views_part(self, consume):
         """New macro views since the last briefing; nothing when there are none or the ledger fails."""
         if self.views is None:
@@ -835,6 +851,18 @@ def fetch_brief():
     if not lines:
         raise RuntimeError(f'morning_brief exit {result.returncode}: {result.stderr[-300:]}')
     return json.loads(lines[-1])
+
+
+def record_valuation(text):
+    """TrillionStack's valuation cycle reads the answer and records it; its stdout is the chat reply."""
+    python = VALUATION_PYTHON if VALUATION_PYTHON.exists() else Path(sys.executable)
+    result = subprocess.run([str(python), str(VALUATION_CYCLE), 'reply', '--text', text], capture_output=True,
+                            text=True, timeout=600, cwd=str(VALUATION_CYCLE.parents[1]))
+    if result.stderr.strip():
+        logger.info('valuation reply exit %s: %s', result.returncode, result.stderr[-500:])
+    if result.stdout.strip():
+        return result.stdout.strip()
+    raise RuntimeError(f'valuation_cycle exit {result.returncode}: {result.stderr[-200:]}')
 
 
 def fetch_views(consume=True):
@@ -939,7 +967,7 @@ def main():
     logging.basicConfig(level=logging.INFO, handlers=[handler, logging.StreamHandler()])
     bot = PlaybackBot(Telegram(*load_settings()), Store(get_project_root() / 'data' / 'playback_bot.sqlite3'),
                       fetch_candidates=fetch_candidates, play=play, deliver=deliver, is_processed=is_processed,
-                      brief=fetch_brief, digest=fetch_digest, views=fetch_views)
+                      brief=fetch_brief, digest=fetch_digest, views=fetch_views, valuation=record_valuation)
     if args.command == 'offer':
         bot.store.set('offer_date', None)
         bot.store.set('offer_retry_at', 0)
